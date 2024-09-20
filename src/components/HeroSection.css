@@ -1,0 +1,27 @@
+.hero-section {
+  background-image: url('/src/assets/teaBg.jpg'); /* Chemin vers ton image */
+  background-size: cover; /* Couvrir toute la section */
+  background-position: top center; /* Positionner l'image en haut */
+  background-repeat: no-repeat; /* Ne pas répéter l'image */
+  height: 100vh; /* Ajuster la hauteur */
+  position: relative; /* Position relative pour gérer les z-index */
+  overflow: hidden; /* Pour éviter les débordements */
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute; /* Position absolue pour l'overlay */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Couleur de l'overlay avec transparence */
+  filter: blur(4px); /* Ajouter un léger flou */
+  z-index: 0; /* Placer l'overlay derrière le contenu */
+}
+
+.hero-section-content {
+  position: relative; /* Position pour le contenu */
+  z-index: 1; /* Assure que le contenu est au-dessus de l'image floue */
+  padding: 20px; /* Ajouter un peu d'espace autour du contenu */
+}
