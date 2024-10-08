@@ -1,38 +1,43 @@
 import React from "react";
+import { Box, Typography, Paper, Grid } from "@mui/material";
 import { features } from "../constants";
 
 const FeatureSection = () => {
   return (
-    <div className="relative mt-20 border-b border-neutral-800 min-h-[800px]">
-      <div className="text-center">
-        <span className="bg-neutral-900 text-orange-500 rounded-full h-6 text-sm font-medium px-2 py-1 uppercase">
-          Feature
-        </span>
-        <h2 className="text-3xl sm:text-5xl lg:text-6xl mt-10 lg:mt-20 tracking-wide">
-          Easily build{" "}
-          <span className="bg-gradient-to-r from-orange-500 to-orange-800 text-transparent bg-clip-text">
-            your code
+    <Box sx={{ position: 'relative', mt: 8, borderBottom: '1px solid #4a4a4a', minHeight: '800px' }}>
+      <Box textAlign="center">
+        <Box sx={{ bgcolor: '#DDA15E', color: 'white', borderRadius: '20px', height: '30px', display: 'inline-block', padding: '0 10px' }}>
+          <Typography variant="caption" fontWeight="medium" textTransform="uppercase">
+            Bonjour
+          </Typography>
+        </Box>
+        <Typography variant="h4" sx={{ mt: 3, mb: 2 }}>
+          Bonjour bonjour{" "}
+          <span style={{ background: 'linear-gradient(to right, #FF8C00, #C0392B)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
+            bonjouuur
           </span>
-        </h2>
-      </div>
-      <div className="flex flex-wrap mt-10 lg:mt-20">
+        </Typography>
+      </Box>
+      <Grid container spacing={2} sx={{ mt: 3 }}>
         {features.map((feature, index) => (
-          <div key={index} className="w-full sm:w-1/2 lg:w-1/3">
-            <div className="flex">
-              <div className="flex mx-6 h-10 w-10 p-2 bg-neutral-900 text-orange-700 justify-center items-center rounded-full">
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Paper elevation={2} sx={{ display: 'flex', alignItems: 'center', padding: 2, borderRadius: 2 }}>
+              <Box sx={{ bgcolor: '#DDA15E', color: 'white', borderRadius: '50%', height: '40px', width: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', mr: 2 }}>
                 {feature.icon}
-              </div>
-              <div>
-                <h5 className="mt-1 mb-6 text-xl">{feature.text}</h5>
-                <p className="text-md p-2 mb-20 text-neutral-500">
+              </Box>
+              <Box>
+                <Typography variant="h6" sx={{ mb: 1, color: 'white' }}>
+                  {feature.text}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'white' }}>
                   {feature.description}
-                </p>
-              </div>
-            </div>
-          </div>
+                </Typography>
+              </Box>
+            </Paper>
+          </Grid>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Box>
   );
 };
 

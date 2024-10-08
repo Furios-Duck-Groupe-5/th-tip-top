@@ -14,36 +14,36 @@ import user6 from "../assets/profile-pictures/user6.jpg";
 import React from "react";
 
 export const navItems = [
-  { label: "Accuiel", href: "#" },
-  { label: "Participer", href: "#" },
+  { label: "Accueil", href: "/" },
+  { label: "Participer", href: "/participation" },
   { label: "Blog", href: "#" },
   { label: "Contact", href: "#" },
 ];
 
 export const testimonials = [
   {
-    user: "John Doe",
-    company: "Stellar Solutions",
+    user: "Abbad Mohamed",
+    company: "Furious duck",
     image: user1,
-    text: "I am extremely satisfied with the services provided. The team was responsive, professional, and delivered results beyond my expectations.",
+    text: "hadchi m9wd ajmi a7san atay fl3alam",
   },
   {
-    user: "Jane Smith",
-    company: "Blue Horizon Technologies",
+    user: "wow",
+    company: "wow",
     image: user2,
-    text: "I couldn't be happier with the outcome of our project. The team's creativity and problem-solving skills were instrumental in bringing our vision to life",
+    text: "hadchi m9wd ajmi a7san atay fl3alam",
   },
   {
-    user: "David Johnson",
-    company: "Quantum Innovations",
+    user: "hmmmm",
+    company: "aaaaa",
     image: user3,
-    text: "Working with this company was a pleasure. Their attention to detail and commitment to excellence are commendable. I would highly recommend them to anyone looking for top-notch service.",
+    text: "hadchi m9wd ajmi a7san atay fl3alam.",
   },
   {
-    user: "Ronee Brown",
-    company: "Fusion Dynamics",
+    user: "Rok",
+    company: "thé top tio",
     image: user4,
-    text: "Working with the team at XYZ Company was a game-changer for our project. Their attention to detail and innovative solutions helped us achieve our goals faster than we thought possible. We are grateful for their expertise and professionalism!",
+    text: "hadchi m9wd ajmi a7san atay fl3alam",
   },
   {
     user: "Michael Wilson",
@@ -62,62 +62,88 @@ export const testimonials = [
 export const features = [
   {
     icon: <BotMessageSquare />,
-    text: "Drag-and-Drop Interface",
-    description:
-      "Easily design and arrange your VR environments with a user-friendly drag-and-drop interface.",
+    text: (
+      <span style={{ color: '#DDA15E' }}>bonjour bonjour bonjour</span>
+    ),
+    description: (
+      <span style={{ color: '#DDA15E' }}>
+        bonjour bonjour bonjourbonjour bonjour bonjourbonjour bonjour bonjour
+      </span>
+    ),
   },
   {
     icon: <Fingerprint />,
-    text: "Multi-Platform Compatibility",
-    description:
-      "Build VR applications that run seamlessly across multiple platforms, including mobile, desktop, and VR headsets.",
+    text: (
+      <span style={{ color: '#DDA15E' }}>bonjour bonjour bonjour</span>
+    ),
+    description: (
+      <span style={{ color: '#DDA15E' }}>
+        bonjour bonjour bonjourbonjour bonjour bonjourbonjour bonjour bonjourbonjour bonjour bonjour
+      </span>
+    ),
   },
   {
     icon: <ShieldHalf />,
-    text: "Built-in Templates",
-    description:
-      "Jumpstart your VR projects with a variety of built-in templates for different types of applications and environments.",
+    text: (
+      <span style={{ color: '#DDA15E' }}>bonjour bonjour bonjour</span>
+    ),
+    description: (
+      <span style={{ color: '#DDA15E' }}>
+        bonjour bonjour bonjourts.
+      </span>
+    ),
   },
   {
     icon: <BatteryCharging />,
     text: "Real-Time Preview",
-    description:
-      "Preview your VR application in real-time as you make changes, allowing for quick iterations and adjustments.",
+    description: (
+      <span style={{ color: '#DDA15E' }}>
+        Preview your VR application in real-time as you make changes, allowing for quick iterations and adjustments.
+      </span>
+    ),
   },
   {
     icon: <PlugZap />,
     text: "Collaboration Tools",
-    description:
-      "Work together with your team in real-time on VR projects, enabling seamless collaboration and idea sharing.",
+    description: (
+      <span style={{ color: '#DDA15E' }}>
+        Work together with your team in real-time on VR projects, enabling seamless collaboration and idea sharing.
+      </span>
+    ),
   },
   {
     icon: <GlobeLock />,
     text: "Analytics Dashboard",
-    description:
-      "Gain valuable insights into user interactions and behavior within your VR applications with an integrated analytics dashboard.",
+    description: (
+      <span style={{ color: '#DDA15E' }}>
+        Gain valuable insights into user interactions and behavior within your VR applications with an integrated analytics dashboard.
+      </span>
+    ),
   },
 ];
 
+// Les autres tableaux restent inchangés
+
 export const checklistItems = [
   {
-    title: "Code merge made easy",
+    title: "Qualité Supérieure",
     description:
-      "Track the performance of your VR apps and gain insights into user behavior.",
+      "Tous nos thés sont soigneusement sélectionnés pour leur qualité exceptionnelle, provenant des meilleures plantations du monde.",
   },
   {
-    title: "Review code without worry",
+    title: "Origines Authentiques",
     description:
-      "Track the performance of your VR apps and gain insights into user behavior.",
+      "Nos thés proviennent de régions renommées, comme l'Assam en Inde, le Fujian en Chine et les montagnes d'Afrique, garantissant une richesse de saveurs.",
   },
   {
-    title: "AI Assistance to reduce time",
+    title: "Sélection Éthique",
     description:
-      "Track the performance of your VR apps and gain insights into user behavior.",
+      "Nous travaillons directement avec des producteurs locaux pour assurer des pratiques durables et éthiques dans chaque tasse.",
   },
   {
-    title: "Share work in minutes",
+    title: "Expérience Sensorielle",
     description:
-      "Track the performance of your VR apps and gain insights into user behavior.",
+      "Dégustez nos thés qui offrent une palette de saveurs unique, enrichissant vos moments de détente avec des arômes raffinés.",
   },
 ];
 
