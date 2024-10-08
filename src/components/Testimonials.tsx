@@ -1,35 +1,92 @@
 import React from "react";
+import Slider from "react-slick";
+import { Box, Typography, Avatar } from "@mui/material";
 import { testimonials } from "../constants";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Testimonials = () => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
+
   return (
-    <div className="mt-20 tracking-wide">
-      <h2 className="text-3xl sm:text-5xl lg:text-6xl text-center my-10 lg:my-20">
-        What People are saying
-      </h2>
-      <div className="flex flex-wrap justify-center">
+    <Box sx={{ mt: 10, textAlign: "center" }}>
+      <Typography
+        variant="h3"
+        component="h2"
+        gutterBottom
+        sx={{
+          background: "linear-gradient(to right, #ac6434, #DDA15E)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }}
+      >
+        Ce que nos clients adorent ❤️
+      </Typography>
+      <Typography
+        variant="h6"
+        color="text.secondary"
+        sx={{ maxWidth: "700px", mx: "auto", mb: 6 }}
+      >
+        Nos clients sont au cœur de tout ce que nous faisons. Découvrez ce qu'ils pensent de nos produits et de leur expérience avec nous.
+        Ces témoignages reflètent l'amour et la satisfaction qu'ils ont pour nos sélections de thé uniques.
+      </Typography>
+      <Slider {...settings}>
         {testimonials.map((testimonial, index) => (
-          <div key={index} className="w-full sm:w-1/2 lg:w-1/3 px-4 py-2">
-            <div className="bg-neutral-900 rounded-md p-6 text-md border border-neutral-800 font-thin">
-              <p>{testimonial.text}</p>
-              <div className="flex mt-8 items-start">
-                <img
-                  className="w-12 h-12 mr-6 rounded-full border border-neutral-300"
+          <Box key={index} p={2}>
+            <Box
+              sx={{
+                bgcolor: "background.paper",
+                boxShadow: 3,
+                p: 4,
+                borderRadius: 2,
+                textAlign: "left",
+              }}
+            >
+              <Typography variant="body1" color="text.secondary">
+                {testimonial.text}
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+                <Avatar
                   src={testimonial.image}
-                  alt=""
+                  alt={testimonial.user}
+                  sx={{ width: 56, height: 56, mr: 2 }}
                 />
-                <div>
-                  <h6>{testimonial.user}</h6>
-                  <span className="text-sm font-normal italic text-neutral-600">
+                <Box>
+                  <Typography variant="subtitle1">
+                    {testimonial.user}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
                     {testimonial.company}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
         ))}
-      </div>
-    </div>
+      </Slider>
+    </Box>
   );
 };
 

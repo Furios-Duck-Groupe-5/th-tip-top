@@ -1,79 +1,133 @@
 import { FC, useState } from "react";
-import { Menu, X } from "lucide-react";
-import logo from "../assets/logo.png";
+import { AppBar, Toolbar, IconButton, Menu, MenuItem, Button, Box } from "@mui/material";
+import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
+import logo from "/Users/user/Desktop/virtualr-main/src/assets/Thé_TIPTOP2-removebg-preview2.png";
 import { navItems } from "../constants";
+import { Link } from "react-router-dom";
 import React from "react";
 
-// Typage pour un élément de navigation
-interface NavItem {
-  href: string;
-  label: string;
-}
-
-// Utilisation de FC pour typer le composant Navbar
 const Navbar: FC = () => {
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
-  const toggleNavbar = () => {
-    setMobileDrawerOpen(!mobileDrawerOpen);
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen((prev) => !prev);
   };
 
   return (
-    <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b border-neutral-700/80">
-      <div className="container px-4 mx-auto relative lg:text-sm">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center flex-shrink-0">
-            <img className="h-10 w-10 mr-2" src={logo} alt="Logo" />
-            <span className="text-xl tracking-tight">VirtualR</span>
-          </div>
-          <ul className="hidden lg:flex ml-14 space-x-12">
-            {navItems.map((item: NavItem, index: number) => (
-              <li key={index}>
-                <a href={item.href}>{item.label}</a>
-              </li>
-            ))}
-          </ul>
-          <div className="hidden lg:flex justify-center space-x-12 items-center">
-            <a href="#" className="py-2 px-3 border rounded-md">
-              Sign In
-            </a>
-            <a
-              href="#"
-              className="bg-gradient-to-r from-orange-500 to-orange-800 py-2 px-3 rounded-md"
+    <AppBar position="sticky" sx={{ backgroundColor: 'rgba(0, 0, 0, 0)', backdropFilter: 'blur(10px)', zIndex: 50 }}>
+      <Toolbar sx={{ position: 'relative' }}>
+        <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', position: 'relative' }}>
+          <Link to="/">
+            <img 
+              src={logo} 
+              alt="Logo" 
+              style={{ 
+                height: 100, 
+                marginRight: 16,
+                position: 'absolute',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                left: '75px',
+                marginTop:7
+              }} 
+            />
+          </Link>
+        </Box>
+
+        <Box sx={{ display: { xs: 'none', lg: 'flex' }, alignItems: 'center', marginLeft: 2 }}>
+          {navItems.map((item, index) => (
+            <Button 
+              key={index} 
+              component={Link} 
+              to={item.href} 
+              sx={{ 
+                color: 'black', 
+                marginX: 1,
+                '&:hover': {
+                  backgroundColor: '#71C067', // Couleur de fond au hover
+                  color: 'white' // Couleur du texte au hover
+                }
+              }}
             >
-              Creeé un compte
-            </a>
-          </div>
-          <div className="lg:hidden md:flex flex-col justify-end">
-            <button onClick={toggleNavbar}>
-              {mobileDrawerOpen ? <X /> : <Menu />}
-            </button>
-          </div>
-        </div>
-        {mobileDrawerOpen && (
-          <div className="fixed right-0 z-20 bg-neutral-900 w-full p-12 flex flex-col justify-center items-center lg:hidden">
-            <ul>
-              {navItems.map((item: NavItem, index: number) => (
-                <li key={index} className="py-4">
-                  <a href={item.href}>{item.label}</a>
-                </li>
-              ))}
-            </ul>
-            <div className="flex space-x-6">
-              <a href="#" className="py-2 px-3 border rounded-md">
-                Sign In
-              </a>
-              <a
-                href="#"
-                className="py-2 px-3 rounded-md bg-gradient-to-r from-orange-500 to-orange-800"
-              >
-                Create an account
-              </a>
-            </div>
-          </div>
-        )}
-      </div>
-    </nav>
+              {item.label}
+            </Button>
+          ))}
+
+          <Button 
+            component={Link} 
+            to="/login" 
+            variant="outlined" 
+            sx={{ 
+              color: 'black', 
+              marginX: 1, 
+              borderColor: '#71C067',
+              '&:hover': { 
+                backgroundColor: '#71C067',
+                color: 'white', 
+              }
+            }}
+          >
+            Se connecter
+          </Button>
+
+          <Button component={Link} to="/signup" variant="contained" sx={{ backgroundColor: '#DDA15E', marginX: 1 }}>
+            Créez un compte
+          </Button>
+        </Box>
+
+        <IconButton 
+          edge="end" 
+          color="inherit" 
+          onClick={toggleMobileMenu} 
+          sx={{ 
+            display: { lg: 'none' }, 
+            color: { xs: '#DDA15E', sm: 'black' }, // Change la couleur de l'icône du menu en mode mobile
+          }}
+        >
+          {mobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
+        </IconButton>
+      </Toolbar>
+
+      {mobileMenuOpen && (
+        <Menu
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={mobileMenuOpen}
+          onClose={toggleMobileMenu}
+          PaperProps={{
+            sx: {
+              backgroundColor: { xs: '#DDA15E', sm: '#71C067' }, // Couleur de fond en fonction de la taille de l'écran
+              color: 'black',
+              width: '100%', // Pour couvrir toute la largeur de l'écran mobile
+            },
+          }}
+        >
+          {navItems.map((item, index) => (
+            <MenuItem 
+              key={index} 
+              onClick={toggleMobileMenu} 
+              component={Link} 
+              to={item.href} 
+              sx={{ 
+                color: 'white', 
+                '&:hover': { 
+                  backgroundColor: '#71C067', 
+                  color: 'white' 
+                } 
+              }}
+            >
+              {item.label}
+            </MenuItem>
+          ))}
+          <MenuItem onClick={toggleMobileMenu} component={Link} to="/login" sx={{ color: 'white' }}>
+            Se connecter
+          </MenuItem>
+          <MenuItem onClick={toggleMobileMenu} component={Link} to="/signup" sx={{ color: 'white' }}>
+            Créez un compte
+          </MenuItem>
+        </Menu>
+      )}
+    </AppBar>
   );
 };
 
