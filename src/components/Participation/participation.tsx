@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Typography, Button, TextField, Grid, Paper, Avatar } from '@mui/material';
-import teaImage from '/Users/user/Desktop/virtualr-main/src/assets/teaBg.jpg'; // Chemin de votre image de fond
-import teaIcon from '/Users/user/Desktop/virtualr-main/src/assets/teaBg.jpg'; // Chemin de votre icône de thé
+import teaImage from 'C:/Users/HP EliteBook/Downloads/th-tip-top-main/th-tip-top-main/src/assets/teaBg.jpg'; // Chemin de votre image de fond
+import teaIcon from   'C:/Users/HP EliteBook/Downloads/th-tip-top-main/th-tip-top-main/src/assets/teaBg.jpg'; // Chemin de votre icône de thé
 import { motion } from 'framer-motion';
-import bgV from '/Users/user/Desktop/virtualr-main/src/assets/teaVid1.mp4'
+import bgV from 'C:/Users/HP EliteBook/Downloads/th-tip-top-main/th-tip-top-main/src/assets/teaVid1.mp4'
 const ParticipationPage = () => {
   return (
     <Box

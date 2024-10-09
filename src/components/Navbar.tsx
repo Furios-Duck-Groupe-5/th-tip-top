@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { AppBar, Toolbar, IconButton, Menu, MenuItem, Button, Box } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
-import logo from "/Users/user/Desktop/virtualr-main/src/assets/Thé_TIPTOP2-removebg-preview2.png";
+import logo from "../assets/The_TIPTOP2-removebg-preview2.png";
 import { navItems } from "../constants";
 import { Link } from "react-router-dom";
 import React from "react";

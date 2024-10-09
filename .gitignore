@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+# Ignorer les fichiers de MongoDB
+src/backend/db_stockage/WiredTiger*
+src/backend/db_stockage/diagnostic.data/*
+src/backend/db_stockage/journal/*
+src/backend/db_stockage/WiredTiger.lock
 
 # Editor directories and files
 .vscode/*
