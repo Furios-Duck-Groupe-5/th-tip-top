@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es6",                          // Version de JavaScript cible
+    "module": "commonjs",                     // Type de module à utiliser (CommonJS ou esnext)
+    "outDir": "../dist",                      // Dossier où les fichiers compilés seront générés
+    "rootDir": "./",                          // Dossier source pour votre code TypeScript
+    "strict": true,                           // Active le mode strict
+    "esModuleInterop": true                   // Permet l'interopérabilité entre modules
+  },
+  "include": ["**/*.ts"],                    // Inclure tous les fichiers .ts dans ce dossier
+  "exclude": ["node_modules"]                 // Exclure le dossier node_modules de la compilation
+}

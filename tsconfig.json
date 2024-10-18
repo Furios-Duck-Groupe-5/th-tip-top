@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "jsx": "react",
+    "jsx": "react",                         // Utilisez "react" si vous utilisez React
     "target": "ESNext",                     // Utilisez ESNext pour la dernière version des fonctionnalités JS
     "module": "commonjs",                   // Utilisez commonjs pour la compatibilité avec Node.js
     "strict": true,                         // Activez les vérifications strictes
@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true, // Assurez-vous que les noms de fichiers sont cohérents
     "outDir": "./dist",                     // Dossier de sortie pour les fichiers compilés
     "typeRoots": ["./node_modules/@types"], // Incluez les types pour Node.js
-    "resolveJsonModule": true
+    "resolveJsonModule": true                // Permet l'importation de fichiers JSON
   },
   "include": ["src/**/*"],                  // Incluez tous les fichiers TypeScript dans le dossier src
   "exclude": ["node_modules"]               // Excluez le dossier node_modules

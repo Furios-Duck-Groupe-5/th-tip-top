@@ -20,38 +20,50 @@ import {
 } from '@mui/material';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 
-const UserListPage = () => {
-  // Exemple de données d'utilisateurs ç supprimer quand on commence à les lié avec le backend
-  const initialUsers = [
+// Définir l'interface pour un utilisateur
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  role: string;
+  email: string;
+  gender: string;
+  dob: string; // Date de naissance
+}
+
+// Définir les types pour le composant
+const UserListPage: React.FC = () => {
+  // Exemple de données d'utilisateurs (à remplacer par les données du backend)
+  const initialUsers: User[] = [
     { id: 1, firstName: 'Mohamed', lastName: 'Abbad', role: 'Admin', email: 'mohamed.abbad@example.com', gender: 'Male', dob: '1990-01-01' },
     { id: 2, firstName: 'Azz', lastName: 'Safi', role: 'Admin', email: 'Azz.safi@example.com', gender: 'Female', dob: '1992-02-02' },
     { id: 3, firstName: 'Anas', lastName: 'Atmani', role: 'Client', email: 'anas.atm@example.com', gender: 'Female', dob: '1989-03-03' },
-    { id: 4, firstName: 'Zaki', lastName: 'Teff', role: 'EMployee', email: 'zak.tef@example.com', gender: 'Male', dob: '1995-04-04' },
+    { id: 4, firstName: 'Zaki', lastName: 'Teff', role: 'Employee', email: 'zak.tef@example.com', gender: 'Male', dob: '1995-04-04' },
   ];
 
-  const [users, setUsers] = useState(initialUsers);
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('lastName');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [open, setOpen] = useState(false); // État pour le modal
-  const [currentUser, setCurrentUser] = useState(null); // État pour l'utilisateur à modifier
+  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<keyof User>('lastName');
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [open, setOpen] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Gestion du tri
-  const handleRequestSort = (property) => {
+  const handleRequestSort = (property: keyof User) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
   // Fonction pour supprimer un utilisateur
-  const handleDeleteUser = (id) => {
+  const handleDeleteUser = (id: number) => {
     setUsers(users.filter(user => user.id !== id));
   };
 
   // Ouvrir le modal pour modifier l'utilisateur
-  const handleEditUser = (user) => {
+  const handleEditUser = (user: User) => {
     setCurrentUser(user);
     setOpen(true);
   };
@@ -63,18 +75,21 @@ const UserListPage = () => {
   };
 
   // Fonction pour gérer les changements dans le formulaire de modification
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCurrentUser(prevState => ({
-      ...prevState,
-      [name]: value,
-    }));
+    if (currentUser) {
+      setCurrentUser(prevState => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   // Fonction pour soumettre le formulaire de modification
   const handleSubmit = () => {
-    if(currentUser)
-    setUsers(users.map(user => (user.id === currentUser.id ? currentUser : user)));
+    if (currentUser) {
+      setUsers(users.map(user => (user.id === currentUser.id ? currentUser : user)));
+    }
     handleClose();
   };
 
@@ -84,12 +99,12 @@ const UserListPage = () => {
   );
 
   // Fonction pour gérer le changement de page
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
   // Fonction pour gérer le changement de lignes par page
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -199,7 +214,7 @@ const UserListPage = () => {
               borderRadius: 2,
               boxShadow: 24,
               p: 4,
-              width: { xs: '90%', sm: '400px' }, // Responsive width
+              width: { xs: '90%', sm: '400px' }, // Largeur responsive
               maxHeight: '80vh', // Limite la hauteur
               overflowY: 'auto', // Activer le défilement vertical
               position: 'absolute', // Positionnement absolu
