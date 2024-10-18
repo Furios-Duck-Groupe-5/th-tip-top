@@ -16,8 +16,13 @@ import React from "react";
 export const navItems = [
   { label: "Accueil", href: "/" },
   { label: "Participer", href: "/participation" },
-  { label: "Blog", href: "#" },
-  { label: "Contact", href: "#" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+  { label: "Mon compte", href: "/mon-compte" },
+  { label: "Admin", href: "/admin" },
+  { label: "Gestion de gain", href: "/gain" },
+
+
 ];
 
 export const testimonials = [

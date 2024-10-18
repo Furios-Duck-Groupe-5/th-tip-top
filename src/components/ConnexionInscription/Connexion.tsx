@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert } from "@mui/material";
 import axios from "axios"; 
 import logo from "../../assets/thebgbg.png";
+import React from "react";
 
 const LoginPage: FC = () => {
   const [email, setEmail] = useState<string>("");

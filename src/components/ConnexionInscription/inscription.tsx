@@ -1,8 +1,7 @@
 import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import axios from "axios"; 
 import logo from "../../assets/thebgbg.png";
-import { useNavigate } from "react-router-dom"; // Importer useNavigate
+import React from "react";
 
 const SignUpPage: FC = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -13,63 +12,60 @@ const SignUpPage: FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
-  const navigate = useNavigate(); // Hook pour la navigation
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Vérification si tous les champs sont remplis
     if (!firstName || !lastName || !dateOfBirth || !phoneNumber || !gender || !email || !password) {
       setErrorMessage("Veuillez remplir tous les champs.");
-      return;
-    }
-
-    setErrorMessage("");
-    setSuccessMessage(""); 
-
-    try {
-      // Appel à l'API pour l'inscription
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
-        firstName,
-        lastName,
-        dateOfBirth,
-        phoneNumber,
-        gender,
-        email,
-        password,
-      });
-
-      setSuccessMessage(response.data.message || "Inscription réussie ! Vous pouvez maintenant vous connecter.");
-
-      setTimeout(() => {
-        navigate("/login"); 
-      }, 4000); 
-    } catch (error: any) {
-      console.error("Erreur lors de l'inscription :", error);
-
-     
-      if (error.response && error.response.data) {
-        setErrorMessage(error.response.data.message || "Erreur lors de l'inscription. Veuillez réessayer.");
-      } else {
-        setErrorMessage("Une erreur est survenue. Veuillez réessayer.");
-      }
+    } else {
+      setErrorMessage("");
+      console.log("Nom:", firstName);
+      console.log("Prénom:", lastName);
+      console.log("Date de naissance:", dateOfBirth);
+      console.log("Numéro de téléphone:", phoneNumber);
+      console.log("Genre:", gender);
+      console.log("Email:", email);
+      console.log("Mot de passe:", password);
+      // Ajoutez votre logique d'inscription ici
     }
   };
 
   return (
-    <Box sx={{ bgcolor: "#f5f5f5", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", mt: -5 }}>
-      <Container component="main" maxWidth="xs" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -5 }}>
-        <img src={logo} alt="Logo" style={{ height: '120px', marginBottom: '24px' }} />
-        <Box sx={{ bgcolor: 'white', padding: 4, borderRadius: 2, boxShadow: 3, width: '100%', mt: -5 }}>
-          <Typography component="h1" variant="h5" align="center" gutterBottom>Inscription</Typography>
+    <Box 
+      sx={{ 
+        bgcolor: "#f5f5f5", 
+        height: "100vh", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center",
+        mt: -5
+      }}
+    >
+      <Container
+        component="main"
+        maxWidth="xs"
+        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt :-5 }}
+      >
+        <img 
+          src={logo} 
+          alt="Logo" 
+          style={{ height: '120px', marginBottom: '24px' }} 
+        />
 
-          {/* Affichage du message d'erreur */}
+        <Box 
+          sx={{ 
+            bgcolor: 'white', 
+            padding: 4, 
+            borderRadius: 2, 
+            boxShadow: 3, 
+            width: '100%',
+            mt : -5
+          }}
+        >
+          <Typography component="h1" variant="h5" align="center" gutterBottom>
+            Inscription
+          </Typography>
           {errorMessage && <Alert severity="error" sx={{ marginBottom: 2 }}>{errorMessage}</Alert>}
-
-          {/* Affichage du message de succès */}
-          {successMessage && <Alert severity="success" sx={{ marginBottom: 2 }}>{successMessage}</Alert>}
-
           <form onSubmit={handleSubmit}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
               <TextField
@@ -79,7 +75,7 @@ const SignUpPage: FC = () => {
                 label="Nom"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                sx={{ marginRight: 1 }}
+                sx={{ bgcolor: 'white', input: { color: 'black' }, marginRight: 1 }}
               />
               <TextField
                 variant="outlined"
@@ -88,7 +84,7 @@ const SignUpPage: FC = () => {
                 label="Prénom"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                sx={{ marginLeft: 1 }}
+                sx={{ bgcolor: 'white', input: { color: 'black' }, marginLeft: 1 }}
               />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
@@ -101,9 +97,9 @@ const SignUpPage: FC = () => {
                 value={dateOfBirth}
                 onChange={(e) => setDateOfBirth(e.target.value)}
                 InputLabelProps={{ shrink: true }}
-                sx={{ marginRight: 1 }}
+                sx={{ bgcolor: 'white', input: { color: 'black' }, marginRight: 1 }}
               />
-              <FormControl fullWidth required sx={{ marginLeft: 1 }}>
+              <FormControl fullWidth variant="outlined" required sx={{ marginLeft: 1 }}>
                 <InputLabel>Genre</InputLabel>
                 <Select
                   value={gender}
@@ -123,7 +119,7 @@ const SignUpPage: FC = () => {
               label="Numéro de téléphone"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              sx={{ marginBottom: 2 }}
+              sx={{ bgcolor: 'white', input: { color: 'black' }, marginBottom: 2 }}
             />
             <TextField
               variant="outlined"
@@ -132,7 +128,7 @@ const SignUpPage: FC = () => {
               label="E-mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              sx={{ marginBottom: 2 }}
+              sx={{ bgcolor: 'white', input: { color: 'black' }, marginBottom: 2 }}
             />
             <TextField
               variant="outlined"
@@ -142,7 +138,7 @@ const SignUpPage: FC = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              sx={{ marginBottom: 2 }}
+              sx={{ bgcolor: 'white', input: { color: 'black' }, marginBottom: 2 }}
             />
             <Button
               type="submit"
@@ -173,7 +169,7 @@ const SignUpPage: FC = () => {
             Google
           </Button>
           <Typography variant="body2" align="center" sx={{ marginTop: 2 }}>
-            Vous avez déjà un compte? <a href="/login" style={{ color: 'orange' }}>Se connecter</a>
+            Vous avez déjà un compte? <a href="#" style={{ color: 'orange' }}>Se connecter</a>
           </Typography>
         </Box>
       </Container>
