@@ -1,0 +1,35 @@
+{
+    "short_name": "ThéTipTop",
+    "name": "Thé tip top PWA",
+    "id": "/",
+    "icons": [
+      {
+        "src": "logo-192-pwa.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "logo-512-pwa.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#DDA15E",
+    "background_color": "#ffffff",
+    "screenshots": [
+      {
+        "src": "acceuil-pwa.jpeg",
+        "sizes": "2880x1556",
+        "type": "image/jpeg",
+        "form_factor": "wide"  
+      },
+      {
+        "src": "participation-pwa.jpeg",
+        "sizes": "2880x1556",  
+        "type": "image/jpeg"
+      }
+    ]
+  }
+  

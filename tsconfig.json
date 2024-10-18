@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "target": "ESNext",                     // Utilisez ESNext pour la dernière version des fonctionnalités JS
+    "module": "commonjs",                   // Utilisez commonjs pour la compatibilité avec Node.js
+    "strict": true,                         // Activez les vérifications strictes
+    "esModuleInterop": true,                // Permet l'importation de modules CommonJS dans des modules ES
+    "skipLibCheck": true,                   // Ignorez la vérification des fichiers de déclaration
+    "forceConsistentCasingInFileNames": true, // Assurez-vous que les noms de fichiers sont cohérents
+    "outDir": "./dist",                     // Dossier de sortie pour les fichiers compilés
+    "typeRoots": ["./node_modules/@types"], // Incluez les types pour Node.js
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*"],                  // Incluez tous les fichiers TypeScript dans le dossier src
+  "exclude": ["node_modules"]               // Excluez le dossier node_modules
+}
