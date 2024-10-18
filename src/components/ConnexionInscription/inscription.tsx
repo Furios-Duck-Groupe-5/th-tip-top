@@ -2,31 +2,51 @@ import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import logo from "../../assets/thebgbg.png";
 import React from "react";
+import axios from "axios"; 
+
 
 const SignUpPage: FC = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [gender, setGender] = useState<string>("");
+  const [gender, setGender] = useState<boolean | null>(null); // Modifié pour être un booléen ou null
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>(""); // Pour le message de succès
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firstName || !lastName || !dateOfBirth || !phoneNumber || !gender || !email || !password) {
+    
+    // Vérifier si tous les champs sont remplis
+    if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password) {
       setErrorMessage("Veuillez remplir tous les champs.");
     } else {
       setErrorMessage("");
-      console.log("Nom:", firstName);
-      console.log("Prénom:", lastName);
-      console.log("Date de naissance:", dateOfBirth);
-      console.log("Numéro de téléphone:", phoneNumber);
-      console.log("Genre:", gender);
-      console.log("Email:", email);
-      console.log("Mot de passe:", password);
-      // Ajoutez votre logique d'inscription ici
+
+      // Préparer les données pour l'envoi
+      const userData = {
+        nom: lastName,
+        prenom: firstName,
+        date_de_naissance: dateOfBirth,
+        sexe: gender ? "M" : "F", // Ici, on suppose que 'male' est vrai et 'female' est faux
+        email: email,
+        mot_de_passe: password,
+      };
+
+      try {
+        // Envoyer les données à l'API
+        const response = await axios.post("http://localhost:4001/signup", userData);
+        setSuccessMessage("Inscription réussie !");
+        console.log(response.data);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // Gérer les erreurs renvoyées par le serveur
+          setErrorMessage(error.response.data.message || "Une erreur s'est produite.");
+        } else {
+          setErrorMessage("Erreur de connexion au serveur.");
+        }
+      }
     }
   };
 
@@ -66,6 +86,7 @@ const SignUpPage: FC = () => {
             Inscription
           </Typography>
           {errorMessage && <Alert severity="error" sx={{ marginBottom: 2 }}>{errorMessage}</Alert>}
+          {successMessage && <Alert severity="success" sx={{ marginBottom: 2 }}>{successMessage}</Alert>}
           <form onSubmit={handleSubmit}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
               <TextField
@@ -102,25 +123,19 @@ const SignUpPage: FC = () => {
               <FormControl fullWidth variant="outlined" required sx={{ marginLeft: 1 }}>
                 <InputLabel>Genre</InputLabel>
                 <Select
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
+                  value={gender === null ? "" : gender ? "male" : "female"} // Affiche 'male' si true et 'female' si false
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    setGender(selectedValue === "male");
+                  }}
                   label="Genre"
                 >
                   <MenuItem value="male">Homme</MenuItem>
                   <MenuItem value="female">Femme</MenuItem>
-                  <MenuItem value="other">Autre</MenuItem>
                 </Select>
               </FormControl>
             </Box>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              label="Numéro de téléphone"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              sx={{ bgcolor: 'white', input: { color: 'black' }, marginBottom: 2 }}
-            />
+           
             <TextField
               variant="outlined"
               required

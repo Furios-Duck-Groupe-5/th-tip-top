@@ -7,12 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
 import Lottie from 'lottie-react';
 import fireworksAnimation from './fire-work.json';
-// TODO: Ajouter une animation de première visite
-// import starExplosionAnimation from './starts.json';
+
 type Prize = {
   name: string;
   image: string;
 };
+
 const ParticipationPage: FC = () => {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
@@ -72,14 +72,11 @@ const ParticipationPage: FC = () => {
   const handleCloseHistoryModal = () => setOpenHistoryModal(false);
   const handleRedirectToDraw = () => navigate('/lots');
 
-  //TODO à changer la logique de boucle de participation
   const handleCodeSubmit = () => {
-    //TODO à changer c'st juste pour le test
     if (code === '1234567890') {
       if (!codeValidated) {
         const randomValue = Math.random();
-        //TODO àc changer le type de prize
-        let prize : Prize;
+        let prize: Prize;
 
         if (randomValue < 0.3) {
           prize = { name: 'Infuseur à thé', image: 'src/components/Participation/infusseur.png' };
@@ -113,7 +110,22 @@ const ParticipationPage: FC = () => {
   };
 
   return (
-    <Box sx={{ position: 'relative', overflow: 'hidden', minHeight: '100vh', p: 4, backgroundColor: '#F0F4EF' }}>
+    <Box
+      sx={{
+        position: 'relative',
+        overflow: 'hidden',
+        minHeight: '100vh',
+        height: '100vh', // Assure que la page prend toute la hauteur
+        width: '100%',   // Assure que la page prend toute la largeur
+        margin: 0,      // Supprime les marges
+        padding: 0,     // Supprime les paddings
+        backgroundColor: '#F0F4EF',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        boxSizing: 'border-box' // Inclut le padding et la bordure dans la largeur et la hauteur totales
+      }}
+    >
       {/* Confetti si le code est validé */}
       {codeValidated && <Confetti numberOfPieces={200} />}
 
@@ -130,7 +142,6 @@ const ParticipationPage: FC = () => {
           }}
         >
           {/* TODO: Activer l'animation */}
-          {/* <Lottie animationData={starExplosionAnimation} loop={true} /> */}
         </Box>
       )}
 
@@ -198,19 +209,10 @@ const ParticipationPage: FC = () => {
 
         <Grid item xs={12} md={6}>
           <Paper elevation={4} sx={{ p: 4, borderRadius: 3, backgroundColor: '#FFFBF2' }}>
-            <Typography variant="h5" gutterBottom sx={{ color: '#DDA15E', mb: 2 }}>
-              Gagnez des cadeaux exclusifs !
+            <Typography variant="h5" align="center" sx={{ color: '#DDA15E', mb: 2 }}>
+              Qu'est-ce que vous pouvez gagner ?
             </Typography>
-            <Typography variant="body1" paragraph>
-              Pour célébrer l’ouverture de notre nouvelle boutique, tentez votre chance et gagnez un an de thé, des coffrets et plus encore !
-            </Typography>
-
-            <Divider sx={{ my: 3 }} />
-
-            <Typography variant="h6" gutterBottom sx={{ color: '#DDA15E' }}>
-              Lots à gagner :
-            </Typography>
-            <ul style={{ color: '#DDA15E', fontWeight: 'bold' }}>
+            <ul style={{ listStyleType: 'none', padding: 0, color: '#4B7260', fontWeight: 'bold' }}>
               <li>Infuseur à thé</li>
               <li>Boîte de thé détox ou infusion</li>
               <li>Coffrets découverte</li>
@@ -254,7 +256,6 @@ const ParticipationPage: FC = () => {
             <Divider sx={{ my: 3 }} />
 
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Box sx={{ flex: 1, ml: 1 }}>
                   <Button
@@ -267,7 +268,6 @@ const ParticipationPage: FC = () => {
                   </Button>
                 </Box>
               </motion.div>
-
             </Box>
           </Paper>
         </Grid>
