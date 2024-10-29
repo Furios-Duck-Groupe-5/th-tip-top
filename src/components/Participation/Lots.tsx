@@ -119,7 +119,7 @@ const LotsPage: FC = () => {
               />
               <CardContent>
                 <Typography gutterBottom variant="h4" component="div" sx={{ color: '#333', fontWeight: 'bold' }}>
-                  Grand Tirage au Sort - Gagnez 1 An de Thé !
+                  Grand Tirage au Sort - Gagnez 1 An de thé !
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
                   Participez à notre Grand Tirage au Sort et tentez de remporter un an de thé gratuit, d'une valeur de 360€ !

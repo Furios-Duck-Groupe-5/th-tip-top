@@ -11,16 +11,23 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaRegBell, FaUsers, FaGift } from 'react-icons/fa';
 
-const AdminPage = () => {
+// Define types for new employee
+interface Employee {
+  name: string;
+  email: string;
+  role: string;
+}
+
+const AdminPage: React.FC = () => {
   const navigate = useNavigate();
-  const [openPrizeModal, setOpenPrizeModal] = useState(false);
-  const [prizes, setPrizes] = useState([]);
-  const [newPrize, setNewPrize] = useState({ name: '', image: null });
-  const [editIndex, setEditIndex] = useState(null);
+  const [openPrizeModal, setOpenPrizeModal] = useState<boolean>(false);
+  const [prizes, setPrizes] = useState<Array<{ name: string; image: File | null }>>([]);
+  const [newPrize, setNewPrize] = useState<{ name: string; image: File | null }>({ name: '', image: null });
+  const [editIndex, setEditIndex] = useState<number | null>(null);
 
   // States for adding a new employee
-  const [newEmployee, setNewEmployee] = useState({ name: '', email: '', role: 'employé' });
-  const [employees, setEmployees] = useState([]); // Stores the list of employees
+  const [newEmployee, setNewEmployee] = useState<Employee>({ name: '', email: '', role: 'employé' });
+  const [employees, setEmployees] = useState<Employee[]>([]); // Stores the list of employees
 
   const handleViewStatistics = () => {
     navigate('/detailed-statistics');
@@ -42,9 +49,19 @@ const AdminPage = () => {
 
   // Handle adding new employee
   const handleAddEmployee = () => {
+    if (!newEmployee.name || !newEmployee.email) {
+      alert('Veuillez remplir tous les champs.');
+      return;
+    }
     setEmployees([...employees, newEmployee]);
     setNewEmployee({ name: '', email: '', role: 'employé' });
     alert('Nouvel employé ajouté avec succès');
+  };
+
+  // Function to handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewEmployee((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -140,42 +157,20 @@ const AdminPage = () => {
                   Voir tous les utilisateurs
                 </Button>
               </Grid>
+              <Grid item xs={12} textAlign="center">
+                {/* Button to navigate to Add Employee Page */}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 2 }}
+                  onClick={() => navigate('/add-employee')}
+                >
+                  Ajouter un nouvel employé
+                </Button>
+              </Grid>
             </Grid>
 
-            {/* Form to add new employee */}
-            <Typography variant="h6" gutterBottom sx={{ color: '#DDA15E', marginTop: '20px' }}>
-              Ajouter un nouvel employé
-            </Typography>
-            <TextField
-              fullWidth
-              label="Nom de l'employé"
-              value={newEmployee.name}
-              onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Email de l'employé"
-              value={newEmployee.email}
-              onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Rôle"
-              value={newEmployee.role}
-              onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })}
-              margin="normal"
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 2 }}
-              onClick={handleAddEmployee}
-            >
-              Ajouter un employé
-            </Button>
-          </Paper>
+           </Paper>
         </Grid>
 
         {/* Section Gestion des Lots */}

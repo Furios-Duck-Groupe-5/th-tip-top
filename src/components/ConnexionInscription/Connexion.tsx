@@ -2,31 +2,39 @@ import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert } from "@mui/material";
 import logo from "../Participation/360.png";
 import React from "react";
-import axios from "axios"; // Importer axios ici
+import axios from "axios";
 
 const LoginPage: FC = () => {
   const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [mot_de_passe, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!email || !mot_de_passe) {
       setErrorMessage("Veuillez remplir tous les champs.");
-    } else {
-      setErrorMessage("");
-      console.log("Email:", email);
-      console.log("Mot de passe:", password);
+      return; // Sortir de la fonction si les champs ne sont pas remplis
     }
-  };
 
-  // Fonction pour récupérer les rôles
-  const fetchRoles = async () => {
+    setErrorMessage(""); // Réinitialiser le message d'erreur
+
     try {
-      const response = await axios.get('http://localhost:4001/roles');
-      console.log(response.data); // Affiche les rôles dans la console
+      const response = await axios.post('http://localhost:4001/login', {
+        email,
+        mot_de_passe // Mot de passe envoyé en clair, mais haché côté serveur
+      });
+      console.log(response);
+
+      // Si la connexion est réussie, gérer la réponse ici
+      console.log("Connexion réussie:", response.data);
+      window.location.href = '/blog'; 
+
     } catch (error) {
-      console.error('Erreur lors de la récupération des rôles:', error);
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(error.response?.data.message || 'Erreur lors de la connexion.');
+      } else {
+        setErrorMessage('Une erreur inconnue s\'est produite.');
+      }
     }
   };
 
@@ -46,7 +54,6 @@ const LoginPage: FC = () => {
         maxWidth="xs"
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' , mt: -25 }}
       >
-        {/* Agrandir et centrer le logo */}
         <img 
           src={logo} 
           alt="Logo" 
@@ -77,8 +84,8 @@ const LoginPage: FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               sx={{ 
-                bgcolor: 'white',   // Couleur de fond blanc
-                input: { color: 'black' },  // Couleur du texte en noir
+                bgcolor: 'white',   
+                input: { color: 'black' },
                 marginBottom: 2
               }}
             />
@@ -88,12 +95,12 @@ const LoginPage: FC = () => {
               required
               fullWidth
               label="Mot de passe"
-              type="password"
-              value={password}
+              type="password" // Correction ici
+              value={mot_de_passe}
               onChange={(e) => setPassword(e.target.value)}
               sx={{ 
-                bgcolor: 'white',  // Couleur de fond blanc
-                input: { color: 'black' },  // Couleur du texte en noir
+                bgcolor: 'white',
+                input: { color: 'black' },
                 marginBottom: 2
               }}
             />
@@ -108,21 +115,6 @@ const LoginPage: FC = () => {
               }}
             >
               Se connecter
-            </Button>
-            {/* Nouveau bouton pour afficher les rôles */}
-            <Button
-              onClick={fetchRoles}
-              fullWidth
-              variant="outlined"
-              sx={{ 
-                bgcolor: '#ffffff', // Fond blanc
-                borderColor: '#DDA15E', // Couleur de bordure
-                color: '#DDA15E', // Couleur de texte
-                '&:hover': { borderColor: '#d19c5c' }, // Changer la couleur au survol
-                marginBottom: 2
-              }}
-            >
-              Afficher les Rôles
             </Button>
           </form>
           <Typography variant="body2" align="center" sx={{ marginTop: 2 }}>

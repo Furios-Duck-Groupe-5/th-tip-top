@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -21,34 +21,70 @@ import {
 import { FaTrash, FaEdit } from 'react-icons/fa';
 
 // Définir l'interface pour un utilisateur
+// Définir l'interface pour un utilisateur
 interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  role: string;
+  id_user: number;
+  prenom: string;
+  nom: string;
+  role_id: number;
   email: string;
-  gender: string;
-  dob: string; // Date de naissance
+  sexe: 'M' | 'F';
+  date_de_naissance: string; // Date de naissance sous forme de chaîne
 }
+
 
 // Définir les types pour le composant
 const UserListPage: React.FC = () => {
-  // Exemple de données d'utilisateurs (à remplacer par les données du backend)
-  const initialUsers: User[] = [
-    { id: 1, firstName: 'Mohamed', lastName: 'Abbad', role: 'Admin', email: 'mohamed.abbad@example.com', gender: 'Male', dob: '1990-01-01' },
-    { id: 2, firstName: 'Azz', lastName: 'Safi', role: 'Admin', email: 'Azz.safi@example.com', gender: 'Female', dob: '1992-02-02' },
-    { id: 3, firstName: 'Anas', lastName: 'Atmani', role: 'Client', email: 'anas.atm@example.com', gender: 'Female', dob: '1989-03-03' },
-    { id: 4, firstName: 'Zaki', lastName: 'Teff', role: 'Employee', email: 'zak.tef@example.com', gender: 'Male', dob: '1995-04-04' },
-  ];
-
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [users, setUsers] = useState<User[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof User>('lastName');
+  const [orderBy, setOrderBy] = useState<keyof User>('nom');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [open, setOpen] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Fonction pour récupérer les utilisateurs depuis l'API
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('http://localhost:4001/users'); 
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des utilisateurs.');
+      }
+      const data: User[] = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des utilisateurs:', error);
+    }
+    
+    
+  };
+  const getRoleLabel = (role: number): string => {
+    switch (role) {
+      case 1:
+        return 'Client';
+      case 2:
+        return 'Administrateur';
+      case 3:
+        return 'Employé';
+      default:
+        return 'Inconnu'; // Valeur par défaut si le rôle n'est pas reconnu
+    }
+  };
+  // Appel de fetchUsers lors du montage du composant
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+  
 
   // Gestion du tri
   const handleRequestSort = (property: keyof User) => {
@@ -57,10 +93,20 @@ const UserListPage: React.FC = () => {
     setOrderBy(property);
   };
 
-  // Fonction pour supprimer un utilisateur
-  const handleDeleteUser = (id: number) => {
-    setUsers(users.filter(user => user.id !== id));
-  };
+  const handleDeleteUser = async (id_user: number) => {
+    try {
+        const response = await fetch(`http://localhost:4001/users/${id_user}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            throw new Error('Erreur lors de la suppression de l\'utilisateur.');
+        }
+        setUsers(users.filter(user => user.id_user !== id_user));
+    } catch (error) {
+        console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+    }
+};
+
 
   // Ouvrir le modal pour modifier l'utilisateur
   const handleEditUser = (user: User) => {
@@ -86,16 +132,30 @@ const UserListPage: React.FC = () => {
   };
 
   // Fonction pour soumettre le formulaire de modification
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (currentUser) {
-      setUsers(users.map(user => (user.id === currentUser.id ? currentUser : user)));
+      try {
+        const response = await fetch(`http://localhost:4001/users/${currentUser.id_user}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(currentUser),
+        });
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour de l\'utilisateur.');
+        }
+        setUsers(users.map(user => (user.id_user === currentUser.id_user ? currentUser : user)));
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
+      }
     }
     handleClose();
   };
 
   // Filtrer les utilisateurs par terme de recherche
   const filteredUsers = users.filter(user =>
-    `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+    `${user.prenom} ${user.nom}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Fonction pour gérer le changement de page
@@ -143,18 +203,18 @@ const UserListPage: React.FC = () => {
             <TableRow>
               <TableCell>
                 <TableSortLabel
-                  active={orderBy === 'lastName'}
-                  direction={orderBy === 'lastName' ? order : 'asc'}
-                  onClick={() => handleRequestSort('lastName')}
+                  active={orderBy === 'nom'}
+                  direction={orderBy === 'nom' ? order : 'asc'}
+                  onClick={() => handleRequestSort('nom')}
                 >
                   Nom
                 </TableSortLabel>
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={orderBy === 'firstName'}
-                  direction={orderBy === 'firstName' ? order : 'asc'}
-                  onClick={() => handleRequestSort('firstName')}
+                  active={orderBy === 'prenom'}
+                  direction={orderBy === 'prenom' ? order : 'asc'}
+                  onClick={() => handleRequestSort('prenom')}
                 >
                   Prénom
                 </TableSortLabel>
@@ -168,18 +228,18 @@ const UserListPage: React.FC = () => {
           </TableHead>
           <TableBody>
             {sortedUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.lastName}</TableCell>
-                <TableCell>{user.firstName}</TableCell>
-                <TableCell>{user.role}</TableCell>
+              <TableRow key={user.id_user}>
+                <TableCell>{user.nom}</TableCell>
+                <TableCell>{user.prenom}</TableCell>
+                <TableCell>{getRoleLabel(user.role_id)}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.gender}</TableCell>
-                <TableCell>{user.dob}</TableCell>
+                <TableCell>{user.sexe === 'M' ? 'Masculin' : 'Féminin'}</TableCell>
+                <TableCell>{formatDate(user.date_de_naissance)}</TableCell>
                 <TableCell>
                   <IconButton color="primary" onClick={() => handleEditUser(user)}>
                     <FaEdit />
                   </IconButton>
-                  <IconButton color="error" onClick={() => handleDeleteUser(user.id)}>
+                  <IconButton color="error" onClick={() => handleDeleteUser(user.id_user)}>
                     <FaTrash />
                   </IconButton>
                 </TableCell>
@@ -230,8 +290,8 @@ const UserListPage: React.FC = () => {
               label="Prénom"
               variant="outlined"
               fullWidth
-              name="firstName"
-              value={currentUser ? currentUser.firstName : ''}
+              name="prenom"
+              value={currentUser ? currentUser.prenom : ''}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
             />
@@ -239,8 +299,8 @@ const UserListPage: React.FC = () => {
               label="Nom"
               variant="outlined"
               fullWidth
-              name="lastName"
-              value={currentUser ? currentUser.lastName : ''}
+              name="nom"
+              value={currentUser ? currentUser.nom : ''}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
             />
@@ -248,8 +308,8 @@ const UserListPage: React.FC = () => {
               label="Rôle"
               variant="outlined"
               fullWidth
-              name="role"
-              value={currentUser ? currentUser.role : ''}
+              name="role_id"
+              value={currentUser ? currentUser.role_id : ''}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
             />
@@ -268,7 +328,7 @@ const UserListPage: React.FC = () => {
               variant="outlined"
               fullWidth
               name="gender"
-              value={currentUser ? currentUser.gender : ''}
+              value={currentUser ? currentUser.sexe : ''}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
             />
@@ -277,8 +337,8 @@ const UserListPage: React.FC = () => {
               variant="outlined"
               fullWidth
               type="date"
-              name="dob"
-              value={currentUser ? currentUser.dob : ''}
+              name="date_de_naisance"
+              value={currentUser ? currentUser.date_de_naissance : ''}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
               InputLabelProps={{
