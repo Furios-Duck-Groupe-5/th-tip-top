@@ -4,7 +4,8 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { body, validationResult } from 'express-validator';
-
+import * as XLSX from 'xlsx';
+import fs from 'fs';
 // Charger les variables d'environnement
 dotenv.config();
 
@@ -242,6 +243,105 @@ app.put('/users/:id_user', async (req: Request, res: Response): Promise<void> =>
             console.error('Erreur inconnue :', error);
             res.status(500).json({ message: 'Une erreur inconnue s\'est produite.' });
         }
+    }
+});
+
+app.get('/statistics', async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Requête pour obtenir les statistiques de sexe
+        const genderStats = await pool.query(`
+            SELECT sexe, COUNT(*) AS count
+            FROM Utilisateur
+            GROUP BY sexe
+        `);
+
+        // Requête pour obtenir les statistiques d'âge
+        const ageStats = await pool.query(`
+            SELECT 
+                CASE 
+                    WHEN EXTRACT(YEAR FROM AGE(CURRENT_DATE, date_de_naissance)) BETWEEN 18 AND 25 THEN '18-25'
+                    WHEN EXTRACT(YEAR FROM AGE(CURRENT_DATE, date_de_naissance)) BETWEEN 26 AND 35 THEN '26-35'
+                    WHEN EXTRACT(YEAR FROM AGE(CURRENT_DATE, date_de_naissance)) BETWEEN 36 AND 50 THEN '36-50'
+                    ELSE '51+'
+                END AS age_group,
+                COUNT(*) AS count
+            FROM Utilisateur
+            GROUP BY age_group
+            ORDER BY age_group
+        `);
+
+        // Formater et retourner les résultats
+        res.status(200).json({
+            genderStats: genderStats.rows,
+            ageStats: ageStats.rows
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des statistiques :', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des statistiques.' });
+    }
+});
+
+// TODO date de naissanance ## pas de id pas de status et pas de mot de passe
+app.get('/export-users', async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Récupérer les utilisateurs de la base de données
+        const result = await pool.query('SELECT * FROM Utilisateur');
+
+        if (result.rows.length === 0) {
+            console.log("Aucun utilisateur trouvé pour l'exportation");
+            res.status(404).json({ message: 'Aucun utilisateur trouvé pour l\'exportation.' });
+            return;
+        }
+
+        // Exclure le mot de passe et formater les dates
+        const formattedRows = result.rows.map((row) => {
+            const { mot_de_passe, ...userWithoutPassword } = row; // Exclure le mot de passe
+            
+            // Formater la date de naissance
+            if (userWithoutPassword.date_de_naissance) {
+                userWithoutPassword.date_de_naissance = new Date(userWithoutPassword.date_de_naissance).toLocaleDateString('fr-FR'); // Format date
+            }
+            
+            return userWithoutPassword;
+        });
+
+        // Créer une feuille de calcul avec les données des utilisateurs
+        const worksheet = XLSX.utils.json_to_sheet(formattedRows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Utilisateurs');
+
+        // Ajuster les largeurs des colonnes
+        const columnWidths = formattedRows.reduce((acc: any, row: any) => {
+            Object.keys(row).forEach((key) => {
+                const cellValue = row[key]?.toString() || ''; // Convertir la valeur en chaîne
+                const cellLength = cellValue.length;
+
+                // Si la colonne n'existe pas encore, initialiser sa largeur
+                if (!acc[key] || cellLength > acc[key]) {
+                    acc[key] = cellLength; // Mettre à jour avec la longueur maximale
+                }
+            });
+            return acc;
+        }, {});
+
+        // Convertir les largeurs en format attendu par XLSX
+        const colWidths = Object.keys(columnWidths).map((key) => ({
+            wch: columnWidths[key] + 2 // Ajouter un peu d'espace (2 caractères)
+        }));
+
+        // Appliquer les largeurs aux colonnes
+        worksheet['!cols'] = colWidths;
+
+        // Écrire le fichier dans un buffer
+        const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+
+        // Envoyer le fichier Excel en tant que réponse
+        res.setHeader('Content-Disposition', 'attachment; filename="utilisateurs.xlsx"');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.send(buffer);
+    } catch (error) {
+        console.error('Erreur lors de l\'exportation des utilisateurs :', error);
+        res.status(500).json({ message: 'Erreur lors de l\'exportation des utilisateurs.' });
     }
 });
 

@@ -10,6 +10,8 @@ import {
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaRegBell, FaUsers, FaGift } from 'react-icons/fa';
+import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 // Define types for new employee
 interface Employee {
@@ -41,28 +43,28 @@ const AdminPage: React.FC = () => {
     setOpenPrizeModal(true);
   };
 
-  const handleClosePrizeModal = () => {
-    setOpenPrizeModal(false);
-    setNewPrize({ name: '', image: null });
-    setEditIndex(null);
-  };
+  // const handleClosePrizeModal = () => {
+  //   setOpenPrizeModal(false);
+  //   setNewPrize({ name: '', image: null });
+  //   setEditIndex(null);
+  // };
 
-  // Handle adding new employee
-  const handleAddEmployee = () => {
-    if (!newEmployee.name || !newEmployee.email) {
-      alert('Veuillez remplir tous les champs.');
-      return;
+  const handleExportData = async () => {
+    try {
+      const response = await axios.get('http://localhost:4001/export-users', {
+        responseType: 'blob', // Pour traiter le fichier en tant que blob (données binaires)
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'utilisateurs.xlsx');
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error('Erreur lors de l\'exportation des données :', error);
     }
-    setEmployees([...employees, newEmployee]);
-    setNewEmployee({ name: '', email: '', role: 'employé' });
-    alert('Nouvel employé ajouté avec succès');
   };
 
-  // Function to handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewEmployee((prev) => ({ ...prev, [name]: value }));
-  };
 
   return (
     <Box
@@ -198,6 +200,14 @@ const AdminPage: React.FC = () => {
             </Typography>
             <Button variant="contained" color="primary" sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 2 }}>
               Envoyer une notification
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleExportData}
+              sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 2 }}
+            >
+              Exporter les données
             </Button>
           </Paper>
         </Grid>

@@ -29,7 +29,7 @@ const SignUpPage: FC = () => {
         nom: lastName,
         prenom: firstName,
         date_de_naissance: dateOfBirth,
-        sexe: gender ? "M" : "F", // Ici, on suppose que 'male' est vrai et 'female' est faux
+        sexe: gender ? "H" : "F", // Ici, on suppose que 'male' est vrai et 'female' est faux
         email: email,
         mot_de_passe: password,
       };

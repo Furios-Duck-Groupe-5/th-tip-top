@@ -28,7 +28,7 @@ interface User {
   nom: string;
   role_id: number;
   email: string;
-  sexe: 'M' | 'F';
+  sexe: 'H' | 'F';
   date_de_naissance: string; // Date de naissance sous forme de chaîne
 }
 
@@ -233,7 +233,7 @@ const UserListPage: React.FC = () => {
                 <TableCell>{user.prenom}</TableCell>
                 <TableCell>{getRoleLabel(user.role_id)}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.sexe === 'M' ? 'Masculin' : 'Féminin'}</TableCell>
+                <TableCell>{user.sexe === 'H' ? 'Masculin' : 'Féminin'}</TableCell>
                 <TableCell>{formatDate(user.date_de_naissance)}</TableCell>
                 <TableCell>
                   <IconButton color="primary" onClick={() => handleEditUser(user)}>
