@@ -16,6 +16,8 @@ import GainsManagementPage from "./components/Participation/GainsManagementPage"
 import ContactPage from "./components/Contact/contact";
 import BlogPage from "./components/Blog/blog";
 import LotsPage from "./components/Participation/Lots";
+import AddEmployeePage from "./components/Admin/addEmploye";
+import EmployeePage from "./components/Employe/employePage";
 
 // Typing the Layout component's props
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
@@ -55,9 +57,11 @@ const App: React.FC = () => {
           <Route path="/users" element={<UserListPage />} />
           <Route path="/gain" element={<GainsManagementPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog" element={<EmployeePage />} />
           <Route path="/lots" element={<LotsPage />} />
           <Route path="/participation" element={<ParticipationPage />} />
+          <Route path="/add-employee" element={<AddEmployeePage />} />
+
         </Routes>
       </Layout>
     </Router>

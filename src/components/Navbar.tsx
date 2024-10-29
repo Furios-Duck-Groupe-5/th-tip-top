@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { AppBar, Toolbar, IconButton, Menu, MenuItem, Button, Box } from "@mui/material";
 import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import logo from "../assets/The_TIPTOP2-removebg-preview2.png";
@@ -8,9 +8,21 @@ import React from "react";
 
 const Navbar: FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token); // Mettre à jour l'état d'authentification en fonction du token
+  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Retirer le token
+    setIsAuthenticated(false); // Mettre à jour l'état d'authentification
+    window.location.href = "/"; // Optionnel : redirection après déconnexion
   };
 
   return (
@@ -53,26 +65,39 @@ const Navbar: FC = () => {
             </Button>
           ))}
 
-          <Button 
-            component={Link} 
-            to="/login" 
-            variant="outlined" 
-            sx={{ 
-              color: 'black', 
-              marginX: 1, 
-              borderColor: '#71C067',
-              '&:hover': { 
-                backgroundColor: '#71C067',
-                color: 'white', 
-              }
-            }}
-          >
-            Se connecter
-          </Button>
+          {!isAuthenticated ? (
+            <>
+              <Button 
+                component={Link} 
+                to="/login" 
+                variant="outlined" 
+                sx={{ 
+                  color: 'black', 
+                  marginX: 1, 
+                  borderColor: '#71C067',
+                  '&:hover': { 
+                    backgroundColor: '#71C067',
+                    color: 'white', 
+                  }
+                }}
+              >
+                Se connecter
+              </Button>
 
-          <Button component={Link} to="/signup" variant="contained" sx={{ backgroundColor: '#DDA15E', marginX: 1 }}>
-            Créez un compte
-          </Button>
+              <Button 
+                component={Link} 
+                to="/signup" 
+                variant="contained" 
+                sx={{ backgroundColor: '#DDA15E', marginX: 1 }}
+              >
+                Créez un compte
+              </Button>
+            </>
+          ) : (
+            <Button color="inherit" onClick={handleLogout}>
+              Déconnexion
+            </Button>
+          )}
         </Box>
 
         <IconButton 
@@ -119,12 +144,20 @@ const Navbar: FC = () => {
               {item.label}
             </MenuItem>
           ))}
-          <MenuItem onClick={toggleMobileMenu} component={Link} to="/login" sx={{ color: 'white' }}>
-            Se connecter
-          </MenuItem>
-          <MenuItem onClick={toggleMobileMenu} component={Link} to="/signup" sx={{ color: 'white' }}>
-            Créez un compte
-          </MenuItem>
+          {!isAuthenticated ? (
+            <>
+              <MenuItem onClick={toggleMobileMenu} component={Link} to="/login" sx={{ color: 'white' }}>
+                Se connecter
+              </MenuItem>
+              <MenuItem onClick={toggleMobileMenu} component={Link} to="/signup" sx={{ color: 'white' }}>
+                Créez un compte
+              </MenuItem>
+            </>
+          ) : (
+            <MenuItem onClick={handleLogout} sx={{ color: 'white' }}>
+              Déconnexion
+            </MenuItem>
+          )}
         </Menu>
       )}
     </AppBar>
