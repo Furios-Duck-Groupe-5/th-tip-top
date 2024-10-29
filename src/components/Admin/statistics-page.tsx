@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
 import {
   PieChart,
@@ -13,27 +13,41 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const DetailedStatisticsPage = () => {
-  // Remplacez les valeurs ci-dessous par des données réelles
-  const totalTickets = 15000;
-  const usedTickets = 12000;
-  const wonLots = 300;
+// Types pour les données de statistiques
+interface WinnerData {
+  gender: string;
+  count: number;
+}
 
-  // Données pour les graphiques
-  const winners = [
-    { gender: 'Homme', count: 180 },
-    { gender: 'Femme', count: 120 },
-  ];
+interface AgeGroupData {
+  ageGroup: string;
+  count: number;
+}
 
-  const ageGroups = [
-    { ageGroup: '18-25', count: 50 },
-    { ageGroup: '26-35', count: 100 },
-    { ageGroup: '36-50', count: 80 },
-    { ageGroup: '51+', count: 70 },
-  ];
-
-  // Couleurs pour le diagramme circulaire
+const DetailedStatisticsPage: React.FC = () => {
+  const [winners, setWinners] = useState<WinnerData[]>([]);
+  const [ageGroups, setAgeGroups] = useState<AgeGroupData[]>([]);
   const COLORS = ['#0088FE', '#FFBB28'];
+
+  useEffect(() => {
+    fetch('http://localhost:4001/statistics')
+      .then(response => response.json())
+      .then(data => {
+        // Mise en forme des données pour le graphique de sexe
+        setWinners(data.genderStats.map((item: any) => ({
+          // TODO pourquoi h = femme?
+          gender: item.sexe === 'H' ? 'Homme' : 'Femme',
+          count: parseInt(item.count, 10),
+        })));
+        
+        // Mise en forme des données pour le graphique d'âge
+        setAgeGroups(data.ageStats.map((item: any) => ({
+          ageGroup: item.age_group,
+          count: parseInt(item.count, 10),
+        })));
+      })
+      .catch(error => console.error('Erreur lors de la récupération des statistiques :', error));
+  }, []);
 
   return (
     <Box
@@ -46,29 +60,6 @@ const DetailedStatisticsPage = () => {
       <Typography variant="h4" gutterBottom align="center" sx={{ color: '#DDA15E' }}>
         Statistiques Détaillées du Jeu-Concours
       </Typography>
-
-      <Grid container spacing={4} justifyContent="center">
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} sx={{ p: 3, backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
-            <Typography variant="h6" gutterBottom>Total des Tickets Fournis</Typography>
-            <Typography variant="body1">{totalTickets}</Typography>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} sx={{ p: 3, backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
-            <Typography variant="h6" gutterBottom>Total des Tickets Utilisés</Typography>
-            <Typography variant="body1">{usedTickets}</Typography>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} sx={{ p: 3, backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
-            <Typography variant="h6" gutterBottom>Total des Lots Gagnés</Typography>
-            <Typography variant="body1">{wonLots}</Typography>
-          </Paper>
-        </Grid>
-      </Grid>
 
       <Grid container spacing={4} justifyContent="center" sx={{ mt: 4 }}>
         <Grid item xs={12} md={6}>
