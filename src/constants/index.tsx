@@ -18,9 +18,9 @@ export const navItems = [
   { label: "Participer", href: "/participation" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
-  { label: "Mon compte", href: "/mon-compte" },
-  { label: "Admin", href: "/admin" },
-  { label: "Gestion de gain", href: "/gain" },
+ // { label: "Mon compte", href: "/mon-compte" },
+ //{ label: "Admin", href: "/admin" },
+ // { label: "Gestion de gain", href: "/gain" },
 
 
 ];

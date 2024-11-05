@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { body, validationResult } from 'express-validator';
 import * as XLSX from 'xlsx';
+import jwt from 'jsonwebtoken';
+
 import fs from 'fs';
 // Charger les variables d'environnement
 dotenv.config();
@@ -83,36 +85,45 @@ app.post('/signup', [
     }
 });
 
-
 app.post('/login', async (req: Request, res: Response): Promise<void> => {
     const { email, mot_de_passe } = req.body;
 
-    // Vérifiez si l'email et le mot de passe sont fournis
     if (!email || !mot_de_passe) {
-      //  return res.status(400).json({ message: 'Email et mot de passe sont requis.' });
-      console.log("ou es le mdp ou le email")
+         res.status(400).json({ message: 'Email et mot de passe sont requis.' });
     }
 
     try {
-        // Récupérez l'utilisateur par email
         const result = await pool.query('SELECT * FROM Utilisateur WHERE email = $1', [email]);
         if (result.rows.length === 0) {
-          //  return res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
-          console.log("incorrect email user")
+             res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
         }
 
         const user = result.rows[0];
 
-        // Comparez le mot de passe fourni avec le mot de passe haché
         const isPasswordValid = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
         if (!isPasswordValid) {
-            // return res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
-            console.log("password incorrect")
+             res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
         }
 
-        // Si tout est correct, retourner les informations de l'utilisateur
-        const { mot_de_passe: _, ...userWithoutPassword } = user; // Ne pas retourner le mot de passe
-        res.status(200).json({ message: 'Connexion réussie!', user: userWithoutPassword });
+        // Créer un jeton JWT avec les informations de l'utilisateur
+        const payload = {
+            userId: user.id_user, 
+            roleId: user.role_id
+        };
+        const secretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs='; // Utilise une clé secrète sécurisée
+        const token = jwt.sign(payload, secretKey, { expiresIn: '1h' }); // Token expirant au bout d'1 heure
+
+        // Exclure le mot de passe des données retournées
+        const { mot_de_passe: _, ...userWithoutPassword } = user
+
+        // Retourner les données de l'utilisateur et le jeton
+        // TODO il faut voir comment faire apres hebergement
+        res.status(200).json({
+            message: 'Connexion réussie!',
+            user: userWithoutPassword,
+            token,
+            roleId: user.role_id
+        });
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
         res.status(500).json({ message: 'Erreur lors de la connexion.' });

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
+import { AuthProvider } from './components/ConnexionInscription/AuthContext';
 
 // Assurer que le type de l'élément est bien trouvé par TypeScript
 const rootElement = document.getElementById('root');
@@ -11,7 +12,9 @@ if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </React.StrictMode>
   );
 } else {

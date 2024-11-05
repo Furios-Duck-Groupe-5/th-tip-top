@@ -1,15 +1,10 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import Workflow from "./components/Workflow";
 import Footer from "./components/Footer";
 import Testimonials from "./components/Testimonials";
-import React, { PropsWithChildren } from "react";
-import LoginPage from "./components/ConnexionInscription/Connexion";
-import SignUpPage from "./components/ConnexionInscription/inscription";
 import ParticipationPage from "./components/Participation/participation";
-import ProfilePage from "./components/Pade de profil/page-de-profil";
-import AdminPage from "./components/Admin/admin";
 import DetailedStatisticsPage from "./components/Admin/statistics-page";
 import UserListPage from "./components/Admin/users-page";
 import GainsManagementPage from "./components/Participation/GainsManagementPage";
@@ -18,53 +13,68 @@ import BlogPage from "./components/Blog/blog";
 import LotsPage from "./components/Participation/Lots";
 import AddEmployeePage from "./components/Admin/addEmploye";
 import EmployeePage from "./components/Employe/employePage";
+import React, { PropsWithChildren, lazy, Suspense } from "react";
+import { AuthProvider, useAuth } from "./components/ConnexionInscription/AuthContext";
 
-// Typing the Layout component's props
+// Lazy-loaded components
+const LoginPage = lazy(() => import("./components/ConnexionInscription/Connexion"));
+const SignUpPage = lazy(() => import("./components/ConnexionInscription/inscription"));
+const ProfilePage = lazy(() => import("./components/Pade de profil/page-de-profil"));
+const AdminPage = lazy(() => import("./components/Admin/admin"));
+
+// Protected Route Component
+const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
+  const { isLoggedIn } = useAuth();
+  return isLoggedIn ? children : <Navigate to="/login" />;
+};
+
+// Layout component to control Navbar and Footer display
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const location = useLocation(); // Hook to get current location
+  const location = useLocation(); 
   const hideNavbarAndFooter = location.pathname === "/participation";
 
   return (
     <>
-      {/* Show Navbar only if it's not the participation page */}
       {!hideNavbarAndFooter && <Navbar />}
-      <div className="max-w-7xl mx-auto pt-20 px-6">
-        {children}
-      </div>
-      {/* Show Footer only if it's not the participation page */}
+      <div>{children}</div>
       {!hideNavbarAndFooter && <Footer />}
     </>
   );
 };
 
 const App: React.FC = () => {
+  const { isLoggedIn } = useAuth();
+
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={
-            <>
-              <HeroSection />
-              <Workflow />
-              <Testimonials />
-            </>
-          } />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/mon-compte" element={<ProfilePage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/detailed-statistics" element={<DetailedStatisticsPage />} />
+    <AuthProvider>
+      <Router>
+        <Layout>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={
+                <>
+                  <HeroSection />
+                  <Workflow />
+                  <Testimonials />
+                </>
+              } />
+              {/* Conditional rendering of Login and Sign Up based on login status */}
+              {!isLoggedIn && <Route path="/login" element={<LoginPage />} />}
+              {!isLoggedIn && <Route path="/signup" element={<SignUpPage />} />}
+              <Route path="/mon-compte" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+              <Route path="/detailed-statistics" element={<DetailedStatisticsPage />} />
           <Route path="/users" element={<UserListPage />} />
           <Route path="/gain" element={<GainsManagementPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<EmployeePage />} />
           <Route path="/lots" element={<LotsPage />} />
           <Route path="/participation" element={<ParticipationPage />} />
-          <Route path="/add-employee" element={<AddEmployeePage />} />
-
-        </Routes>
-      </Layout>
-    </Router>
+          <Route path="/add-employee" element={<AddEmployeePage />} />            </Routes>
+          </Suspense>
+        </Layout>
+      </Router>
+    </AuthProvider>
   );
 };
 
