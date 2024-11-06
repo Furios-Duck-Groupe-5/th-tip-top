@@ -100,3 +100,39 @@ pipeline {
         }
     }
 }
+
+
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Furios-Duck-Groupe-5/th-tip-top.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    // Exemple de build Docker pour Node.js
+                    sh 'docker build -t th-tip-top .'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    // Exemple d'exécution de tests
+                    sh 'docker run --rm th-tip-top npm test'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    // Déploiement de l'application (exemple de déploiement sur un serveur distant)
+                    sh 'docker run -d --name th-tip-top-prod th-tip-top'
+                }
+            }
+        }
+    }
+}
