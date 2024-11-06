@@ -6,6 +6,11 @@ import {
   Grid,
   Paper,
   TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -62,6 +67,38 @@ const AdminPage: React.FC = () => {
       link.click();
     } catch (error) {
       console.error('Erreur lors de l\'exportation des données :', error);
+    }
+  };
+
+  const [openNotificationDialog, setOpenNotificationDialog] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>('');
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+
+  // Function to handle the opening of the notification dialog
+  const handleOpenNotificationDialog = () => {
+    setOpenNotificationDialog(true);
+  };
+
+  // Function to handle the closing of the notification dialog
+  const handleCloseNotificationDialog = () => {
+    setOpenNotificationDialog(false);
+    setMessage('');
+  };
+
+  // Function to handle the message submission
+  const handleSendNotification = async () => {
+    try { // TODO
+      // // Send the message to the specified email (for testing purpose, we use axios to simulate sending)
+      // await axios.post('http://localhost:4001/send-email', {
+      //   to: 'med_abbad@outlook.fr',
+      //   subject: 'Nouvelle Notification',
+      //   message: message,
+      // });
+      // // Show success notification (Snackbar)
+      // setOpenSnackbar(true);
+      // handleCloseNotificationDialog();
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du message:', error);
     }
   };
 
@@ -128,6 +165,7 @@ const AdminPage: React.FC = () => {
           </Paper>
         </Grid>
 
+
         {/* Section Gestion des Utilisateurs */}
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ p: 4, borderRadius: 2, backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
@@ -172,7 +210,7 @@ const AdminPage: React.FC = () => {
               </Grid>
             </Grid>
 
-           </Paper>
+          </Paper>
         </Grid>
 
         {/* Section Gestion des Lots */}
@@ -198,7 +236,12 @@ const AdminPage: React.FC = () => {
             <Typography variant="h5" gutterBottom sx={{ color: '#DDA15E' }}>
               Notifications <FaRegBell />
             </Typography>
-            <Button variant="contained" color="primary" sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 2 }}
+              onClick={handleOpenNotificationDialog}
+            >
               Envoyer une notification
             </Button>
             <Button
@@ -212,6 +255,46 @@ const AdminPage: React.FC = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* Notification Dialog */}
+      <Dialog open={openNotificationDialog} onClose={handleCloseNotificationDialog}>
+        <DialogTitle>Envoyer une Notification</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="message"
+            label="Votre Message"
+            type="text"
+            fullWidth
+            multiline
+            rows={4}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseNotificationDialog} color="primary">
+            Annuler
+          </Button>
+          <Button
+            onClick={handleSendNotification}
+            color="primary"
+            disabled={!message.trim()}
+          >
+            Envoyer
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Snackbar for showing success message */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        message="Notification envoyée avec succès!"
+        sx={{ bottom: 20 }}
+      />
 
       <Box sx={{ mt: 4, textAlign: 'center' }}>
         <Typography variant="h6" gutterBottom sx={{ color: '#DDA15E' }}>

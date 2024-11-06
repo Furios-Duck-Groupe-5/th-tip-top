@@ -4,12 +4,12 @@ import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
 import logo from "../assets/The_TIPTOP2-removebg-preview2.png";
 import { navItems } from "../constants";
 import { Link } from "react-router-dom";
-import { useAuth } from './ConnexionInscription/AuthContext'; 
+import { useAuth } from './ConnexionInscription/AuthContext';
 import React from "react";
 
 const Navbar: FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const { isLoggedIn, logout, roleId } = useAuth(); 
+  const { isLoggedIn, logout, roleId } = useAuth();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
@@ -17,8 +17,8 @@ const Navbar: FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logout(); 
-      window.location.href = "/"; 
+      await logout();
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
       // Handle error as necessary
@@ -71,7 +71,6 @@ const Navbar: FC = () => {
 
           {isLoggedIn ? (
             <>
-              {/* Only show Admin and Gestion de gain buttons if the user has the correct role */}
               {roleId === 2 && (
                 <Button
                   component={Link}
@@ -79,6 +78,7 @@ const Navbar: FC = () => {
                   variant="outlined"
                   sx={{
                     color: 'black',
+                    border: 'none',
                     marginX: 1,
                     borderColor: '#71C067',
                     '&:hover': {
@@ -96,16 +96,34 @@ const Navbar: FC = () => {
                   to="/gain"
                   variant="outlined"
                   sx={{
+                    border: 'none',
                     color: 'black',
                     marginX: 1,
-                    borderColor: '#71C067',
+                    '&:hover': {
+                      backgroundColor: '#71C067',
+                      color: 'white',
+                    },
+                  }}
+                >
+                  Employee
+                </Button>
+              )}
+              {roleId === 1 && (
+                <Button
+                  component={Link}
+                  to="/gain-historique"
+                  variant="outlined"
+                  sx={{
+                    color: 'black',
+                    marginX: 1,
+                    border: 'none',
                     '&:hover': {
                       backgroundColor: '#71C067',
                       color: 'white',
                     }
                   }}
                 >
-                  Employee
+                  Historique de gain
                 </Button>
               )}
               <Button
