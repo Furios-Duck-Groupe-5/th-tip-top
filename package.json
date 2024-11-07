@@ -16,6 +16,7 @@
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
     "@types/react-chartjs-2": "^2.5.7",
+    "aos": "^2.3.4",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
@@ -27,6 +28,7 @@
     "express-validator": "^7.2.0",
     "framer-motion": "^11.5.6",
     "jsonwebtoken": "^9.0.2",
+    "lottie": "^0.0.1",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.344.0",
     "mongoose": "^8.7.1",
@@ -50,6 +52,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/aos": "^3.0.7",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
