@@ -21,6 +21,10 @@ pipeline {
             args '-v /tmp:/tmp' // Facultatif, selon tes besoins
         }
 
+        tools {
+        nodejs 'Node 16' // Remplace par le nom de ta configuration Node.js
+    }
+
         // Étape 2 : Installation des dépendances
         stage('Install Dependencies') {
             steps {
