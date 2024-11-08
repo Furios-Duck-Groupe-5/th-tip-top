@@ -23,7 +23,7 @@ tools {
             steps {
                 script {
                     // Installer les dépendances Node.js et React
-                    sh 'npm install'
+                    sh 'yarn install'
                 }
             }
         }
