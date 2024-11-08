@@ -1,280 +1,313 @@
-import React, { useState, useEffect, FC } from 'react';
-import { Box, Typography, Button, TextField, Grid, Paper, Divider } from '@mui/material';
-import { motion } from 'framer-motion';
-import ResultPopup from './resultat';
-import HistoryPopup from './historique-gain';
-import { useNavigate } from 'react-router-dom';
-import Confetti from 'react-confetti';
-import Lottie from 'lottie-react';
-import fireworksAnimation from './fire-work.json';
+import React, { useState, useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import Lottie from "lottie-react";
+import sleeveAnimation from './bg.json';
+import teaAnimation from './the.json';
 
-type Prize = {
-  name: string;
-  image: string;
-};
+import BiryaniImg1 from "/Users/user/Desktop/virtualr-main/src/components/Participation/360.png";
+import BiryaniImg2 from "/Users/user/Desktop/virtualr-main/src/components/Participation/39.png";
+import BiryaniImg3 from "/Users/user/Desktop/virtualr-main/src/components/Participation/69.png";
+import BiryaniImg4 from "/Users/user/Desktop/virtualr-main/src/components/Participation/detox.png";
+import BiryaniImg5 from "/Users/user/Desktop/virtualr-main/src/components/Participation/signature.png";
+import "/Users/user/Desktop/virtualr-main/src/components/Participation/spin.css";
+import { Box, Button, Typography, Container, TextField, Snackbar } from "@mui/material";
+import { CheckCircle, ErrorOutline } from "@mui/icons-material";
+import axios from "axios";
 
-const ParticipationPage: FC = () => {
-  const navigate = useNavigate();
-  const [openModal, setOpenModal] = useState(false);
-  const [openHistoryModal, setOpenHistoryModal] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [code, setCode] = useState('');
-  const [gains, setGains] = useState<Array<{ name: string; date: string }>>([]);
-  const [codeValidated, setCodeValidated] = useState(false);
-  const [codeMessage, setCodeMessage] = useState('');
-  const [timeLeft, setTimeLeft] = useState(30 * 24 * 60 * 60 * 1000);
-  const [showAnimation, setShowAnimation] = useState(false);
-  const [isFirstVisit, setIsFirstVisit] = useState(false);
+const ImageList = [
+  { id: 1, img: BiryaniImg1 },
+  { id: 2, img: BiryaniImg2 },
+  { id: 3, img: BiryaniImg3 },
+  { id: 4, img: BiryaniImg4 },
+  { id: 5, img: BiryaniImg5 },
+];
+// TODO LE SITE NEST PAS RESPONSIVE
+interface ParticipationPage {}
 
-  // Vérification de la première visite
+const ParticipationPage: React.FC<ParticipationPage> = () => {
+  const [imageId, setImageId] = useState<string>(BiryaniImg1);
+  const [code, setCode] = useState<string>("");
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [snackbarType, setSnackbarType] = useState<"success" | "error">("success");
+
   useEffect(() => {
-    const hasVisited = localStorage.getItem('hasVisited');
-    if (!hasVisited) {
-      setIsFirstVisit(true);
-      localStorage.setItem('hasVisited', 'true');
-    }
+    AOS.init({
+      offset: 100,
+      duration: 700,
+      easing: "ease-in",
+      delay: 100,
+    });
   }, []);
 
-  // Compte à rebours
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1000);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // Affichage de l'animation lors de la validation du code
-  useEffect(() => {
-    if (codeValidated) {
-      setShowAnimation(true);
-      const animationTimeout = setTimeout(() => {
-        setShowAnimation(false);
-      }, 5000);
-      return () => clearTimeout(animationTimeout);
+  const handleSubmitCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (code.length !== 10) {
+      setSnackbarMessage("Le code saisi n'est pas valide. Veuillez réessayer.");
+      setSnackbarType("error");
+      setOpenSnackbar(true);
+      return;
     }
-  }, [codeValidated]);
 
-  // Formater le temps restant
-  const formatTimeLeft = (milliseconds: number) => {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    return { days, hours, minutes, seconds };
-  };
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setSnackbarMessage("Vous devez être connecté pour participer.");
+      setSnackbarType("error");
+      setOpenSnackbar(true);
+      return;
+    }
 
-  const { days, hours, minutes, seconds } = formatTimeLeft(timeLeft);
-
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
-  const handleOpenHistoryModal = () => setOpenHistoryModal(true);
-  const handleCloseHistoryModal = () => setOpenHistoryModal(false);
-  const handleRedirectToDraw = () => navigate('/lots');
-
-  const handleCodeSubmit = () => {
-    if (code === '1234567890') {
-      if (!codeValidated) {
-        const randomValue = Math.random();
-        let prize: Prize;
-
-        if (randomValue < 0.3) {
-          prize = { name: 'Infuseur à thé', image: 'src/components/Participation/infusseur.png' };
-        } else if (randomValue < 0.5) {
-          prize = { name: 'Thé détox', image: 'src/components/Participation/detox.png' };
-        } else if (randomValue < 0.7) {
-          prize = { name: 'Thé Signature', image: 'src/components/Participation/signature.png' };
-        } else if (randomValue < 0.9) {
-          prize = { name: 'Coffret Découverte (39€)', image: 'src/components/Participation/39.png' };
-        } else {
-          prize = { name: 'Coffret Découverte (69€)', image: 'src/components/Participation/69.png' };
+    try {
+      const response = await axios.post(
+        'http://localhost:4001/participer',
+        { code_ticket: code },
+        { 
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
         }
+      );
 
-        setResult(prize);
-        setCodeValidated(true);
-
-        if (prize.name && prize.name !== 'Désolé, vous n\'avez rien gagné.') {
-          setGains((prevGains) => [
-            ...prevGains,
-            { name: prize.name, date: new Date().toLocaleString() },
-          ]);
-        }
-
-        handleOpenModal();
-      } else {
-        setCodeMessage('Code déjà validé');
+      if (response.status === 200) {
+        setSnackbarMessage("Vous avez participé avec succès en utilisant le code de ticket.");
+        setSnackbarType("success");
+        setOpenSnackbar(true);
       }
-    } else {
-      setCodeMessage('Code invalide');
+    }  catch (error: unknown) { 
+      if (axios.isAxiosError(error)) {  
+          setSnackbarMessage(error.response?.data.message || "Une erreur est survenue. Veuillez réessayer.");
+      } else {
+          setSnackbarMessage("Une erreur s'est produite lors de la participation.");
+      }
+
+      setSnackbarType("error");
+      setOpenSnackbar(true);
     }
   };
 
   return (
-    <Box
-      sx={{
-        position: 'relative',
-        overflow: 'hidden',
-        minHeight: '100vh',
-        height: '100vh', // Assure que la page prend toute la hauteur
-        width: '100%',   // Assure que la page prend toute la largeur
-        margin: 0,      // Supprime les marges
-        padding: 0,     // Supprime les paddings
-        backgroundColor: '#F0F4EF',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        boxSizing: 'border-box' // Inclut le padding et la bordure dans la largeur et la hauteur totales
-      }}
-    >
-      {/* Confetti si le code est validé */}
-      {codeValidated && <Confetti numberOfPieces={200} />}
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", color: "white", position: "relative" }}>
+      
+      {/* Le bg est lottie à changer ??? */}
+      <Lottie
+        animationData={sleeveAnimation}
+        loop={true}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: -1, 
+        }}
+      />
 
-      {/* Animation de première visite */}
-      {isFirstVisit && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: 9999,
-          }}
-        >
-          {/* TODO: Activer l'animation */}
-        </Box>
-      )}
+      <Container sx={{ paddingBottom: 8, paddingTop: 8, height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 4 }}>
+          {/* Text Section */}
+          <Box
+            data-aos="zoom-out"
+            data-aos-duration="400"
+            data-aos-once="true"
+            sx={{ display: "flex", flexDirection: "column", justifyContent: "center", textAlign: { xs: "center", sm: "left" }, order: { xs: 2, sm: 1 } }}
+          >
+            <Typography
+              variant="h3"
+              sx={{
+                marginTop: -40,
+                fontWeight: "bold",
+                backgroundColor: "white", 
+                color: "#DDA15E",
+                display: "inline-block",
+                padding: "8px 16px",
+                border: "2px solid #DDA15E",
+                borderRadius: "20px",
+              }}
+            >
+              Bienvenue au jeu concours The Tip Top
+            </Typography>
 
-      {/* Animation de validation du code */}
-      {showAnimation && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: 9999,
-          }}
-        >
-          <Lottie animationData={fireworksAnimation} loop={true} />
-        </Box>
-      )}
+            <Typography variant="body2" sx={{ marginTop: 2 }}>
+              Découvrez quel lot vous avez gagné en entrant votre code de concours ! Ne manquez pas cette chance de profiter de nos offres exclusives et de nos thés raffinés.
+            </Typography>
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.5 }}>
-        <Typography
-          variant="h3"
-          component="h1"
-          align="center"
-          gutterBottom
-          sx={{
-            color: '#DDA15E',
-            fontWeight: 'bold',
-            mb: 4,
-            fontFamily: 'cursive',
-            letterSpacing: '2px',
-          }}
-        >
-          Participez au Grand Jeu-Concours de Thé Tip Top !
-        </Typography>
-      </motion.div>
+            {/* Code input section */}
+            <Box sx={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+              <TextField
+                variant="outlined"
+                label="Entrez votre code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                sx={{
+                  width: "100%",
+                  backgroundColor: "#fff",
+                  borderRadius: "12px",
+                  boxShadow: 1,
+                }}
+                fullWidth
+              />
+              <Button
+                variant="contained"
+                sx={{
+                  background: "linear-gradient(to right, #DDA15E, #DDA15E)",
+                  "&:hover": { transform: "scale(1.05)" },
+                  borderRadius: "20px",
+                  boxShadow: 1,
+                }}
+                onClick={handleSubmitCode}
+              >
+                Vérifiez votre code
+              </Button>
+            </Box>
+          </Box>
 
-      <Box sx={{ textAlign: 'center', mb: 4, p: 3, backgroundColor: '#fff', borderRadius: '12px', boxShadow: 4 }}>
-        <Typography variant="h5" sx={{ color: '#DDA15E', mb: 1 }}>
-          Le jeu se termine dans :
-        </Typography>
-        <Typography variant="h6" sx={{ color: '#DDA15E' }}>
-          {days} jours {hours} heures {minutes} minutes {seconds} secondes
-        </Typography>
-      </Box>
+          {/* Image Section */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "relative",
+              minHeight: { xs: "300px", sm: "450px" },
+              order: { xs: 1, sm: 2 },
+            }}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: -100,
+                left: "50%",
+                transform: "translateX(-50%)",
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                padding: "8px 16px",
+                borderRadius: "20px",
+                fontSize: "18px",
+                fontWeight: "bold",
+                color: "#DDA15E",
+                border: "2px solid #DDA15E"
+              }}
+            >
+              Lot à gagner!
+            </Box>
 
-      <Grid container spacing={6} alignItems="center">
-        <Grid item xs={12} md={6}>
-          <motion.div initial={{ x: '-100vw' }} animate={{ x: 0 }} transition={{ type: 'spring', stiffness: 50 }}>
-            <Box sx={{ textAlign: 'center' }}>
+            <Box
+              sx={{
+                width: { xs: "300px", sm: "450px" },
+                height: { xs: "300px", sm: "450px" },
+                overflow: "hidden",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <img
-                src="src/components/Participation/concour.png"
-                alt="Concours Thé Tip Top"
+                data-aos="zoom-in"
+                data-aos-duration="300"
+                data-aos-once="true"
+                src={imageId}
+                alt="biryani img"
+                className="spin"
                 style={{
-                  width: '100%',
-                  maxWidth: '600px',
-                  height: 'auto',
-                  borderRadius: '20px',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+                  width: "100%",
+                  transform: "scale(1.25)",
                 }}
               />
             </Box>
-          </motion.div>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <Paper elevation={4} sx={{ p: 4, borderRadius: 3, backgroundColor: '#FFFBF2' }}>
-            <Typography variant="h5" align="center" sx={{ color: '#DDA15E', mb: 2 }}>
-              Qu'est-ce que vous pouvez gagner ?
-            </Typography>
-            <ul style={{ listStyleType: 'none', padding: 0, color: '#4B7260', fontWeight: 'bold' }}>
-              <li>Infuseur à thé</li>
-              <li>Boîte de thé détox ou infusion</li>
-              <li>Coffrets découverte</li>
-              <li>Thé signature</li>
-              <li>Un an de thé gratuit</li>
-            </ul>
-
-            <Divider sx={{ my: 3 }} />
-
-            <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-              Entrez votre code pour participer :
-            </Typography>
-            <TextField
-              fullWidth
-              label="Code de participation"
-              variant="outlined"
-              sx={{ mb: 2 }}
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              InputLabelProps={{
-                style: { color: '#DDA15E' }
+            <Box
+              sx={{
+                position: "absolute",
+                bottom: 0,
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                gap: 2,
+                backgroundColor: "rgba(255, 255, 255, 0.3)",
+                borderRadius: "50px",
+                padding: "8px",
               }}
-            />
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="contained"
-                color="success"
-                fullWidth
-                sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#4B7260' } }}
-                onClick={handleCodeSubmit}
-              >
-                Participer
-              </Button>
-            </motion.div>
-            {codeMessage && (
-              <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-                {codeMessage}
-              </Typography>
-            )}
-
-            <Divider sx={{ my: 3 }} />
-
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Box sx={{ flex: 1, ml: 1 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, width: '100%' }}
-                    onClick={handleRedirectToDraw}
-                  >
-                    Voir tous les lots
-                  </Button>
+            >
+              {ImageList.map((item) => (
+                <Box
+                  key={item.id}
+                  sx={{
+                    width: "80px",
+                    height: "80px",
+                    display: "inline-block",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    "&:hover": { transform: "scale(1.05)" },
+                  }}
+                  onClick={() => setImageId(item.img)}
+                >
+                  <img
+                    data-aos="zoom-in"
+                    data-aos-duration="400"
+                    data-aos-once="true"
+                    src={item.img}
+                    alt="biryani img"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
                 </Box>
-              </motion.div>
+              ))}
             </Box>
-          </Paper>
-        </Grid>
-      </Grid>
+          </Box>
+        </Box>
+      </Container>
 
-      <ResultPopup open={openModal} handleClose={handleCloseModal} result={result} />
-      <HistoryPopup open={openHistoryModal} onClose={handleCloseHistoryModal} gains={gains} />
+      {/* Animation de feux d'artifice à gauche et droite */}
+      <Box sx={{ position: "absolute", left: 90, bottom: -20, width: "20%", height: "50%" }}>
+        <Lottie animationData={teaAnimation} loop={true} />
+      </Box>
+
+      {/* Snackbar for feedback */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        ContentProps={{
+          sx: {
+            backgroundColor: snackbarType === "success" ? "#4caf50" : "#f44336",
+            color: "white",
+          },
+        }}
+        action={
+          snackbarType === "success" ? (
+            <CheckCircle sx={{ color: "white", fontSize: 40 }} />
+          ) : (
+            <ErrorOutline sx={{ color: "white", fontSize: 40 }} />
+          )
+        }
+      />
+
+      {/* Footer */}
+      <Box sx={{
+        position: "absolute",
+        bottom: 20,
+        left: 0,
+        width: "100%",
+        padding: "0 16px",
+        display: "flex",
+        justifyContent: "flex-start",
+        fontSize: "14px",
+        color: "white",
+      }}>
+        <Typography variant="body2" sx={{ display: "inline", marginLeft:16 }}>
+          <a href="/" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16,fontWeight: "bold" }}>ACCEUIL</a>
+          <a href="/login" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16,fontWeight: "bold" }}>CONNEXION</a>
+          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16,fontWeight: "bold" }}>CGU</a>
+          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16,fontWeight: "bold" }}>CGV</a>
+          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16 ,fontWeight: "bold"}}>@TheTipTop</a>
+        </Typography>
+      </Box>
     </Box>
   );
 };
