@@ -20,7 +20,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Building the project...'
-                sh 'yarn install'
+                bat 'yarn install'
             }
         }
 
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     // Exécuter les tests unitaires ou d’intégration
-                    sh 'yarn test'
+                    bat 'yarn test'
                 }
             }
         }
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     // Construction de l'image Docker pour l'application
-                    sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
+                    bat "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
                 }
             }
         }
