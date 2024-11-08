@@ -20,10 +20,15 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
+<<<<<<< HEAD
                     // Installer Yarn si nécessaire
             sh 'npm install -g yarn'
             // Installer les dépendances avec Yarn
             sh 'yarn install'
+=======
+                    // Installer les dépendances Node.js et React
+                    sh 'yarn install'
+>>>>>>> a30016dda1112afba855c180e8325a7591303b76
                 }
             }
         }
