@@ -16,6 +16,11 @@ pipeline {
             }
         }
 
+        docker {
+            image 'node:16-alpine' // Utilise une image Docker avec Node.js et npm/yarn préinstallés
+            args '-v /tmp:/tmp' // Facultatif, selon tes besoins
+        }
+
         // Étape 2 : Installation des dépendances
         stage('Install Dependencies') {
             steps {
