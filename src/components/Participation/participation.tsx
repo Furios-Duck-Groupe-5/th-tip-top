@@ -13,6 +13,7 @@ import BiryaniImg5 from "/Users/user/Desktop/virtualr-main/src/components/Partic
 import "/Users/user/Desktop/virtualr-main/src/components/Participation/spin.css";
 import { Box, Button, Typography, Container, TextField, Snackbar } from "@mui/material";
 import { CheckCircle, ErrorOutline } from "@mui/icons-material";
+import axios from "axios";
 
 const ImageList = [
   { id: 1, img: BiryaniImg1 },
@@ -40,15 +41,50 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
     });
   }, []);
 
-  const handleSubmitCode = () => {
-    if (code.length === 10) {
-      setSnackbarMessage("Votre code est validé! Vous avez gagné un lot!");
-      setSnackbarType("success");
-    } else {
+  const handleSubmitCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (code.length !== 10) {
       setSnackbarMessage("Le code saisi n'est pas valide. Veuillez réessayer.");
       setSnackbarType("error");
+      setOpenSnackbar(true);
+      return;
     }
-    setOpenSnackbar(true);
+
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setSnackbarMessage("Vous devez être connecté pour participer.");
+      setSnackbarType("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost:4001/participer',
+        { code_ticket: code },
+        { 
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setSnackbarMessage("Vous avez participé avec succès en utilisant le code de ticket.");
+        setSnackbarType("success");
+        setOpenSnackbar(true);
+      }
+    }  catch (error: unknown) { 
+      if (axios.isAxiosError(error)) {  
+          setSnackbarMessage(error.response?.data.message || "Une erreur est survenue. Veuillez réessayer.");
+      } else {
+          setSnackbarMessage("Une erreur s'est produite lors de la participation.");
+      }
+
+      setSnackbarType("error");
+      setOpenSnackbar(true);
+    }
   };
 
   return (
