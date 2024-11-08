@@ -6,7 +6,9 @@ pipeline {
         DOCKER_IMAGE = "furious-duck/contest-app"  // Remplace par le nom de ton image Docker
         DATABASE_URL = "postgresql://admin:your_password@postgres:5432/contest_db" // URL PostgreSQL
     }
-
+tools {
+        nodejs 'nodejs' // Assurez-vous que la configuration Node.js inclut Yarn
+    }
     stages {
         // Étape 1 : Vérification du code source (Checkout)
         stage('Checkout') {
