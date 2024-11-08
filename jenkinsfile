@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         // Variables d'environnement
-        DOCKER_IMAGE = "jenkins/jenkins"  // Remplace par le nom de ton image Docker
-        DATABASE_URL = "postgresql://admin:your_password@postgres:5432/contest_db" // URL PostgreSQL
+        DOCKER_IMAGE = 'jenkins/jenkins'  // Remplace par le nom de ton image Docker
+        DATABASE_URL = 'postgresql://admin:your_password@postgres:5432/contest_db' // URL PostgreSQL
     }
 
     stages {
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     // Installer les dépendances Node.js et React
-                    sh 'npm install'
+                    sh 'yarn install'
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     // Exécuter les tests unitaires ou d’intégration
-                    sh 'npm test'
+                    sh 'yarn test'
                 }
             }
         }
@@ -90,13 +90,13 @@ pipeline {
     post {
         // Notifications ou actions post-pipeline
         always {
-            echo "Pipeline terminé, nettoyage..."
+            echo 'Pipeline terminé, nettoyage...'
             // Nettoyage d'images Docker obsolètes
             sh "docker rmi ${DOCKER_IMAGE}:${env.BUILD_NUMBER} || true"
         }
         failure {
             // Envoie une notification en cas d'échec
-            echo "Pipeline échoué."
+            echo 'Pipeline échoué.'
         }
     }
 }
