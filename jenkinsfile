@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Variables d'environnement
-        DOCKER_IMAGE = "jenkins/jenkins"  // Remplace par le nom de ton image Docker
+        DOCKER_IMAGE = "furious-duck/contest-app"  // Remplace par le nom de ton image Docker
         DATABASE_URL = "postgresql://admin:your_password@postgres:5432/contest_db" // URL PostgreSQL
     }
 
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     // Exécuter les tests unitaires ou d’intégration
-                    sh 'npm test'
+                    sh 'yarn test'
                 }
             }
         }
@@ -97,42 +97,6 @@ pipeline {
         failure {
             // Envoie une notification en cas d'échec
             echo "Pipeline échoué."
-        }
-    }
-}
-
-
-pipeline {
-    agent any
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Furios-Duck-Groupe-5/th-tip-top.git'
-            }
-        }
-        stage('Build') {
-            steps {
-                script {
-                    // Exemple de build Docker pour Node.js
-                    sh 'docker build -t th-tip-top .'
-                }
-            }
-        }
-        stage('Test') {
-            steps {
-                script {
-                    // Exemple d'exécution de tests
-                    sh 'docker run --rm th-tip-top npm test'
-                }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                script {
-                    // Déploiement de l'application (exemple de déploiement sur un serveur distant)
-                    sh 'docker run -d --name th-tip-top-prod th-tip-top'
-                }
-            }
         }
     }
 }
