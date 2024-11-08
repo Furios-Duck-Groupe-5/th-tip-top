@@ -1,35 +1,102 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'nodejs' // Assurez-vous que la configuration Node.js inclut Yarn
+    environment {
+        // Variables d'environnement
+        DOCKER_IMAGE = "furious-duck/contest-app"  // Remplace par le nom de ton image Docker
+        DATABASE_URL = "postgresql://admin:your_password@postgres:5432/contest_db" // URL PostgreSQL
     }
 
     stages {
-        stage('Build') {
+        // Étape 1 : Vérification du code source (Checkout)
+        stage('Checkout') {
             steps {
-                echo 'Building the project...'
-                sh 'yarn install'
+                // Récupère le code source depuis le dépôt Git
+                checkout scm
             }
         }
 
-        stage('Test') {
+        // Étape 2 : Installation des dépendances
+        stage('Install Dependencies') {
             steps {
-                echo 'Testing'
-                sh 'yarn test'
-            }
-        }
-
-        stage('Deploy / Deliver') {
-            steps {
-                echo 'Deploying...'
-                sh 'yarn build'
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'build/**/*.*', onlyIfSuccessful: true
+                script {
+                    // Installer les dépendances Node.js et React
+                    sh 'npm install'
                 }
             }
+        }
+
+        // Étape 3 : Tests
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Exécuter les tests unitaires ou d’intégration
+                    sh 'yarn test'
+                }
+            }
+        }
+
+        // Étape 4 : Construction de l'image Docker
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Construction de l'image Docker pour l'application
+                    sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
+                }
+            }
+        }
+
+        // Étape 5 : Push de l'image Docker vers un registre (si nécessaire)
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Authentification Docker (optionnel, selon si tu utilises un registre privé)
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                    }
+                    // Push de l'image Docker vers le registre
+                    sh "docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                }
+            }
+        }
+
+        // Étape 6 : Déploiement en environnement de développement
+        stage('Deploy to Development') {
+            steps {
+                script {
+                    // Lancer le container pour l'environnement de développement
+                    sh """
+                    docker run -d --name contest-dev --network furious-ducks-network \
+                    -e DATABASE_URL=${DATABASE_URL} -p 3000:3000 ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
+                    """
+                }
+            }
+        }
+
+        // Étape 7 : Déploiement en pré-production
+        stage('Deploy to Pre-production') {
+            steps {
+                script {
+                    // Lancer le container pour l'environnement de pré-production
+                    sh """
+                    docker run -d --name contest-preprod --network furious-ducks-network \
+                    -e DATABASE_URL=${DATABASE_URL} -p 3001:3000 ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        // Notifications ou actions post-pipeline
+        always {
+            echo "Pipeline terminé, nettoyage..."
+            // Nettoyage d'images Docker obsolètes
+            sh "docker rmi ${DOCKER_IMAGE}:${env.BUILD_NUMBER} || true"
+        }
+        failure {
+            // Envoie une notification en cas d'échec
+            echo "Pipeline échoué."
         }
     }
 }
