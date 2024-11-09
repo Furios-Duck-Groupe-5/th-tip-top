@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { Pool } from 'pg';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
@@ -407,6 +407,51 @@ app.post('/participer', async (req: Request, res: Response): Promise<void> => {
         console.log("erreur")
         console.error('Erreur lors de la participation :', error);
         res.status(500).json({ message: 'Une erreur s\'est produite lors de la participation.' });
+    }
+});
+
+const authenticateJWT = (req: Request, res: Response, next: NextFunction): void => {
+    const token = req.headers['authorization']?.split(' ')[1];  // Extraire le token de l'en-tête Authorization
+  
+    if (!token) {
+       res.status(401).json({ message: 'Token manquant ou invalide.' });
+    }
+  if(token){
+    try {
+      // Décoder et vérifier le token
+      const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=');
+      req.userId = decoded.userId;  // Ajouter l'ID de l'utilisateur à la requête
+      next();  // Passer au middleware suivant (votre route PUT)
+    } catch (error) {
+      console.error('Erreur lors de la vérification du token :', error);
+      res.status(401).json({ message: 'Token invalide ou expiré.' });
+    }
+  };}
+  
+  export default authenticateJWT;
+
+// Endpoint pour mettre à jour le profil utilisateur
+app.put('/user-profile', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+    const { prenom, nom, email, sexe, date_de_naissance } = req.body;
+    const userId = req.userId;  // Récupérer l'ID de l'utilisateur depuis le token JWT
+
+    try {
+        // Vérifier si l'utilisateur existe
+        const result = await pool.query('SELECT * FROM Utilisateur WHERE id_user = $1', [userId]);
+        if (result.rows.length === 0) {
+             res.status(404).json({ message: 'Utilisateur non trouvé.' });
+        }
+
+        // Mettre à jour les informations de l'utilisateur dans la base de données
+        await pool.query(
+            'UPDATE Utilisateur SET prenom = $1, nom = $2, email = $3, sexe = $4, date_de_naissance = $5 WHERE id_user = $6',
+            [prenom, nom, email, sexe, date_de_naissance, userId]
+        );
+
+        res.status(200).json({ message: 'Profil mis à jour avec succès.' });
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour du profil :', error);
+        res.status(500).json({ message: 'Erreur lors de la mise à jour du profil.' });
     }
 });
 
