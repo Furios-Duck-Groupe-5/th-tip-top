@@ -10,7 +10,7 @@ const ProfilePage: FC = () => {
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
   const [gender, setGender] = useState<boolean | null>(null);
   const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [password, setPassword] = useState<string>(""); // Champ mot de passe initialisé vide
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -27,15 +27,14 @@ const ProfilePage: FC = () => {
 
       const response = await axios.get("http://localhost:4001/user-profile", {
         headers: {
-          'Authorization': `Bearer ${token}`,  // Ajout du token dans l'en-tête
+          'Authorization': `Bearer ${token}`,
         },
       });
 
       const userData = response.data;
       setFirstName(userData.prenom);
       setLastName(userData.nom);
-      
-      // Conversion de la date pour l'affichage correct dans le champ de saisie
+
       const formattedDate = new Date(userData.date_de_naissance).toISOString().slice(0, 10);
       setDateOfBirth(formattedDate);
 
@@ -48,28 +47,31 @@ const ProfilePage: FC = () => {
     }
   };
 
-  // Appeler fetchUserData lorsque le composant est monté pour la première fois
   useEffect(() => {
     fetchUserData();
   }, []);
 
-  // Fonction pour envoyer les données mises à jour
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password) {
-      setErrorMessage("Veuillez remplir tous les champs.");
+
+    if (!firstName || !lastName || !dateOfBirth || gender === null || !email) {
+      setErrorMessage("Veuillez remplir les champs obligatoires.");
       return;
     }
 
-    const updatedUserData = {
+    // Crée un objet avec uniquement les champs à mettre à jour
+    const updatedUserData: any = {
       nom: lastName,
       prenom: firstName,
       date_de_naissance: dateOfBirth,
       sexe: gender ? "H" : "F",
       email: email,
-      mot_de_passe: password,
     };
+
+    // Ajoute le mot de passe uniquement s'il est fourni
+    if (password) {
+      updatedUserData.mot_de_passe = password;
+    }
 
     try {
       const token = localStorage.getItem('authToken');
@@ -96,12 +98,12 @@ const ProfilePage: FC = () => {
   };
 
   return (
-    <Box 
-      sx={{ 
-        bgcolor: "#f5f5f5", 
-        height: "100vh", 
-        display: "flex", 
-        alignItems: "center", 
+    <Box
+      sx={{
+        bgcolor: "#f5f5f5",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
         justifyContent: "center",
         mt: -5
       }}
@@ -111,20 +113,20 @@ const ProfilePage: FC = () => {
         maxWidth="xs"
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -5 }}
       >
-        <img 
-          src={logo} 
-          alt="Logo" 
-          style={{ height: '120px', marginBottom: '24px' }} 
+        <img
+          src={logo}
+          alt="Logo"
+          style={{ height: '120px', marginBottom: '24px' }}
         />
 
-        <Box 
-          sx={{ 
-            bgcolor: 'white', 
-            padding: 4, 
-            borderRadius: 2, 
-            boxShadow: 3, 
+        <Box
+          sx={{
+            bgcolor: 'white',
+            padding: 4,
+            borderRadius: 2,
+            boxShadow: 3,
             width: '100%',
-            mt : -5
+            mt: -5
           }}
         >
           <Typography component="h1" variant="h5" align="center" gutterBottom>
@@ -192,7 +194,6 @@ const ProfilePage: FC = () => {
             />
             <TextField
               variant="outlined"
-              required
               fullWidth
               label="Mot de passe"
               type="password"
