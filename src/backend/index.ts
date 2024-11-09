@@ -454,6 +454,26 @@ app.put('/user-profile', authenticateJWT, async (req: Request, res: Response): P
         res.status(500).json({ message: 'Erreur lors de la mise à jour du profil.' });
     }
 });
+// Endpoint pour récupérer le profil utilisateur
+app.get('/user-profile', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+    const userId = req.userId;  // Récupérer l'ID de l'utilisateur depuis le token JWT
+
+    try {
+        // Rechercher l'utilisateur par son ID
+        const result = await pool.query('SELECT prenom, nom, email, sexe, date_de_naissance FROM Utilisateur WHERE id_user = $1', [userId]);
+        
+        if (result.rows.length === 0) {
+            res.status(404).json({ message: 'Utilisateur non trouvé.' });
+            return;
+        }
+
+        // Retourner les informations de l'utilisateur
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error('Erreur lors de la récupération du profil :', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération du profil.' });
+    }
+});
 
 // Démarrer le serveur
 app.listen(port, () => {

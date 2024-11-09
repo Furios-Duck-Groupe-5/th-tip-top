@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { TextField, Button, Typography, Container, Box, Alert, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import axios from "axios";
 import logo from "../../assets/thebgbg.png";
@@ -15,11 +15,48 @@ const ProfilePage: FC = () => {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Fonction pour récupérer les données de l'utilisateur
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        setErrorMessage("Token manquant, veuillez vous reconnecter.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get("http://localhost:4001/user-profile", {
+        headers: {
+          'Authorization': `Bearer ${token}`,  // Ajout du token dans l'en-tête
+        },
+      });
+
+      const userData = response.data;
+      setFirstName(userData.prenom);
+      setLastName(userData.nom);
+      
+      // Conversion de la date pour l'affichage correct dans le champ de saisie
+      const formattedDate = new Date(userData.date_de_naissance).toISOString().slice(0, 10);
+      setDateOfBirth(formattedDate);
+
+      setGender(userData.sexe === "H");
+      setEmail(userData.email);
+      setLoading(false);
+    } catch (error) {
+      setErrorMessage("Erreur lors du chargement des données de l'utilisateur.");
+      setLoading(false);
+    }
+  };
+
+  // Appeler fetchUserData lorsque le composant est monté pour la première fois
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   // Fonction pour envoyer les données mises à jour
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validation
+    
     if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password) {
       setErrorMessage("Veuillez remplir tous les champs.");
       return;
@@ -35,18 +72,15 @@ const ProfilePage: FC = () => {
     };
 
     try {
-      // Récupérer le token depuis localStorage
       const token = localStorage.getItem('authToken');
-
       if (!token) {
         setErrorMessage("Token manquant, veuillez vous reconnecter.");
         return;
       }
 
-      // Envoyer les données à l'API pour mise à jour avec le token dans les en-têtes
-      const response = await axios.put("http://localhost:4001/user-profile", updatedUserData, {
+      await axios.put("http://localhost:4001/user-profile", updatedUserData, {
         headers: {
-          'Authorization': `Bearer ${token}`,  // Ajout du token dans l'en-tête
+          'Authorization': `Bearer ${token}`,
         },
       });
 
@@ -171,8 +205,9 @@ const ProfilePage: FC = () => {
               fullWidth
               variant="contained"
               sx={{ bgcolor: '#DDA15E', '&:hover': { bgcolor: '#d19c5c' }, marginBottom: 2 }}
+              disabled={loading}
             >
-              Mettre à jour
+              {loading ? "Chargement..." : "Mettre à jour"}
             </Button>
           </form>
         </Box>
