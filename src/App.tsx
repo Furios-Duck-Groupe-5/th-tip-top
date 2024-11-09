@@ -33,12 +33,13 @@ const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const location = useLocation();
   const hideNavbarAndFooter = location.pathname === "/participation";
+  const hideAdmin = location.pathname === "/admin";
 
   return (
     <>
-      {!hideNavbarAndFooter && <Navbar />}
+      {!hideNavbarAndFooter && !hideAdmin && <Navbar />}
       <div>{children}</div>
-      {!hideNavbarAndFooter && <Footer />}
+      {!hideNavbarAndFooter && !hideAdmin && <Footer />}
     </>
   );
 };

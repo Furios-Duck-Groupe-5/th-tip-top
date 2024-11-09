@@ -23,6 +23,7 @@ interface AgeGroupData {
   ageGroup: string;
   count: number;
 }
+// TO DO ajouer total des particpiant , nimbre de tickets et kts gagné
 
 const DetailedStatisticsPage: React.FC = () => {
   const [winners, setWinners] = useState<WinnerData[]>([]);
