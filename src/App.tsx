@@ -18,6 +18,7 @@ import { AuthProvider, useAuth } from "./components/ConnexionInscription/AuthCon
 import UserGainHistoryPage from "./components/Pade de profil/historique";
 import HistoriqueGain from "./config/Historique-gain";
 import GrandTiragePage from "./components/Admin/grand-tirage";
+import EmployeePrizePage from "./components/Employe/employee";
 // Lazy-loaded components
 const LoginPage = lazy(() => import("./components/ConnexionInscription/Connexion"));
 const SignUpPage = lazy(() => import("./components/ConnexionInscription/inscription"));
@@ -35,12 +36,13 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const location = useLocation();
   const hideNavbarAndFooter = location.pathname === "/participation";
   const hideAdmin = location.pathname === "/admin";
+  const hideEmployee = location.pathname ==="/page-employee"
 
   return (
     <>
-      {!hideNavbarAndFooter && !hideAdmin && <Navbar />}
+      {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Navbar />}
       <div>{children}</div>
-      {!hideNavbarAndFooter && !hideAdmin && <Footer />}
+      {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Footer />}
     </>
   );
 };
@@ -68,7 +70,7 @@ const App: React.FC = () => {
               <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
               <Route path="/detailed-statistics" element={<DetailedStatisticsPage />} />
               <Route path="/users" element={<UserListPage />} />
-              <Route path="/gain" element={<GainsManagementPage />} />
+              <Route path="/page-employee" element={<EmployeePrizePage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/lots" element={<LotsPage />} />
