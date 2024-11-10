@@ -296,6 +296,35 @@ app.get('/statistics', async (req: Request, res: Response): Promise<void> => {
     }
 });
 
+app.get('/ticket-statistics', async (req: Request, res: Response): Promise<void> => {
+    try {
+      // Récupérer le nombre de tickets disponibles (status = true)
+      const availableTicketsQuery = `
+        SELECT gain, COUNT(*) AS count
+        FROM ticket
+        WHERE status = true
+        GROUP BY gain
+      `;
+      const availableTickets = await pool.query(availableTicketsQuery);
+  console.log("availableTickets",availableTickets)
+      // Si aucun ticket n'est trouvé, retourner un message spécifique
+      if (availableTickets.rows.length === 0) {
+         res.status(404).json({ message: 'Aucun ticket disponible trouvé.' });
+      }
+  
+      // Retourner les résultats des tickets disponibles, groupés par gain
+      res.status(200).json({
+        availableTickets: availableTickets.rows
+      });
+      console.log("availableTickets",availableTickets.rows)
+
+    } catch (error) {
+      console.error('Erreur lors de la récupération des statistiques des tickets :', error);
+      res.status(500).json({ message: 'Erreur lors de la récupération des statistiques des tickets.' });
+    }
+  });
+  
+
 // TODO date de naissanance ## pas de id pas de status et pas de mot de passe
 app.get('/export-users', async (req: Request, res: Response): Promise<void> => {
     try {
