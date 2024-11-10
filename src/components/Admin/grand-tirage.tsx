@@ -38,7 +38,6 @@ const GrandTiragePage: React.FC = () => {
 
       setOpenGrandTirageDialog(true); // Ouvrir la modale pour afficher le gagnant
       setOpenSnackbar(true); // Afficher le message de succès
-      setOpenGrandTirageDialog(false); 
 
     } catch (error) {
       console.error('Erreur lors du tirage du grand lot:', error);
