@@ -23,32 +23,57 @@ interface AgeGroupData {
   ageGroup: string;
   count: number;
 }
-// TO DO ajouer total des particpiant , nimbre de tickets et kts gagné
+
+interface TicketData {
+  gain: string;
+  count: number;
+}
 
 const DetailedStatisticsPage: React.FC = () => {
   const [winners, setWinners] = useState<WinnerData[]>([]);
   const [ageGroups, setAgeGroups] = useState<AgeGroupData[]>([]);
+  const [ticketStats, setTicketStats] = useState<TicketData[]>([]);
   const COLORS = ['#0088FE', '#FFBB28'];
 
   useEffect(() => {
+    // Récupérer les statistiques générales
     fetch('http://localhost:4001/statistics')
       .then(response => response.json())
       .then(data => {
-        // Mise en forme des données pour le graphique de sexe
+        console.log("Données des statistiques générales:", data); // Log pour vérifier les données
         setWinners(data.genderStats.map((item: any) => ({
-          // TODO pourquoi h = femme?
           gender: item.sexe === 'H' ? 'Homme' : 'Femme',
           count: parseInt(item.count, 10),
         })));
         
-        // Mise en forme des données pour le graphique d'âge
         setAgeGroups(data.ageStats.map((item: any) => ({
           ageGroup: item.age_group,
           count: parseInt(item.count, 10),
         })));
       })
       .catch(error => console.error('Erreur lors de la récupération des statistiques :', error));
+
+    // Récupérer les statistiques des tickets
+    fetch('http://localhost:4001/ticket-statistics')
+      .then(response => response.json())
+      .then(data => {
+        console.log("Données des statistiques des tickets:", data); // Log pour vérifier les données des tickets
+
+        // Adapter pour récupérer les tickets depuis 'availableTickets'
+        setTicketStats(data.availableTickets.map((item: any) => ({
+          gain: item.gain,
+          count: parseInt(item.count, 10), // Assurez-vous de convertir count en nombre
+        })));
+      })
+      .catch(error => console.error('Erreur lors de la récupération des statistiques des tickets :', error));
   }, []);
+
+  // Log des données avant de les envoyer aux graphiques
+  useEffect(() => {
+    console.log("Winners:", winners);
+    console.log("Age Groups:", ageGroups);
+    console.log("Ticket Stats:", ticketStats);
+  }, [winners, ageGroups, ticketStats]);
 
   return (
     <Box
@@ -63,6 +88,7 @@ const DetailedStatisticsPage: React.FC = () => {
       </Typography>
 
       <Grid container spacing={4} justifyContent="center" sx={{ mt: 4 }}>
+        {/* Statistiques par Sexe */}
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ p: 3, backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
             <Typography variant="h6" gutterBottom>Statistiques par Sexe</Typography>
@@ -89,6 +115,7 @@ const DetailedStatisticsPage: React.FC = () => {
           </Paper>
         </Grid>
 
+        {/* Statistiques par Âge */}
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ p: 3, backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
             <Typography variant="h6" gutterBottom>Statistiques par Âge</Typography>
@@ -99,6 +126,22 @@ const DetailedStatisticsPage: React.FC = () => {
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="count" fill="#DDA15E" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Paper>
+        </Grid>
+
+        {/* Statistiques des Tickets */}
+        <Grid item xs={12}>
+          <Paper elevation={3} sx={{ p: 3, backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
+            <Typography variant="h6" gutterBottom>Statistiques des Tickets disponibles</Typography>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={ticketStats}>
+                <XAxis dataKey="gain" angle={-45} textAnchor="end" height={60} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#4F7CAC" />
               </BarChart>
             </ResponsiveContainer>
           </Paper>
