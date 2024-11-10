@@ -534,6 +534,107 @@ app.post('/grand-tirage', async (req: Request, res: Response): Promise<void> => 
 });
 
 
+app.post('/get-user-tickets', async (req: Request, res: Response): Promise<void> => {
+    const { email, nom } = req.body;
+
+    if (!email || !nom) {
+        res.status(400).json({ error: 'L\'email et le nom sont requis.' });
+        return;
+    }
+
+    try {
+        const userQueryResult = await pool.query(
+            'SELECT * FROM Utilisateur WHERE email = $1 AND nom = $2',
+            [email, nom]
+        );
+
+        if (userQueryResult.rows.length === 0) {
+            const emailCheckResult = await pool.query(
+                'SELECT * FROM Utilisateur WHERE email = $1',
+                [email]
+            );
+
+            if (emailCheckResult.rows.length === 0) {
+                res.status(404).json({ error: 'Email incorrect ou utilisateur non trouvé.' });
+            } else {
+                res.status(404).json({ error: 'Nom incorrect pour cet email.' });
+            }
+            return;
+        }
+
+        const user = userQueryResult.rows[0];
+        const userId = user.id_user;
+
+        const ticketQueryResult = await pool.query(
+            'SELECT * FROM ticket WHERE id_user = $1',
+            [userId]
+        );
+
+        const gains = ticketQueryResult.rows.map(ticket => ({
+            id_ticket: ticket.id_ticket,
+            gain: ticket.gain,
+            remis: ticket.remis, 
+        }));
+        console.log("gain",gains)
+
+        res.status(200).json({
+            message: 'Tickets récupérés avec succès',
+            gains,
+            id_user: userId
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des tickets :', error);
+        res.status(500).json({ error: 'Une erreur s\'est produite lors de la récupération des tickets.' });
+    }
+});
+
+
+app.put('/update-ticket-status/:id_ticket', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+    const { id_ticket } = req.params;
+    const { newStatus } = req.body;
+
+    console.log("ID du ticket reçu:", id_ticket);
+    console.log("Nouveau statut reçu:", newStatus);
+
+    const statusToUpdate = newStatus ?? true; // Utilisation de true comme valeur par défaut
+    console.log("Statut à mettre à jour:", statusToUpdate);
+
+    try {
+        // Vérifier si le ticket existe dans la base de données
+        const ticketExists = await pool.query('SELECT * FROM ticket WHERE id_ticket = $1', [id_ticket]);
+        console.log("Ticket trouvé dans la base de données:", ticketExists.rows);
+
+        if (ticketExists.rows.length === 0) {
+            res.status(404).json({ message: 'Ticket non trouvé.' });
+            return;
+        }
+
+        // Si le ticket existe, mettre à jour à la fois le statut et le champ "remis"
+        const updateResult = await pool.query(
+            'UPDATE ticket SET status = $1, remis = true WHERE id_ticket = $2',
+            [statusToUpdate, id_ticket]
+        );
+
+        console.log("Résultat de la mise à jour du statut et remis:", updateResult);
+
+        // Retourner une réponse avec le ticket mis à jour
+        res.status(200).json({
+            message: 'Statut du ticket et "remis" mis à jour avec succès.',
+            updatedTicket: {
+                id_ticket: id_ticket,
+                status: statusToUpdate,
+                remis: true // Puisque nous avons mis à jour "remis" en true
+            }
+        });
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour du statut et du gain:', error);
+        res.status(500).json({ message: 'Erreur lors de la mise à jour du statut et du gain.' });
+    }
+});
+
+
+
+
 
 
 // Démarrer le serveur
