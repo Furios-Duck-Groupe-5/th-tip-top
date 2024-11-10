@@ -1,32 +1,51 @@
-import React, { useState, useEffect } from "react";
-import { Container, Box, Typography, Card, CardContent, List, ListItem, Divider, CircularProgress, Alert } from "@mui/material";
-
-// Exemple de données statiques pour l'historique des gains
-const sampleGainHistory = [
-  { lot: "Infuseur à thé", date: "2024-10-01" },
-  { lot: "Boîte de 100g de thé détox", date: "2024-10-05" },
-  { lot: "Coffret découverte 39€", date: "2024-10-10" },
-  { lot: "Boîte de 100g de thé signature", date: "2024-10-15" },
-  { lot: "Coffret découverte 69€", date: "2024-10-20" },
-];
-
-// TODO : Le historique ne fonctionne pas , pas encore implémanter :)
+import React, { useState, useEffect } from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CircularProgress,
+  Alert,
+  List,
+  Divider,
+} from '@mui/material';
+import axios from 'axios';
 
 const UserGainHistoryPage: React.FC = () => {
-  const [gainHistory, setGainHistory] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [gainHistory, setGainHistory] = useState<any[]>([]); // Store gains
+  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  const [errorMessage, setErrorMessage] = useState<string>(""); // Error message
 
   useEffect(() => {
-    // Simuler un délai de chargement
-    setLoading(true);
+    // Fetch user gain history data when component mounts
+    const fetchGainHistory = async () => {
+      setLoading(true); // Set loading to true before the request
 
-    // Utilisation de données simulées pour l'historique des gains
-    setTimeout(() => {
-      setGainHistory(sampleGainHistory);
-      setLoading(false);
-    }, 1000); // Simule 1 seconde de chargement
-  }, []);
+      try {
+        const response = await axios.post('http://localhost:4001/user-historique', {}, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Include JWT token from localStorage
+          },
+        });
+
+        // Check if the response contains gain data
+        if (response.data.gains) {
+          console.log("Gain Data:", response.data.gains); // Log the entire gain data from the response
+          setGainHistory(response.data.gains); // Set the gains in state
+        } else {
+          setErrorMessage("Aucun gain trouvé pour cet utilisateur."); // If no gains
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération de l\'historique des gains:', error);
+        setErrorMessage("Erreur lors de la récupération des gains."); // If error occurs
+      } finally {
+        setLoading(false); // Set loading to false after request is completed
+      }
+    };
+
+    fetchGainHistory(); // Call the function to fetch gain history
+  }, []); // Empty dependency array to fetch on component mount
 
   if (loading) {
     return (
@@ -54,28 +73,41 @@ const UserGainHistoryPage: React.FC = () => {
         </Typography>
       </Box>
 
-      {errorMessage && <Alert severity="error" sx={{ mb: 4 }}>{errorMessage}</Alert>}
-
-      {gainHistory.length === 0 ? (
+      {errorMessage ? (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {errorMessage} {/* Display error message if any */}
+        </Alert>
+      ) : gainHistory.length === 0 ? (
         <Box sx={{ textAlign: "center", mt: 4 }}>
           <Typography variant="body1" sx={{ fontStyle: "italic", color: "#777" }}>
-            Vous n'avez pas encore de gains.
+            Vous n'avez pas encore de gains. {/* Display message if no gains */}
           </Typography>
         </Box>
       ) : (
         <List>
-          {gainHistory.map((gain, index) => (
-            <Card key={index} sx={{ mb: 2, boxShadow: 3 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  {gain.lot}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#777" }}>
-                  Gagné le : {gain.date}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
+          {gainHistory.map((gain, index) => {
+            console.log("Ticket:", gain); // Log each ticket
+            console.log("Status (Remis):", gain.remis); // Log the 'remis' status of each ticket
+
+            return (
+              <React.Fragment key={gain.id_ticket}>
+                <Card sx={{ mb: 2, boxShadow: 3 }}>
+                  <CardContent>
+                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                      {gain.gain} {/* Display gain name */}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: "#777" }}>
+                      Gagné le : {gain.date_validation} {/* Display gain date */}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: gain.remis === "Remis" ? "green" : "red" }}>
+                      {gain.remis} {/* Affiche la valeur de "Remis" ou "Non remis" directement */}
+                    </Typography>
+                  </CardContent>
+                </Card>
+                {index < gainHistory.length - 1 && <Divider />} {/* Add divider between items */}
+              </React.Fragment>
+            );
+          })}
         </List>
       )}
     </Container>

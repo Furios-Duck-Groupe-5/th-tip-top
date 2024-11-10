@@ -662,7 +662,41 @@ app.put('/update-ticket-status/:id_ticket', authenticateJWT, async (req: Request
 });
 
 
+app.post('/user-historique', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+    const userId = req.userId; // Get the authenticated user's ID from the request
 
+    if (!userId) {
+        res.status(401).json({ error: 'Utilisateur non authentifié.' });
+        return; // If no userId, return an error
+    }
+
+    try {
+        // Query the database to fetch the tickets for the authenticated user
+        const ticketQueryResult = await pool.query(
+            'SELECT * FROM ticket WHERE id_user = $1',
+            [userId]
+        );
+
+        // Process the ticket data and map it to the desired format
+        const gains = ticketQueryResult.rows.map(ticket => ({
+            id_ticket: ticket.id_ticket,
+            gain: ticket.gain,
+            remis: ticket.remis ? 'Remis' : 'Non remis', 
+            date_validation: ticket.date_validation // Assuming the date is stored in date_validation
+        }));
+        console.log("gains",gains)
+
+        // Respond with the user's ticket data
+        res.status(200).json({
+            message: 'Tickets récupérés avec succès.',
+            gains,
+            id_user: userId
+        });
+    } catch (error) {
+        console.error('Erreur lors de la récupération des tickets :', error);
+        res.status(500).json({ error: 'Une erreur s\'est produite lors de la récupération des tickets.' });
+    }
+});
 
 
 
