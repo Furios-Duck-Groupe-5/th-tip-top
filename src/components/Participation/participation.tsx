@@ -4,14 +4,14 @@ import "aos/dist/aos.css";
 import Lottie from "lottie-react";
 import sleeveAnimation from './bg.json';
 import teaAnimation from './the.json';
-
-import BiryaniImg1 from "/Users/user/Desktop/virtualr-main/src/components/Participation/360.png";
+import fireWork from './fire-work.json'
+import BiryaniImg1 from "/Users/user/Desktop/virtualr-main/src/components/Participation/infusseur.png";
 import BiryaniImg2 from "/Users/user/Desktop/virtualr-main/src/components/Participation/39.png";
 import BiryaniImg3 from "/Users/user/Desktop/virtualr-main/src/components/Participation/69.png";
 import BiryaniImg4 from "/Users/user/Desktop/virtualr-main/src/components/Participation/detox.png";
 import BiryaniImg5 from "/Users/user/Desktop/virtualr-main/src/components/Participation/signature.png";
 import "/Users/user/Desktop/virtualr-main/src/components/Participation/spin.css";
-import { Box, Button, Typography, Container, TextField, Snackbar } from "@mui/material";
+import { Box, Button, Typography, Container, TextField, Snackbar, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { CheckCircle, ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
 
@@ -22,8 +22,8 @@ const ImageList = [
   { id: 4, img: BiryaniImg4 },
   { id: 5, img: BiryaniImg5 },
 ];
-// TODO LE SITE NEST PAS RESPONSIVE
-interface ParticipationPage {}
+
+interface ParticipationPage { }
 
 const ParticipationPage: React.FC<ParticipationPage> = () => {
   const [imageId, setImageId] = useState<string>(BiryaniImg1);
@@ -31,6 +31,10 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const [snackbarType, setSnackbarType] = useState<"success" | "error">("success");
+
+  // État pour le popup
+  const [openPopup, setOpenPopup] = useState<boolean>(false);
+  const [lotGagne, setLotGagne] = useState<string>("");
 
   useEffect(() => {
     AOS.init({
@@ -41,9 +45,27 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
     });
   }, []);
 
+  // Fonction pour obtenir l'image en fonction du gain
+  const getImageForPrize = (gain: string) => {
+    switch (gain) {
+      case "infuseur à thé":
+        return BiryaniImg1;
+      case "boîte de 100g thé détox ou infusion":
+        return BiryaniImg4;
+      case "boîte de 100g thé signature":
+        return BiryaniImg5;
+      case "coffret découverte 39€":
+        return BiryaniImg2;
+      case "coffret découverte 69€":
+        return BiryaniImg3;
+      default:
+        return BiryaniImg1; // Image par défaut au cas où aucun gain ne correspond
+    }
+  };
+
   const handleSubmitCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (code.length !== 10) {
       setSnackbarMessage("Le code saisi n'est pas valide. Veuillez réessayer.");
       setSnackbarType("error");
@@ -63,23 +85,32 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
       const response = await axios.post(
         'http://localhost:4001/participer',
         { code_ticket: code },
-        { 
+        {
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       if (response.status === 200) {
-        setSnackbarMessage("Vous avez participé avec succès en utilisant le code de ticket.");
+        setSnackbarMessage(response.data.message);
         setSnackbarType("success");
         setOpenSnackbar(true);
+
+        // Récupère le gain depuis la réponse du backend et l'affiche dans le popup
+        const gain = response.data.gain;
+        setLotGagne(gain);
+
+        // Met à jour l'image en fonction du gain
+        setImageId(getImageForPrize(gain));
+
+        setOpenPopup(true);
       }
-    }  catch (error: unknown) { 
-      if (axios.isAxiosError(error)) {  
-          setSnackbarMessage(error.response?.data.message || "Une erreur est survenue. Veuillez réessayer.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setSnackbarMessage(error.response?.data.message || "Une erreur est survenue. Veuillez réessayer.");
       } else {
-          setSnackbarMessage("Une erreur s'est produite lors de la participation.");
+        setSnackbarMessage("Une erreur s'est produite lors de la participation.");
       }
 
       setSnackbarType("error");
@@ -89,8 +120,7 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", color: "white", position: "relative" }}>
-      
-      {/* Le bg est lottie à changer ??? */}
+      {/* Animation Lottie */}
       <Lottie
         animationData={sleeveAnimation}
         loop={true}
@@ -100,10 +130,9 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          zIndex: -1, 
+          zIndex: -1,
         }}
       />
-
       <Container sx={{ paddingBottom: 8, paddingTop: 8, height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 4 }}>
           {/* Text Section */}
@@ -118,7 +147,7 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
               sx={{
                 marginTop: -40,
                 fontWeight: "bold",
-                backgroundColor: "white", 
+                backgroundColor: "white",
                 color: "#DDA15E",
                 display: "inline-block",
                 padding: "8px 16px",
@@ -260,13 +289,117 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
           </Box>
         </Box>
       </Container>
-
-      {/* Animation de feux d'artifice à gauche et droite */}
-      <Box sx={{ position: "absolute", left: 90, bottom: -20, width: "20%", height: "50%" }}>
+       {/* Animation de tea d'artifice à gauche et droite */}
+       <Box sx={{ position: "absolute", left: 90, bottom: -20, width: "20%", height: "50%" }}>
         <Lottie animationData={teaAnimation} loop={true} />
       </Box>
 
-      {/* Snackbar for feedback */}
+      {/* Dialog pour afficher le lot gagné */}
+      <Dialog
+        open={openPopup}
+        onClose={() => setOpenPopup(false)}
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "16px",
+            padding: "20px",
+            boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.2)", // Ajout d'ombre portée
+            backgroundColor: "#f5f5f5", // Couleur de fond plus douce
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            fontWeight: "bold",
+            color: "#DDA15E", // Couleur dorée
+            fontSize: "24px",
+            textAlign: "center",
+            borderBottom: "2px solid #DDA15E", // Bordure sous le titre
+            paddingBottom: "16px",
+          }}
+        >
+          Félicitations !
+        </DialogTitle>
+
+        <DialogContent
+          sx={{
+            textAlign: "center",
+            paddingTop: "16px",
+            paddingBottom: "16px",
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              color: "#333", // Texte en couleur sombre
+              fontWeight: "500",
+              marginBottom: "16px",
+            }}
+          >
+            Vous avez gagné :
+          </Typography>
+
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#DDA15E", // Couleur dorée pour le texte du lot
+              fontWeight: "bold",
+              marginBottom: "20px",
+            }}
+          >
+            <strong>{lotGagne}</strong>
+          </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "16px",
+              minHeight: "200px",
+              width: "100%",
+              padding: "0 20px",
+            }}
+          >
+            <img
+              src={getImageForPrize(lotGagne)} // Utilisation de la fonction pour obtenir l'image du lot
+              alt="lot gagné"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "200px",
+                objectFit: "contain",
+                borderRadius: "12px", // Bord arrondi pour l'image
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Ombre autour de l'image
+              }}
+            />
+          </Box>
+        </DialogContent>
+
+        <DialogActions
+          sx={{
+            justifyContent: "center",
+            paddingTop: "20px",
+          }}
+        >
+          <Button
+            onClick={() => setOpenPopup(false)}
+            color="primary"
+            sx={{
+              backgroundColor: "#DDA15E",
+              color: "white",
+              fontWeight: "bold",
+              borderRadius: "20px",
+              padding: "8px 20px",
+              "&:hover": {
+                backgroundColor: "#c77a3e", // Couleur légèrement plus foncée au survol
+              },
+            }}
+          >
+            Fermer
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
+      {/* Snackbar pour feedback */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
@@ -287,9 +420,8 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
           )
         }
       />
-
-      {/* Footer */}
-      <Box sx={{
+       {/* Footer */}
+       <Box sx={{
         position: "absolute",
         bottom: 20,
         left: 0,
