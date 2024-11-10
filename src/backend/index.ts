@@ -482,6 +482,60 @@ app.get('/user-profile', authenticateJWT, async (req: Request, res: Response): P
     }
 });
 
+app.post('/grand-tirage', async (req: Request, res: Response): Promise<void> => {
+    try {
+        // 1. Récupérer un ticket aléatoire dont le statut est 'false'
+        const ticketResult = await pool.query(
+            'SELECT * FROM ticket WHERE status = false ORDER BY RANDOM() LIMIT 1'
+        );
+        console.log("ticketResult", ticketResult);
+
+        // Si aucun ticket n'est trouvé
+        if (ticketResult.rows.length === 0) {
+            res.status(404).json({ message: 'Aucun ticket avec le statut "false" trouvé.' });
+            return;
+        }
+
+        const ticket = ticketResult.rows[0];
+        console.log("ticket", ticket);
+
+        // 2. Récupérer l'id_user associé à ce ticket
+        const idUser = ticket.id_user;
+        console.log("idUser", idUser);
+
+        // 3. Récupérer l'utilisateur dont l'id_user correspond à celui du ticket
+        const userResult = await pool.query(
+            'SELECT prenom, nom, email FROM Utilisateur WHERE id_user = $1',
+            [idUser]
+        );
+        console.log("userResult", userResult);
+
+        // Si aucun utilisateur n'est trouvé
+        if (userResult.rows.length === 0) {
+            res.status(404).json({ message: 'Utilisateur associé au ticket non trouvé.' });
+            return;
+        }
+
+        const user = userResult.rows[0];
+
+        // 4. Retourner le prénom, nom et email de l'utilisateur
+        res.status(200).json({
+            message: 'Tirage effectué avec succès.',
+            winner: {
+                prenom: user.prenom,  // Prénom
+                nom: user.nom,        // Nom
+                email: user.email,    // Email
+            },
+        });
+    } catch (error) {
+        console.error('Erreur lors du tirage :', error);
+        res.status(500).json({ message: 'Une erreur s\'est produite lors du tirage.' });
+    }
+});
+
+
+
+
 // Démarrer le serveur
 app.listen(port, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
