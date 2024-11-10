@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node' // Remplace par le nom de ta configuration Node.js
+        // Assure-toi que "Node 16" est bien le nom de la configuration dans Jenkins
+        nodejs 'Node 16' // Remplace 'Node 16' par le nom exact de ta configuration Node.js
     }
 
     environment {
@@ -20,19 +21,12 @@ pipeline {
             }
         }
 
-        docker {
-            image 'node:16-alpine' // Utilise une image Docker avec Node.js et npm/yarn préinstallés
-            args '-v /tmp:/tmp' // Facultatif, selon tes besoins
-        }
-
-        
-
         // Étape 2 : Installation des dépendances
         stage('Install Dependencies') {
             steps {
                 script {
                     // Installer les dépendances Node.js et React
-                    sh 'sudo apt install npm'
+                    sh 'npm install' // Utilise npm pour installer les dépendances dans l'image
                 }
             }
         }
@@ -111,4 +105,6 @@ pipeline {
         }
     }
 }
+
+
 
