@@ -22,10 +22,14 @@ import DetailedStatisticsPage from './statistics-page';
 import UserListPage from './users-page';
 import AddEmployeePage from './addEmploye';
 import axios from 'axios';
+import GrandTiragePage from './grand-tirage';
+import { useAuth } from '../ConnexionInscription/AuthContext';
 
 const AdminPage: React.FC = () => {
   const [view, setView] = useState<string>('home'); // Etat pour gérer la vue active
   const [message, setMessage] = useState<string>('');
+  const [openNotificationDialog, setOpenNotificationDialog] = useState<boolean>(false);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
   const handleExportData = async () => {
     try {
@@ -42,8 +46,6 @@ const AdminPage: React.FC = () => {
       console.error('Erreur lors de l\'exportation des données :', error);
     }
   };
-  const [openNotificationDialog, setOpenNotificationDialog] = useState<boolean>(false);
-  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
   const handleOpenNotificationDialog = () => {
     setOpenNotificationDialog(true);
@@ -61,6 +63,16 @@ const AdminPage: React.FC = () => {
       handleCloseNotificationDialog();
     } catch (error) {
       console.error('Erreur lors de l\'envoi du message:', error);
+    }
+  };
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed:", error);
     }
   };
 
@@ -82,41 +94,67 @@ const AdminPage: React.FC = () => {
         anchor="left"
       >
         <List>
-          <ListItem button onClick={() => setView('statistiques')}>
+          <ListItem onClick={() => setView('statistiques')} component="button">
             <ListItemIcon>
               <FaChartBar style={{ color: '#DDA15E' }} />
             </ListItemIcon>
             <ListItemText primary="Statistiques" />
           </ListItem>
 
-          <ListItem button onClick={() => setView('gestionUtilisateurs')}>
+          <ListItem onClick={() => setView('gestionUtilisateurs')} component="button">
             <ListItemIcon>
               <FaUsers style={{ color: '#DDA15E' }} />
             </ListItemIcon>
             <ListItemText primary="Gestion des Utilisateurs" />
           </ListItem>
 
-          <ListItem button onClick={() => setView('ajouterEmploye')}>
+          <ListItem onClick={() => setView('ajouterEmploye')} component="button">
             <ListItemIcon>
               <FaUsers style={{ color: '#DDA15E' }} />
             </ListItemIcon>
             <ListItemText primary="Ajouter un Employé" />
           </ListItem>
 
-          <ListItem button onClick={handleOpenNotificationDialog}>
+          <ListItem onClick={handleOpenNotificationDialog} component="button">
             <ListItemIcon>
               <FaRegBell style={{ color: '#DDA15E' }} />
             </ListItemIcon>
             <ListItemText primary="Notifications" />
           </ListItem>
 
-          <ListItem button onClick={handleExportData}>
-  <ListItemIcon>
-    <FaSignOutAlt style={{ color: '#DDA15E' }} />
-  </ListItemIcon>
-  <ListItemText primary="Exporter les Données" />
-</ListItem>
+          <ListItem onClick={handleExportData} component="button">
+            <ListItemIcon>
+              <FaSignOutAlt style={{ color: '#DDA15E' }} />
+            </ListItemIcon>
+            <ListItemText primary="Exporter les Données" />
+          </ListItem>
+
+          <ListItem onClick={() => setView('grand-tirage')} component="button">
+            <ListItemIcon>
+              <FaGift style={{ color: '#DDA15E' }} />
+            </ListItemIcon>
+            <ListItemText primary="Grand Tirage" />
+          </ListItem>
         </List>
+
+        {/* Bouton de déconnexion */}
+        <Box sx={{ position: 'absolute', bottom: 16, left: 0, width: '100%', padding: '0 16px' }}>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: '#DDA15E',  // Couleur personnalisée
+              '&:hover': {
+                backgroundColor: '#C88B4D', // Couleur personnalisée au survol
+              },
+            }}
+            fullWidth
+            startIcon={<FaSignOutAlt />}
+            onClick={handleLogout}
+          >
+            Déconnexion
+          </Button>
+        </Box>
+
       </Drawer>
 
       {/* Main Content */}
@@ -127,15 +165,19 @@ const AdminPage: React.FC = () => {
         )}
 
         {view === 'statistiques' && (
-          <DetailedStatisticsPage /> 
+          <DetailedStatisticsPage />
         )}
 
         {view === 'gestionUtilisateurs' && (
-          <UserListPage/>
+          <UserListPage />
         )}
 
         {view === 'ajouterEmploye' && (
-          <AddEmployeePage/>
+          <AddEmployeePage />
+        )}
+
+        {view === 'grand-tirage' && (
+          <GrandTiragePage />
         )}
 
         {/* Dialog pour envoyer une notification */}

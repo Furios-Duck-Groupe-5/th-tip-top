@@ -17,6 +17,7 @@ import React, { PropsWithChildren, lazy, Suspense } from "react";
 import { AuthProvider, useAuth } from "./components/ConnexionInscription/AuthContext";
 import UserGainHistoryPage from "./components/Pade de profil/historique";
 import HistoriqueGain from "./config/Historique-gain";
+import GrandTiragePage from "./components/Admin/grand-tirage";
 // Lazy-loaded components
 const LoginPage = lazy(() => import("./components/ConnexionInscription/Connexion"));
 const SignUpPage = lazy(() => import("./components/ConnexionInscription/inscription"));
@@ -75,6 +76,7 @@ const App: React.FC = () => {
               <Route path="/add-employee" element={<AddEmployeePage />} /> 
               <Route path="/employee" element={<EmployeePage />} /> 
               <Route path="/gain-historique" element={<UserGainHistoryPage />} /> 
+              <Route path="/grand-tirage" element={<GrandTiragePage />} /> 
               </Routes>
           </Suspense>
         </Layout>
