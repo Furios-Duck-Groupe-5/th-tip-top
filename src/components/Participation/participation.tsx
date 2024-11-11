@@ -14,6 +14,7 @@ import "/Users/user/Desktop/virtualr-main/src/components/Participation/spin.css"
 import { Box, Button, Typography, Container, TextField, Snackbar, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { CheckCircle, ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ImageList = [
   { id: 1, img: BiryaniImg1 },
@@ -32,6 +33,12 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const [snackbarType, setSnackbarType] = useState<"success" | "error">("success");
 
+
+  const navigate = useNavigate();
+
+  const handleGoToLots = () => {
+    navigate("/lots")
+  }
   // État pour le popup
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [lotGagne, setLotGagne] = useState<string>("");
@@ -220,6 +227,29 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
             >
               Lot à gagner!
             </Box>
+            <Button
+              sx={{
+                position: "absolute",
+                top: 500,
+                left: "50%",
+                transform: "translateX(-50%)",
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                padding: "8px 16px",
+                borderRadius: "20px",
+                fontSize: "18px",
+                fontWeight: "bold",
+                color: "#DDA15E",
+                border: "2px solid #DDA15E",
+                "&:hover": {
+                  backgroundColor: "#DDA15E",
+                  color: "white",
+                },
+              }}
+              onClick={handleGoToLots}
+              >
+              Détails des lots
+            </Button>
+
 
             <Box
               sx={{
@@ -289,8 +319,8 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
           </Box>
         </Box>
       </Container>
-       {/* Animation de tea d'artifice à gauche et droite */}
-       <Box sx={{ position: "absolute", left: 90, bottom: -20, width: "20%", height: "50%" }}>
+      {/* Animation de tea d'artifice à gauche et droite */}
+      <Box sx={{ position: "absolute", left: 90, bottom: -20, width: "20%", height: "50%" }}>
         <Lottie animationData={teaAnimation} loop={true} />
       </Box>
 
@@ -420,8 +450,8 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
           )
         }
       />
-       {/* Footer */}
-       <Box sx={{
+      {/* Footer */}
+      <Box sx={{
         position: "absolute",
         bottom: 20,
         left: 0,
@@ -432,12 +462,12 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
         fontSize: "14px",
         color: "white",
       }}>
-        <Typography variant="body2" sx={{ display: "inline", marginLeft:16 }}>
-          <a href="/" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16,fontWeight: "bold" }}>ACCEUIL</a>
-          <a href="/login" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16,fontWeight: "bold" }}>CONNEXION</a>
-          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16,fontWeight: "bold" }}>CGU</a>
-          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16,fontWeight: "bold" }}>CGV</a>
-          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16 ,fontWeight: "bold"}}>@TheTipTop</a>
+        <Typography variant="body2" sx={{ display: "inline", marginLeft: 16 }}>
+          <a href="/" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>ACCEUIL</a>
+          <a href="/login" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>CONNEXION</a>
+          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>CGU</a>
+          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>CGV</a>
+          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>@TheTipTop</a>
         </Typography>
       </Box>
     </Box>
