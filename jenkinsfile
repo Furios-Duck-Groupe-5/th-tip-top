@@ -21,7 +21,7 @@ pipeline {
             }
         }
 
-        stages {
+        // Étape 2 : Installation de Yarn
         stage('Install Yarn') {
             steps {
                 script {
@@ -30,12 +30,19 @@ pipeline {
                 }
             }
         }
-        // Autres étapes comme 'Run Tests', 'Build Docker Image', etc.
-    }
 
-        
+        // Étape 3 : Installation des dépendances
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Installer les dépendances Node.js et React
+                    sh 'npm cache clean --force'
+                    sh 'npm install --legacy-peer-deps --verbose' // Utilise npm pour installer les dépendances dans l'image
+                }
+            }
+        }
 
-        // Étape 3 : Tests
+        // Étape 4 : Tests
         stage('Run Tests') {
             steps {
                 script {
@@ -45,7 +52,7 @@ pipeline {
             }
         }
 
-        // Étape 4 : Construction de l'image Docker
+        // Étape 5 : Construction de l'image Docker
         stage('Build Docker Image') {
             steps {
                 script {
@@ -55,7 +62,7 @@ pipeline {
             }
         }
 
-        // Étape 5 : Push de l'image Docker vers un registre (si nécessaire)
+        // Étape 6 : Push de l'image Docker vers un registre (si nécessaire)
         stage('Push Docker Image') {
             steps {
                 script {
@@ -69,7 +76,7 @@ pipeline {
             }
         }
 
-        // Étape 6 : Déploiement en environnement de développement
+        // Étape 7 : Déploiement en environnement de développement
         stage('Deploy to Development') {
             steps {
                 script {
@@ -82,7 +89,7 @@ pipeline {
             }
         }
 
-        // Étape 7 : Déploiement en pré-production
+        // Étape 8 : Déploiement en pré-production
         stage('Deploy to Pre-production') {
             steps {
                 script {
@@ -91,17 +98,6 @@ pipeline {
                     docker run -d --name contest-preprod --network furious-ducks-network \
                     -e DATABASE_URL=${DATABASE_URL} -p 3001:3000 ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
                     """
-                }
-            }
-        }
-
-        // Étape 2 : Installation des dépendances
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    // Installer les dépendances Node.js et React
-                    sh 'npm cache clean --force'
-                    sh 'npm install --legacy-peer-deps --verbose' // Utilise npm pour installer les dépendances dans l'image
                 }
             }
         }
@@ -120,6 +116,7 @@ pipeline {
         }
     }
 }
+
 
 
 
