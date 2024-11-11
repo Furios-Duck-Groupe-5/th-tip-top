@@ -74,7 +74,7 @@ const AddEmployeePage: React.FC = () => {
         <Typography variant="h4" gutterBottom align="center" sx={{ color: '#DDA15E', fontWeight: 'bold' }}>
           Ajouter un Nouvel Employé
         </Typography>
-        
+
         <Grid container spacing={2}>
           {/* Nom */}
           <Grid item xs={12} sm={6}>
@@ -87,7 +87,7 @@ const AddEmployeePage: React.FC = () => {
               required
             />
           </Grid>
-          
+
           {/* Prénom */}
           <Grid item xs={12} sm={6}>
             <TextField
@@ -99,7 +99,7 @@ const AddEmployeePage: React.FC = () => {
               required
             />
           </Grid>
-          
+
           {/* Role (Disabled and Pre-filled) */}
           <Grid item xs={12}>
             <TextField
@@ -155,6 +155,16 @@ const AddEmployeePage: React.FC = () => {
               required
             />
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Mot de passe"
+              name="role"
+              value={"default_password"}
+              disabled
+              InputProps={{ readOnly: true }}
+            />
+          </Grid>
 
           {/* Submit Button */}
           <Grid item xs={12} textAlign="center">
@@ -168,7 +178,7 @@ const AddEmployeePage: React.FC = () => {
             </Button>
           </Grid>
         </Grid>
-        
+
         {/* Snackbar for success feedback */}
         <Snackbar
           open={snackbarOpen}

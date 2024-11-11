@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet"; // Importer react-helmet
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
@@ -36,10 +37,16 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const location = useLocation();
   const hideNavbarAndFooter = location.pathname === "/participation";
   const hideAdmin = location.pathname === "/admin";
-  const hideEmployee = location.pathname ==="/page-employee"
+  const hideEmployee = location.pathname === "/page-employee"
 
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Mon Application Thé tip top concours</title>
+        <meta name="description" content="Description de l'application" />
+      </Helmet>
       {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Navbar />}
       <div>{children}</div>
       {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Footer />}
@@ -58,12 +65,15 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={
                 <>
+                  <Helmet>
+                    <title>Page d'Accueil - Mon Application</title>
+                    <meta name="description" content="Page d'accueil de notre application React." />
+                  </Helmet>
                   <HeroSection />
                   <Workflow />
                   <Testimonials />
                 </>
               } />
-              {/* Conditional rendering of Login and Sign Up based on login status */}
               {!isLoggedIn && <Route path="/login" element={<LoginPage />} />}
               {!isLoggedIn && <Route path="/signup" element={<SignUpPage />} />}
               <Route path="/mon-compte" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
@@ -79,7 +89,7 @@ const App: React.FC = () => {
               <Route path="/employee" element={<EmployeePrizePage />} /> 
               <Route path="/gain-historique" element={<UserGainHistoryPage />} /> 
               <Route path="/grand-tirage" element={<GrandTiragePage />} /> 
-              </Routes>
+            </Routes>
           </Suspense>
         </Layout>
       </Router>
