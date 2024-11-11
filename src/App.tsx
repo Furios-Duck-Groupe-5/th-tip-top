@@ -20,6 +20,7 @@ import UserGainHistoryPage from "./components/Pade de profil/historique";
 import HistoriqueGain from "./config/Historique-gain";
 import GrandTiragePage from "./components/Admin/grand-tirage";
 import EmployeePrizePage from "./components/Employe/employee";
+import CookieConsentBanner from "./components/cookies";
 // Lazy-loaded components
 const LoginPage = lazy(() => import("./components/ConnexionInscription/Connexion"));
 const SignUpPage = lazy(() => import("./components/ConnexionInscription/inscription"));
@@ -92,6 +93,8 @@ const App: React.FC = () => {
             </Routes>
           </Suspense>
         </Layout>
+        <CookieConsentBanner /> 
+
       </Router>
     </AuthProvider>
   );

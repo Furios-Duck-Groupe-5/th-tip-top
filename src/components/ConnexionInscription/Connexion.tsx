@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert } from "@mui/material";
-import logo from "../Participation/360.png";
+import logo from "../../assets/The_TIPTOP2-removebg-preview2.png";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom"; 
