@@ -31,6 +31,17 @@ pipeline {
             }
         }
 
+        
+        // Étape 4 : Tests
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Exécuter les tests unitaires ou d’intégration
+                    sh 'yarn test'
+                }
+            }
+        }
+        
         // Étape 3 : Installation des dépendances
         stage('Install Dependencies') {
             steps {
@@ -38,16 +49,6 @@ pipeline {
                     // Installer les dépendances Node.js et React
                     sh 'npm cache clean --force'
                     sh 'npm install --legacy-peer-deps --verbose' // Utilise npm pour installer les dépendances dans l'image
-                }
-            }
-        }
-
-        // Étape 4 : Tests
-        stage('Run Tests') {
-            steps {
-                script {
-                    // Exécuter les tests unitaires ou d’intégration
-                    sh 'yarn test'
                 }
             }
         }
