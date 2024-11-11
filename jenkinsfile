@@ -26,7 +26,8 @@ pipeline {
             steps {
                 script {
                     // Installer les dépendances Node.js et React
-                    sh 'npm install --legacy-peer-deps' // Utilise npm pour installer les dépendances dans l'image
+                    sh 'npm cache clean --force'
+                    sh 'npm install --legacy-peer-deps --verbose' // Utilise npm pour installer les dépendances dans l'image
                 }
             }
         }
