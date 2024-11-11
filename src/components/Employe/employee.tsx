@@ -6,18 +6,24 @@ import {
     TextField,
     Snackbar,
     CircularProgress,
+    Grid,
+    Paper,
+    Card,
+    CardContent,
+    CardActions,
+    Tooltip
 } from '@mui/material';
 import axios from 'axios';
 
 const EmployeePrizePage: React.FC = () => {
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
-    const [prizeData, setPrizeData] = useState<any>(null); // Données des gains
-    const [isLoading, setIsLoading] = useState<boolean>(false); // Gérer l'état de chargement
-    const [openSnackbar, setOpenSnackbar] = useState<boolean>(false); // Affichage du Snackbar
-    const [snackbarMessage, setSnackbarMessage] = useState<string>(''); // Message du Snackbar
+    const [prizeData, setPrizeData] = useState<any>(null); // Prize data
+    const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state
+    const [openSnackbar, setOpenSnackbar] = useState<boolean>(false); // Snackbar visibility
+    const [snackbarMessage, setSnackbarMessage] = useState<string>(''); // Snackbar message
 
-    // Fonction pour rechercher les tickets de l'utilisateur
+    // Function to search for user tickets
     const handleSearchPrize = async () => {
         if (!name || !email) {
             setSnackbarMessage('Veuillez saisir le nom et l\'email.');
@@ -34,19 +40,18 @@ const EmployeePrizePage: React.FC = () => {
             });
 
             if (response.data.gains && response.data.gains.length > 0) {
-                // Marquez les gains comme 'remis' si leur statut est déjà vrai
                 const updatedGains = response.data.gains.map((gain: any) => ({
                     ...gain,
-                    remis: gain.remis === true, // Vérifiez ici le champ remis
+                    remis: gain.remis === true,
                 }));
 
                 setPrizeData({
                     ...response.data,
-                    id_user: response.data.id_user, // Assurez-vous que l'ID de l'utilisateur est bien inclus dans la réponse
-                    gains: updatedGains, // Mettez à jour la liste des gains
+                    id_user: response.data.id_user,
+                    gains: updatedGains,
                 });
             } else {
-                setPrizeData({ gains: [] }); // Stocke un tableau vide pour indiquer aucun gain
+                setPrizeData({ gains: [] });
                 setSnackbarMessage('Aucun gain trouvé pour cet utilisateur.');
             }
         } catch (error) {
@@ -58,10 +63,10 @@ const EmployeePrizePage: React.FC = () => {
         }
     };
 
-    // Fonction pour mettre à jour le statut de remise d'un gain
+    // Function to claim a prize
     const handleClaimPrize = async (id_ticket: number) => {
         try {
-            const token = localStorage.getItem("authToken");  // Récupérer le jeton JWT
+            const token = localStorage.getItem("authToken");
 
             if (!token) {
                 console.error("Jeton d'authentification manquant.");
@@ -70,23 +75,18 @@ const EmployeePrizePage: React.FC = () => {
                 return;
             }
 
-            console.log("Tentative de mise à jour du ticket avec l'ID:", id_ticket);
-
-            const requestData = { newStatus: true };  // Nouveau statut à envoyer
+            const requestData = { newStatus: true };
 
             const response = await axios.put(
                 `http://localhost:4001/update-ticket-status/${id_ticket}`,
                 requestData,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`  // Ajout du jeton dans l'en-tête
+                        Authorization: `Bearer ${token}`,
                     }
                 }
             );
 
-            console.log("Réponse du serveur:", response);
-
-            // Mise à jour locale des données après la réponse
             setPrizeData((prevData: any) => {
                 const updatedGains = prevData.gains.map((gain: any) =>
                     gain.id_ticket === id_ticket ? { ...gain, remis: true } : gain
@@ -109,63 +109,92 @@ const EmployeePrizePage: React.FC = () => {
 
     return (
         <Box sx={{ padding: 4 }}>
-            <Typography variant="h5" gutterBottom>
+            {/* Title with the color DDA15E */}
+            <Typography variant="h4" gutterBottom sx={{ color: '#DDA15E' }}>
                 Visualisation des Gains
             </Typography>
 
-            {/* Champs de saisie */}
-            <TextField
-                label="Nom"
-                fullWidth
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                sx={{ mb: 2 }}
-            />
-            <TextField
-                label="Email"
-                fullWidth
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                sx={{ mb: 2 }}
-            />
+            {/* Search Form */}
+            <Paper sx={{ padding: 3, mb: 3, display: 'flex', flexDirection: 'column', borderRadius: 2, boxShadow: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>Rechercher un utilisateur</Typography>
+                <TextField
+                    label="Nom"
+                    fullWidth
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <TextField
+                    label="Email"
+                    fullWidth
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <Button
+                    variant="contained"
+                    sx={{
+                        backgroundColor: '#DDA15E', // Utilisation de la couleur DDA15E pour le bouton
+                        color: 'white',
+                        '&:hover': {
+                            backgroundColor: '#B58A3B', // Effet au survol (une nuance plus foncée)
+                        },
+                        mb: 2,
+                        textTransform: 'none'
+                    }}
+                    onClick={handleSearchPrize}
+                    disabled={isLoading}
+                >
+                    {isLoading ? <CircularProgress size={24} /> : 'Rechercher le gain'}
+                </Button>
+            </Paper>
 
-            {/* Bouton de recherche */}
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSearchPrize}
-                disabled={isLoading}
-                sx={{ mb: 2 }}
-            >
-                {isLoading ? <CircularProgress size={24} /> : 'Rechercher le gain'}
-            </Button>
-
-            {/* Affichage des informations sur les gains ou message "aucun gain trouvé" */}
+            {/* Prize Information */}
             {prizeData && (
                 <Box sx={{ mt: 2 }}>
-                    <Typography variant="h6">Informations sur les Gains</Typography>
+                    <Typography variant="h6" gutterBottom color="primary" sx={{ color: '#DDA15E' }}>Informations sur les Gains</Typography>
                     {prizeData.gains.length > 0 ? (
-                        prizeData.gains.map((gain: any, index: number) => (
-                            <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                <Button
-                                    variant="outlined"
-                                    color="secondary"
-                                    disabled={gain.remis} // Désactiver si le gain est déjà remis
-                                    onClick={() => handleClaimPrize(gain.id_ticket)}
-                                    sx={{ mr: 2 }}
-                                >
-                                    Gain {index + 1}: {gain.gain}
-                                </Button>
-                                {gain.remis && <Typography color="textSecondary">Déjà remis</Typography>}
-                            </Box>
-                        ))
+                        <Grid container spacing={3}>
+                            {prizeData.gains.map((gain: any, index: number) => (
+                                <Grid item xs={12} sm={6} md={4} key={index}>
+                                    <Card sx={{ display: 'flex', flexDirection: 'column', boxShadow: 3, borderRadius: 2 }}>
+                                        <CardContent>
+                                            <Typography variant="h6" gutterBottom>
+                                                Gain {index + 1}: {gain.gain}
+                                            </Typography>
+                                            <Typography variant="body2" color="textSecondary">
+                                                Statut: {gain.remis ? 'Réclamé' : 'Disponible'}
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions sx={{ justifyContent: 'center', paddingBottom: 2 }}>
+                                            <Tooltip title={gain.remis ? 'Ce gain a déjà été réclamé' : 'Cliquer pour réclamer'}>
+                                                <Button
+                                                    variant="contained"
+                                                    color="success" // Utilisation d'un vert neutre pour le bouton de réclamation
+                                                    disabled={gain.remis || isLoading}
+                                                    onClick={() => handleClaimPrize(gain.id_ticket)}
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        '&:hover': {
+                                                            backgroundColor: '#388E3C', // Vert foncé au survol
+                                                        },
+                                                    }}
+                                                >
+                                                    {gain.remis ? 'Déjà remis' : 'Réclamer'}
+                                                </Button>
+                                            </Tooltip>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
                     ) : (
                         <Typography>Aucun gain trouvé pour cet utilisateur.</Typography>
                     )}
                 </Box>
             )}
 
-            {/* Snackbar pour afficher les messages de succès ou d'erreur */}
+            {/* Snackbar */}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={3000}
