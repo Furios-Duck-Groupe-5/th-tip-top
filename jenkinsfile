@@ -21,16 +21,7 @@ pipeline {
             }
         }
 
-        // Étape 2 : Installation des dépendances
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    // Installer les dépendances Node.js et React
-                    sh 'npm cache clean --force'
-                    sh 'npm install --legacy-peer-deps --verbose' // Utilise npm pour installer les dépendances dans l'image
-                }
-            }
-        }
+        
 
         // Étape 3 : Tests
         stage('Run Tests') {
@@ -88,6 +79,17 @@ pipeline {
                     docker run -d --name contest-preprod --network furious-ducks-network \
                     -e DATABASE_URL=${DATABASE_URL} -p 3001:3000 ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
                     """
+                }
+            }
+        }
+
+        // Étape 2 : Installation des dépendances
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Installer les dépendances Node.js et React
+                    sh 'npm cache clean --force'
+                    sh 'npm install --legacy-peer-deps --verbose' // Utilise npm pour installer les dépendances dans l'image
                 }
             }
         }
