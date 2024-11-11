@@ -21,6 +21,18 @@ pipeline {
             }
         }
 
+        stages {
+        stage('Install Yarn') {
+            steps {
+                script {
+                    // Vérifie si yarn est installé, sinon l'installer
+                    sh 'npm install -g yarn'
+                }
+            }
+        }
+        // Autres étapes comme 'Run Tests', 'Build Docker Image', etc.
+    }
+
         
 
         // Étape 3 : Tests
