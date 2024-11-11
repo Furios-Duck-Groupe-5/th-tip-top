@@ -31,6 +31,17 @@ pipeline {
             }
         }
 
+        // Étape 3 : Installation des dépendances
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Installer les dépendances Node.js et React
+                    sh 'npm cache clean --force'
+                    sh 'npm install --legacy-peer-deps --verbose' // Utilise npm pour installer les dépendances dans l'image
+                }
+            }
+        }
+
         
         // Étape 4 : Tests
         stage('Run Tests') {
@@ -42,16 +53,7 @@ pipeline {
             }
         }
         
-        // Étape 3 : Installation des dépendances
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    // Installer les dépendances Node.js et React
-                    sh 'npm cache clean --force'
-                    sh 'npm install --legacy-peer-deps --verbose' // Utilise npm pour installer les dépendances dans l'image
-                }
-            }
-        }
+        
 
         // Étape 5 : Construction de l'image Docker
         stage('Build Docker Image') {
