@@ -3,8 +3,17 @@ import { Box, Typography, Button } from "@mui/material";
 import { Helmet } from 'react-helmet';
 import video1 from "../assets/teaVid1.mp4";
 import video2 from "../assets/teaVid2.mp4";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate(); 
+
+  const handleGoToLots = () => {
+    navigate("/lots")
+  }
+  const handleGoToDraw = () => {
+    navigate("/participation")
+  }
   return (
     <>
       {/* Balises SEO avec React Helmet */}
@@ -43,10 +52,15 @@ const HeroSection = () => {
               }, 
               mr: 2 
             }}
+            onClick={handleGoToDraw}
           >
             Participer
           </Button>
-          <Button variant="outlined" sx={{ borderColor: '#DDA15E', color: '#DDA15E' }}>
+          <Button 
+            variant="outlined" 
+            sx={{ borderColor: '#DDA15E', color: '#DDA15E' }} 
+            onClick={handleGoToLots} 
+          >
             Les lots
           </Button>
         </Box>

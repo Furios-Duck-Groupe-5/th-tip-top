@@ -7,6 +7,7 @@ import signatureTea from '/src/components/Participation/signature.png';
 import discoverySetSmall from '/src/components/Participation/39.png';
 import discoverySetLarge from '/src/components/Participation/69.png';
 import teaForAYear from '/src/components/Participation/360.png';
+import { useNavigate } from 'react-router-dom';
 
 const LotsPage: FC = () => {
   const lots = [
@@ -36,7 +37,11 @@ const LotsPage: FC = () => {
       description: 'Une expérience complète avec nos thés les plus prestigieux.',
     },
   ];
+  const navigate = useNavigate();
 
+  const handleGoToDraw = () => {
+    navigate("/participation")
+  }
   return (
     <Box sx={{ p: 4, minHeight: '100vh', backgroundColor: '#fff', position: 'relative', overflow: 'hidden' }}>
       <Typography
@@ -165,6 +170,7 @@ const LotsPage: FC = () => {
             transition: 'transform 0.2s',
             '&:active': { transform: 'scale(0.95)' },
           }}
+          onClick={handleGoToDraw}
         >
           Participer maintenant
         </Button>
