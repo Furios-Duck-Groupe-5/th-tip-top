@@ -78,7 +78,7 @@ pipeline {
             }
         }
 
-        // Étape 7 : Déploiement en pré-production
+        // Étape 7 : Déploiement en pré-productionn
         stage('Deploy to Pre-production') {
             steps {
                 script {
@@ -97,8 +97,7 @@ pipeline {
         always {
             echo "Pipeline terminé, nettoyage..."
             // Nettoyage d'images Docker obsolètes
-            sh "docker rmi ${DOCKER_IMAGE}:${env.BUILD_NUMBER} || true"
-        }
+            sh "docker rmi ${DOCKER_IMAGE}:${env.BUILD_NUMBER} || true" }
         failure {
             // Envoie une notification en cas d'échec
             echo "Pipeline échoué."
