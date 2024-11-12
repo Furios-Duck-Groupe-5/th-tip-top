@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'Node 16' // Remplace 'Node 16' par le nom exact de ta configuration Node.js dans Jenkins
+        nodejs 'Node 16'  // Remplace 'Node 16' par le nom exact de ta configuration Node.js dans Jenkins
     }
 
     environment {
@@ -13,14 +13,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Récupère le code source depuis le dépôt Git
+                checkout scm  // Récupère le code source depuis le dépôt Git
             }
         }
 
         stage('Install Yarn') {
             steps {
                 script {
-                    sh 'npm install -g yarn' // Installe Yarn si non disponible
+                    sh 'npm install -g yarn'  // Installe Yarn si non disponible
                 }
             }
         }
@@ -28,8 +28,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'npm cache clean --force'
-                    sh 'npm install --legacy-peer-deps --verbose' // Installe les dépendances du projet
+                    sh 'npm cache clean --force'  // Nettoie le cache npm
+                    sh 'npm install --legacy-peer-deps --verbose'  // Installe les dépendances du projet
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    sh 'npm run test' // Exécute les tests unitaires ou d'intégration
+                    sh 'npm run test'  // Exécute les tests unitaires ou d'intégration
                 }
             }
         }
@@ -45,7 +45,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ." // Crée l'image Docker
+                    // Crée l'image Docker avec un tag basé sur le numéro de build Jenkins
+                    sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
                 }
             }
         }
@@ -53,10 +54,12 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
+                    // Authentifie Docker avec les credentials de Docker Hub
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
                     }
-                    sh "docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}" // Pousse l'image Docker vers Docker Hub
+                    // Pousse l'image Docker vers Docker Hub
+                    sh "docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -64,10 +67,11 @@ pipeline {
         stage('Deploy to Development') {
             steps {
                 script {
+                    // Déploie l'image Docker dans un conteneur de développement
                     sh """
                     docker run -d --name contest-dev --network furious-ducks-network \
                     -e DATABASE_URL=${DATABASE_URL} -p 3000:3000 ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
-                    """ // Déploiement en environnement de développement
+                    """
                 }
             }
         }
@@ -75,10 +79,11 @@ pipeline {
         stage('Deploy to Pre-production') {
             steps {
                 script {
+                    // Déploie l'image Docker dans un conteneur de pré-production
                     sh """
                     docker run -d --name contest-preprod --network furious-ducks-network \
                     -e DATABASE_URL=${DATABASE_URL} -p 3001:3000 ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
-                    """ // Déploiement en environnement de pré-production
+                    """
                 }
             }
         }
@@ -87,14 +92,19 @@ pipeline {
     post {
         always {
             echo "Nettoyage du pipeline..."
-            sh "docker rmi ${DOCKER_IMAGE}:${env.BUILD_NUMBER} || true" // Nettoie l'image Docker pour libérer de l’espace
-            cleanWs() // Nettoie l’espace de travail Jenkins
+            // Supprime l'image Docker locale après le déploiement pour libérer de l’espace
+            sh "docker rmi ${DOCKER_IMAGE}:${env.BUILD_NUMBER} || true"
+            cleanWs()  // Nettoie l’espace de travail Jenkins
         }
         failure {
-            echo "Échec du pipeline, veuillez vérifier les logs pour plus d’informations." // Message d'échec
+            echo "Échec du pipeline, veuillez vérifier les logs pour plus d’informations."
+        }
+        success {
+            echo "Pipeline terminé avec succès."
         }
     }
 }
+
 
 
 
