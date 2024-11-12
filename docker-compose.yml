@@ -1,6 +1,14 @@
 version: '3.8'
 
 services:
+
+  node-install:
+    image: node:18
+    container_name: node-install
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: bash -c "npm install --legacy-peer-deps --verbose --timeout=60000"
   jenkins:
     build: .
     container_name: jenkins-master
