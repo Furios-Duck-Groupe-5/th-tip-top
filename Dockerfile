@@ -1,13 +1,10 @@
 # Utiliser l'image Jenkins comme base
 FROM jenkins/jenkins:lts
 
-
-
 # Passer à l'utilisateur root pour installer des paquets
 USER root
 
-
-# Créer le groupe Docker s'il n'existe pas
+# Créer le groupe Docker s'il n'existe pas et donner les permissions
 RUN groupadd docker && usermod -aG docker jenkins && newgrp docker
 
 # Mettre à jour les paquets et installer des prérequis
@@ -17,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     apt-transport-https \
     unzip \
-    sudo
+    sudo \
+    bzip2  # Ajouté pour l'installation de Restic
 
 # Installer Node.js et npm
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
@@ -32,7 +30,7 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor
     apt-get update && \
     apt-get install -y docker-ce-cli
 
-# Installer Selenium (en supposant que vous utilisez Selenium Server pour le testing)
+# Installer Selenium
 RUN mkdir -p /opt/selenium && \
     curl -o /opt/selenium/selenium-server.jar https://selenium-release.storage.googleapis.com/4.0/selenium-server-4.0.0.jar
 
@@ -42,28 +40,13 @@ RUN curl -fsSL https://packages.grafana.com/gpg.key | sudo apt-key add - && \
     apt-get update && \
     apt-get install -y grafana
 
-
-# Installer les prérequis et les outils nécessaires
-RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
-    software-properties-common \
-    apt-transport-https \
-    bzip2 # Ajout de bzip2 pour inclure bunzip2
-
-
 # Installer Restic
 RUN curl -L https://github.com/restic/restic/releases/download/v0.14.0/restic_0.14.0_linux_amd64.bz2 | bunzip2 -c > /usr/local/bin/restic && \
     chmod +x /usr/local/bin/restic
-
-# Configurer les permissions pour Docker
-RUN usermod -aG docker jenkins && newgrp docker
 
 # Nettoyer les fichiers inutiles pour réduire la taille de l'image
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Revenir à l'utilisateur Jenkins
 USER jenkins
-
-
 

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  jenkins:
+    build: .
+    container_name: jenkins-master
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock # Partage du socket Docker
+      - /opt/selenium:/opt/selenium # Partage du dossier Selenium pour les tests
+    environment:
+      - JAVA_OPTS=-Djava.awt.headless=true # Option pour éviter les erreurs graphiques
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tiptop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium
+    ports:
+      - "4444:4444"
+
+volumes:
+  jenkins_home:
+  grafana_data:
+  postgres_data:
+
+
