@@ -89,5 +89,6 @@
   "main": "server.ts",
   "repository": "git@github.com:Furios-Duck-Groupe-5/th-tip-top.git",
   "author": "MedFcBarca <med_abbad@outlook.fr>",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "commonjs"
 }
