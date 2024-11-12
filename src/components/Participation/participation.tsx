@@ -5,12 +5,12 @@ import Lottie from "lottie-react";
 import sleeveAnimation from './bg.json';
 import teaAnimation from './the.json';
 import fireWork from './fire-work.json'
-import BiryaniImg1 from "/Users/user/Desktop/virtualr-main/src/components/Participation/infusseur.png";
-import BiryaniImg2 from "/Users/user/Desktop/virtualr-main/src/components/Participation/39.png";
-import BiryaniImg3 from "/Users/user/Desktop/virtualr-main/src/components/Participation/69.png";
-import BiryaniImg4 from "/Users/user/Desktop/virtualr-main/src/components/Participation/detox.png";
-import BiryaniImg5 from "/Users/user/Desktop/virtualr-main/src/components/Participation/signature.png";
-import "/Users/user/Desktop/virtualr-main/src/components/Participation/spin.css";
+import BiryaniImg1 from "../../components/Participation/infusseur.png";
+import BiryaniImg2 from "../../components/Participation/39.png";
+import BiryaniImg3 from "../../components/Participation/69.png";
+import BiryaniImg4 from "../../components/Participation/detox.png";
+import BiryaniImg5 from "../../components/Participation/signature.png";
+import "../../components/Participation/spin.css";
 import { Box, Button, Typography, Container, TextField, Snackbar, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { CheckCircle, ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
