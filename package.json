@@ -7,7 +7,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx",
     "preview": "vite preview",
-    "start": "node dist/server.js",
+    "start": "node dist/server.cjs",
     "dev:server": "ts-node --esm src/back-end/server.ts",
     "test": "node test.js"
   },
