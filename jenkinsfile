@@ -48,7 +48,7 @@ pipeline {
             steps {
                 script {
                     // Exécuter les tests unitaires ou d’intégration
-                    sh 'yarn test'
+                    sh 'npm run test'
                 }
             }
         }

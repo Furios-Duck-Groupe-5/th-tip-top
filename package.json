@@ -8,7 +8,8 @@
     "lint": "eslint . --ext js,jsx",
     "preview": "vite preview",
     "start": "node dist/server.js",
-    "dev:server": "ts-node --esm src/back-end/server.ts"
+    "dev:server": "ts-node --esm src/back-end/server.ts",
+    "test": "node test.js"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -50,13 +51,14 @@
     "react-wheel-of-prizes": "^1.1.0",
     "recharts": "^2.12.7",
     "reflect-metadata": "^0.2.2",
+    "rimraf": "^4.0.0",
+    "selenium-webdriver": "^4.26.0",
     "slick-carousel": "^1.8.1",
     "tsparticles": "^3.5.0",
     "tsparticles-engine": "^2.12.0",
     "typeorm": "^0.3.20",
-    "xlsx": "^0.18.5",
     "uuid": "^7.0.0",
-    "rimraf": "^4.0.0"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/aos": "^3.0.7",
