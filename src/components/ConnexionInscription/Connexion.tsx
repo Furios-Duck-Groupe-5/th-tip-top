@@ -23,7 +23,7 @@ const LoginPage: FC = () => {
       setErrorMessage("");
   
       try {
-          const response = await axios.post('http://localhost:4001/login', { email, mot_de_passe });
+          const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, { email, mot_de_passe });
           
           if (response.status === 200) {
               console.log("Connexion réussie:", response.data);

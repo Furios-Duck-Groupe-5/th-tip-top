@@ -47,7 +47,7 @@ const UserListPage: React.FC = () => {
   // Fonction pour récupérer les utilisateurs depuis l'API
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:4001/users'); 
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`); 
       if (!response.ok) {
         throw new Error('Erreur lors de la récupération des utilisateurs.');
       }
@@ -95,7 +95,7 @@ const UserListPage: React.FC = () => {
 
   const handleDeleteUser = async (id_user: number) => {
     try {
-        const response = await fetch(`http://localhost:4001/users/${id_user}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id_user}`, {
             method: 'DELETE',
         });
         if (!response.ok) {
@@ -135,7 +135,7 @@ const UserListPage: React.FC = () => {
   const handleSubmit = async () => {
     if (currentUser) {
       try {
-        const response = await fetch(`http://localhost:4001/users/${currentUser.id_user}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/${currentUser.id_user}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

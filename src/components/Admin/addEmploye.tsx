@@ -39,7 +39,7 @@ const AddEmployeePage: React.FC = () => {
 
     try {
       // Send a POST request to the backend API to add the employee
-      const response = await fetch('http://localhost:4001/add-employee', {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/add-employee`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

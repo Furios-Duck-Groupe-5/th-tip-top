@@ -33,7 +33,7 @@ const AdminPage: React.FC = () => {
 
   const handleExportData = async () => {
     try {
-      const response = await axios.get('http://localhost:4001/export-users', {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/export-users`, {
         responseType: 'blob', // Pour traiter le fichier en tant que blob (données binaires)
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));

@@ -90,7 +90,7 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:4001/participer',
+        `${process.env.REACT_APP_BACKEND_URL}/participer`,
         { code_ticket: code },
         {
           headers: {

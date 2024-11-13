@@ -37,7 +37,7 @@ const DetailedStatisticsPage: React.FC = () => {
 
   useEffect(() => {
     // Récupérer les statistiques générales
-    fetch('http://localhost:4001/statistics')
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/statistics`)
       .then(response => response.json())
       .then(data => {
         console.log("Données des statistiques générales:", data); // Log pour vérifier les données
@@ -54,7 +54,7 @@ const DetailedStatisticsPage: React.FC = () => {
       .catch(error => console.error('Erreur lors de la récupération des statistiques :', error));
 
     // Récupérer les statistiques des tickets
-    fetch('http://localhost:4001/ticket-statistics')
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/ticket-statistics`)
       .then(response => response.json())
       .then(data => {
         console.log("Données des statistiques des tickets:", data); // Log pour vérifier les données des tickets

@@ -34,7 +34,7 @@ const EmployeePrizePage: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:4001/get-user-tickets', {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/get-user-tickets`, {
                 nom: name,
                 email: email,
             });
@@ -78,7 +78,7 @@ const EmployeePrizePage: React.FC = () => {
             const requestData = { newStatus: true };
 
             const response = await axios.put(
-                `http://localhost:4001/update-ticket-status/${id_ticket}`,
+                `${process.env.REACT_APP_BACKEND_URL}/update-ticket-status/${id_ticket}`,
                 requestData,
                 {
                     headers: {

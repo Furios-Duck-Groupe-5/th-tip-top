@@ -25,7 +25,7 @@ const ProfilePage: FC = () => {
         return;
       }
 
-      const response = await axios.get("http://localhost:4001/user-profile", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user-profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -80,7 +80,7 @@ const ProfilePage: FC = () => {
         return;
       }
 
-      await axios.put("http://localhost:4001/user-profile", updatedUserData, {
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/user-profile`, updatedUserData, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
