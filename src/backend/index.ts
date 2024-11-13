@@ -22,7 +22,7 @@ app.use(cors());
 // Configurez la connexion à la base de données
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST || 'db',
     database: process.env.DB_NAME || 'thetiptop_db',
     password: process.env.DB_PASSWORD || 'user',
     port: Number(process.env.DB_PORT) || 5432,
