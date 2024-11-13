@@ -25,7 +25,7 @@ const GrandTiragePage: React.FC = () => {
   const handleGrandTirage = async () => {
     try {
       // Appel API pour obtenir le gagnant
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/grand-tirage`, {});
+      const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/grand-tirage", {});
 
       console.log('Réponse de l\'API:', response.data); // Log de la réponse API
 
@@ -76,7 +76,7 @@ L'équipe du Grand Tirage
 
       // Appel API pour envoyer la notification (email, message, etc.)
       // TODO l'api de l'envoi de notification ne fonctionne pas :)
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/send-notification`, {
+      await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/send-notification", {
         email: winner.email, // Utilisation de l'email du gagnant
         subject: subject,
         message: message

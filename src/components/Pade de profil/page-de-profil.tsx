@@ -25,7 +25,7 @@ const ProfilePage: FC = () => {
         return;
       }
 
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user-profile`, {
+      const response = await axios.get("https://backend.dsp5-archi-o23-15m-g5.fr/user-profile", {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -80,7 +80,7 @@ const ProfilePage: FC = () => {
         return;
       }
 
-      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/user-profile`, updatedUserData, {
+      await axios.put("https://backend.dsp5-archi-o23-15m-g5.fr/user-profile", updatedUserData, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
