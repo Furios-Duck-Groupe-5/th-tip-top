@@ -11,7 +11,7 @@ puis lancer la commande  : node ../dist/index.js
 Puis ouvrir un autre terminal:
 aller à la racine du projet puis executer un :
 yarn dev
-
+dev 
 
 
 
