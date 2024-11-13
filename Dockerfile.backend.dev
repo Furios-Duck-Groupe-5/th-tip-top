@@ -1,0 +1,26 @@
+# Use official Node.js 20 image as base
+FROM node:20
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and yarn.lock for dependency installation
+COPY package.json yarn.lock ./
+
+# Install dependencies (including dev dependencies for development)
+RUN yarn install
+
+# Install development dependencies (e.g., nodemon, ts-node)
+RUN yarn add --dev nodemon ts-node
+
+# Copy the rest of the application code into the container
+COPY . .
+
+# Install TypeScript globally (for easier compilation and debugging)
+RUN yarn global add typescript
+
+# Expose port the app will run on
+EXPOSE 4001
+
+# Use nodemon to restart the app on changes (for dev)
+CMD ["npx", "nodemon", "--exec", "ts-node", "src/backend/index.ts"]

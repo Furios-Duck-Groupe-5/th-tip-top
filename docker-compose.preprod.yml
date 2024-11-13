@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.preprod
+    container_name: app-preprod-container
+    ports:
+      - "4003:4001"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    depends_on:
+      - db
+    networks:
+      - preprod-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.preprod
+    container_name: app-preprod-frontend
+    ports:
+      - "5175:5173"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://backend:4001
+    depends_on:
+      - backend
+    networks:
+      - preprod-network
+
+  db:
+    image: postgres:17
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./thetiptop_db.sql:/docker-entrypoint-initdb.d/backup.sql
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - preprod-network
+
+networks:
+  preprod-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,29 @@
+# Use official Node.js 20 image as base
+FROM node:20
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and yarn.lock for dependency installation
+COPY package.json yarn.lock ./
+
+# Install production dependencies only
+RUN yarn install --production
+
+# Copy the rest of the application code into the container
+COPY . .
+
+# Navigate to src/backend and compile TypeScript
+WORKDIR /app/src/backend
+
+# Run TypeScript compilation
+RUN npx tsc
+
+# Rename the compiled index.js file to index.cjs
+RUN mv ../dist/index.js ../dist/index.cjs
+
+# Expose port 4001
+EXPOSE 4001
+
+# Start the application using the compiled index.cjs
+CMD ["node", "../dist/index.cjs"]
