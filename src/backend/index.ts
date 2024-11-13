@@ -7,6 +7,8 @@ import { body, validationResult } from 'express-validator';
 import * as XLSX from 'xlsx';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
+import nodemailer from 'nodemailer';
+
 // Charger les variables d'environnement
 dotenv.config();
 
@@ -23,7 +25,7 @@ app.use(cors());
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
     host: process.env.DB_HOST || 'localhost',
-    database: process.env.DB_NAME || 'thetiptop2',
+    database: process.env.DB_NAME || 'thetiptop_db',
     password: process.env.DB_PASSWORD || 'user',
     port: Number(process.env.DB_PORT) || 5432,
 });
@@ -697,6 +699,77 @@ app.post('/user-historique', authenticateJWT, async (req: Request, res: Response
         res.status(500).json({ error: 'Une erreur s\'est produite lors de la récupération des tickets.' });
     }
 });
+
+// Endpoint pour l'inscription à la newsletter
+app.post('/newsletter', async (req: Request, res: Response): Promise<void> => {
+    const { email } = req.body;
+
+    if (!email) {
+        res.status(400).json({ message: 'L\'email est requis.' });
+        return;
+    }
+
+    try {
+        // Vérifier si l'email existe déjà dans la table emaling
+        const emailExists = await pool.query('SELECT * FROM emaling WHERE email = $1', [email]);
+
+        if (emailExists.rows.length > 0) {
+            res.status(400).json({ message: 'Cet email est déjà inscrit à la newsletter.' });
+            return;
+        }
+
+        // Insérer le nouvel email dans la table emaling
+        await pool.query('INSERT INTO emaling (email) VALUES ($1)', [email]);
+
+        res.status(201).json({ message: 'Inscription à la newsletter réussie!' });
+    } catch (error) {
+        console.error('Erreur lors de l\'inscription à la newsletter :', error);
+        res.status(500).json({ message: 'Erreur lors de l\'inscription à la newsletter.' });
+    }
+});
+
+// Configurer le transporteur Nodemailer
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'thetiptop40@gmail.com',
+      pass: 'thetiptopgrp5',
+    },
+    tls: {
+      rejectUnauthorized: false, 
+    },
+  });
+  
+  
+  app.post('/send-email-notification', async (req: Request, res: Response) => {
+    const { subject, message } = req.body;
+  
+    try {
+      // Récupérer tous les emails des utilisateurs dans la base de données
+      const result = await pool.query('SELECT email FROM emaling');
+      const emails = result.rows;
+  
+      // Pour chaque email, envoyez une notification
+      for (const email of emails) {
+        const mailOptions = {
+          from: 'thetiptop40@gmail.com', // Expéditeur
+          to: email.email,               // Destinataire
+          subject: subject,              // Sujet de l'email
+          text: message,                 // Corps du message
+        };
+  
+        // Envoyer l'email
+        await transporter.sendMail(mailOptions);
+        console.log(`Email envoyé à ${email.email}`);
+      }
+  
+      // Réponse après l'envoi
+      res.status(200).json({ message: 'Les notifications ont été envoyées avec succès.' });
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi des emails:', error);
+      res.status(500).json({ message: 'Erreur lors de l\'envoi des emails.' });
+    }
+  });
 
 
 
