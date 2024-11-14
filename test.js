@@ -1,4 +1,4 @@
-import { Builder, By, until } from 'selenium-webdriver';
+import { Builder, By, until } from 'selenium-webdriver'; 
 
 async function runTest() {
     // Crée une seule instance de driver
