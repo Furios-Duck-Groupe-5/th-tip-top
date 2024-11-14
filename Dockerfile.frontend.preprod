@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5173
 
 # Start a static file server (e.g., `serve` to serve the production build)
-CMD ["yarn", "serve"]
+CMD ["yarn", "dev"]
