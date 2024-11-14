@@ -40,7 +40,7 @@ const LotsPage: FC = () => {
   const navigate = useNavigate();
 
   const handleGoToDraw = () => {
-    navigate("/participation")
+    navigate("/")
   }
   return (
     <Box sx={{ p: 4, minHeight: '100vh', backgroundColor: '#fff', position: 'relative', overflow: 'hidden' }}>
