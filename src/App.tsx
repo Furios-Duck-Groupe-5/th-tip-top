@@ -40,7 +40,9 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const hideAdmin = location.pathname === "/admin";
   const hideEmployee = location.pathname === "/page-employee"
   
-  const isParticipationPage = location.pathname === "/";
+  const isParticipationPage = location.pathname === "/participation";
+  const islogin = location.pathname === "/login";
+  const issignup = location.pathname === "/signup";
 
   return (
     <>
@@ -51,7 +53,7 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <meta name="description" content="Description de l'application" />
       </Helmet>
       {  !hideAdmin && !hideEmployee && <Navbar />}
-      <div className={isParticipationPage ? "" : "  pt-20 "}>
+      <div className={isParticipationPage ||islogin || issignup ? "pt-20" : ""}>
         {children}
       </div>
       {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Footer />}

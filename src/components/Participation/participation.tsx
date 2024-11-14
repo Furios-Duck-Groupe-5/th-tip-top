@@ -124,6 +124,19 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
       setOpenSnackbar(true);
     }
   };
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Changer l'image en fonction de l'index
+      setImageId((prevImageId) => {
+        const currentIndex = ImageList.findIndex((item) => item.img === prevImageId);
+        const nextIndex = (currentIndex + 1) % ImageList.length; // Passer à l'image suivante
+        return ImageList[nextIndex].img;
+      });
+    }, 3000); // Change l'image toutes les 3 secondes
+
+    // Nettoyer l'intervalle quand le composant est démonté
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
 <Box
@@ -135,7 +148,6 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
     color: "white",
     position: "relative",
     backgroundColor: "#e0dad3", 
-    zIndex:-2
   }}
 >
       {/* Animation Lottie */}
@@ -148,7 +160,6 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          zIndex: -1,
         }}
       />
       <Container sx={{ paddingBottom: 8, paddingTop: 8, height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -278,10 +289,10 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
                 data-aos-once="true"
                 src={imageId}
                 alt="biryani img"
-                className="spin"
+               // className="spin"
                 style={{
                   width: "100%",
-                  transform: "scale(1.25)",
+               //   transform: "scale(1.25)",
                 }}
               />
             </Box>

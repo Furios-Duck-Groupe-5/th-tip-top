@@ -14,8 +14,8 @@ import user6 from "../assets/profile-pictures/user6.jpg";
 import React from "react";
 
 export const navItems = [
-  { label: "Accueil", href: "/" },
-  { label: "Participer", href: "/participation" },
+  { label: "Jeu concour", href: "/" },
+  { label: "A propos", href: "/participation" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
  // { label: "Mon compte", href: "/mon-compte" },

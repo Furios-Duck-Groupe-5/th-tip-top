@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Grid, Typography, Link, Divider, Avatar, TextField, Button, IconButton } from "@mui/material";
-import { Facebook, Instagram, Twitter, LinkedIn, Pinterest } from "@mui/icons-material"; 
+import { Facebook, Instagram, Twitter, LinkedIn, Pinterest,X } from "@mui/icons-material"; 
 import logo from "../assets/thebgbg.png"; 
 
 const Footer = () => {
@@ -113,14 +113,14 @@ const Footer = () => {
               <Instagram />
             </IconButton>
             <IconButton href="https://twitter.com" target="_blank" sx={{ color: "#1DA1F2", mx: 1 }}>
-              <Twitter />
+              <X />
             </IconButton>
-            <IconButton href="https://linkedin.com" target="_blank" sx={{ color: "#0077B5", mx: 1 }}>
+            {/* <IconButton href="https://linkedin.com" target="_blank" sx={{ color: "#0077B5", mx: 1 }}>
               <LinkedIn />
             </IconButton>
             <IconButton href="https://pinterest.com" target="_blank" sx={{ color: "#E60023", mx: 1 }}>
               <Pinterest />
-            </IconButton>
+            </IconButton> */}
           </Box>
         </Grid>
       </Grid>
