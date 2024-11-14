@@ -126,7 +126,18 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", color: "white", position: "relative" }}>
+<Box
+  sx={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    color: "white",
+    position: "relative",
+    backgroundColor: "#e0dad3", 
+    zIndex:-2
+  }}
+>
       {/* Animation Lottie */}
       <Lottie
         animationData={sleeveAnimation}
