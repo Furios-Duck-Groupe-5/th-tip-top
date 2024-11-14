@@ -35,7 +35,7 @@ const Testimonials = () => {
     <>
       {/* Balises Meta pour le SEO */}
       <Helmet>
-        <title>Témoignages Clients - Mon Site</title>
+        <title>Thé tip top</title>
         <meta name="description" content="Découvrez ce que nos clients pensent de nos produits et de leur expérience avec nous. Lisez leurs témoignages inspirants." />
         <meta name="keywords" content="témoignages clients, avis clients, expérience, produits, satisfaction" />
       </Helmet>
