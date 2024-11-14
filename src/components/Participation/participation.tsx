@@ -139,17 +139,17 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
   }, []);
 
   return (
-<Box
-  sx={{
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    color: "white",
-    position: "relative",
-    backgroundColor: "#e0dad3", 
-  }}
->
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        color: "white",
+        position: "relative",
+        backgroundColor: "#e0dad3",
+      }}
+    >
       {/* Animation Lottie */}
       <Lottie
         animationData={sleeveAnimation}
@@ -187,9 +187,10 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
               Bienvenue au jeu concours The Tip Top
             </Typography>
 
-            <Typography variant="body2" sx={{ marginTop: 2 }}>
+            <Typography variant="body2" sx={{ marginTop: 2, color: '#000000' }}>
               Découvrez quel lot vous avez gagné en entrant votre code de concours ! Ne manquez pas cette chance de profiter de nos offres exclusives et de nos thés raffinés.
             </Typography>
+
 
             {/* Code input section */}
             <Box sx={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
@@ -268,7 +269,7 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
                 },
               }}
               onClick={handleGoToLots}
-              >
+            >
               Détails des lots
             </Button>
 
@@ -289,10 +290,10 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
                 data-aos-once="true"
                 src={imageId}
                 alt="biryani img"
-               // className="spin"
+                // className="spin"
                 style={{
                   width: "100%",
-               //   transform: "scale(1.25)",
+                  //   transform: "scale(1.25)",
                 }}
               />
             </Box>

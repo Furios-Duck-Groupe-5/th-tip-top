@@ -1,9 +1,17 @@
 import React from "react";
 import { Box, Grid, Typography, Link, Divider, Avatar, TextField, Button, IconButton } from "@mui/material";
-import { Facebook, Instagram, Twitter, LinkedIn, Pinterest,X } from "@mui/icons-material"; 
+import { Facebook, Instagram, X } from "@mui/icons-material"; 
 import logo from "../assets/thebgbg.png"; 
+import { To, useNavigate } from "react-router-dom";  
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  // Gestionnaires de clic pour chaque lien
+  const handleNavigation = (path: To) => {
+    navigate(path);
+  };
+
   return (
     <Box
       component="footer"
@@ -32,14 +40,14 @@ const Footer = () => {
 
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant="h6" gutterBottom textAlign="center">
-            Ressources
+            Liens utiles
           </Typography>
           <Divider sx={{ mb: 2, bgcolor: "#bbb" }} />
           <ul style={{ listStyleType: "none", padding: 0, textAlign: "center" }}>
-            {["Nos Thés", "Histoire du Thé", "Bienfaits du Thé", "Recettes de Thé", "Guide de Préparation"].map((text) => (
+            {["Mentions légales", "CGU", "Politique de confidentialité", "RSE", "FAQ"].map((text) => (
               <li key={text}>
                 <Link
-                  href={`/${text.replace(/\s+/g, '-').toLowerCase()}`}
+                  onClick={() => handleNavigation(`/${text.replace(/\s+/g, '-').toLowerCase()}`)}  // Gestion du clic pour chaque lien
                   color="inherit"
                   underline="hover"
                   sx={{
@@ -115,12 +123,6 @@ const Footer = () => {
             <IconButton href="https://twitter.com" target="_blank" sx={{ color: "#1DA1F2", mx: 1 }}>
               <X />
             </IconButton>
-            {/* <IconButton href="https://linkedin.com" target="_blank" sx={{ color: "#0077B5", mx: 1 }}>
-              <LinkedIn />
-            </IconButton>
-            <IconButton href="https://pinterest.com" target="_blank" sx={{ color: "#E60023", mx: 1 }}>
-              <Pinterest />
-            </IconButton> */}
           </Box>
         </Grid>
       </Grid>

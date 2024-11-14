@@ -21,6 +21,7 @@ import HistoriqueGain from "./config/Historique-gain";
 import GrandTiragePage from "./components/Admin/grand-tirage";
 import EmployeePrizePage from "./components/Employe/employee";
 import CookieConsentBanner from "./components/cookies";
+import LegalMentions from "./components/CGU/mentions";
 // Lazy-loaded components
 const LoginPage = lazy(() => import("./components/ConnexionInscription/Connexion"));
 const SignUpPage = lazy(() => import("./components/ConnexionInscription/inscription"));
@@ -105,6 +106,8 @@ const App: React.FC = () => {
               <Route path="/employee" element={<EmployeePrizePage />} /> 
               <Route path="/gain-historique" element={<UserGainHistoryPage />} /> 
               <Route path="/grand-tirage" element={<GrandTiragePage />} /> 
+              <Route path="/mentions-légales" element={<LegalMentions />} /> 
+
             </Routes>
           </Suspense>
         </Layout>
