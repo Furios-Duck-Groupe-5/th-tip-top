@@ -13,9 +13,6 @@ RUN yarn install --production
 # Copy the rest of the application code into the container
 COPY . .
 
-# Build the frontend for production
-RUN yarn build
-
 # Expose port for serving the production build
 EXPOSE 5173
 
