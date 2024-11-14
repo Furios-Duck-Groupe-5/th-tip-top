@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import AOS from "aos";
 import "aos/dist/aos.css";
 import { Box, Container, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -7,15 +6,7 @@ import { useNavigate } from "react-router-dom";
 const ExplanationPage: React.FC = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Initialiser AOS pour les animations de défilement
-    AOS.init({
-      offset: 100,
-      duration: 700,
-      easing: "ease-in",
-      delay: 100,
-    });
-  }, []);
+  
 
   const handleGoToParticipation = () => {
     navigate("/");
