@@ -4,7 +4,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.frontend.preprod
+      dockerfile: Dockerfile.backend.preprod
     container_name: app-preprod-container
     ports:
       - "4003:4001"
@@ -23,7 +23,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile.backend.preprod
+      dockerfile: Dockerfile.frontend.preprod
     container_name: app-preprod-frontend
     ports:
       - "5175:5173"
