@@ -15,6 +15,7 @@ import React from "react";
 
 export const navItems = [
   { label: "Jeu concour", href: "/" },
+  { label :"Explication du jeu",href:"/explication"},
   { label: "A propos", href: "/participation" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },

@@ -22,6 +22,9 @@ import GrandTiragePage from "./components/Admin/grand-tirage";
 import EmployeePrizePage from "./components/Employe/employee";
 import CookieConsentBanner from "./components/cookies";
 import LegalMentions from "./components/CGU/mentions";
+import TermsOfUse from "./components/CGU/cgu";
+import PrivacyPolicy from "./components/CGU/politique";
+import ExplanationPage from "./components/Participation/explication";
 // Lazy-loaded components
 const LoginPage = lazy(() => import("./components/ConnexionInscription/Connexion"));
 const SignUpPage = lazy(() => import("./components/ConnexionInscription/inscription"));
@@ -107,6 +110,11 @@ const App: React.FC = () => {
               <Route path="/gain-historique" element={<UserGainHistoryPage />} /> 
               <Route path="/grand-tirage" element={<GrandTiragePage />} /> 
               <Route path="/mentions-légales" element={<LegalMentions />} /> 
+              <Route path="/cgu" element={<TermsOfUse />} /> 
+              <Route path="/politique-de-confidentialité" element={<PrivacyPolicy />} /> 
+              <Route path="/explication" element={<ExplanationPage />} /> 
+
+
 
             </Routes>
           </Suspense>

@@ -88,19 +88,6 @@ const LotsPage: FC = () => {
                     {item.description}
                   </Typography>
                 </CardContent>
-                <CardActions>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    sx={{
-                      color: '#DDA15E',
-                      borderColor: '#DDA15E',
-                      '&:hover': { backgroundColor: '#DDA15E', color: '#fff' },
-                    }}
-                  >
-                    En savoir plus
-                  </Button>
-                </CardActions>
               </Card>
             </motion.div>
           </Grid>
@@ -141,7 +128,7 @@ const LotsPage: FC = () => {
                     color: '#fff',
                   }}
                 >
-                  En savoir plus sur le tirage
+                  Explication de jeu concours
                 </Button>
               </CardActions>
             </Card>

@@ -44,7 +44,7 @@ const Footer = () => {
           </Typography>
           <Divider sx={{ mb: 2, bgcolor: "#bbb" }} />
           <ul style={{ listStyleType: "none", padding: 0, textAlign: "center" }}>
-            {["Mentions légales", "CGU", "Politique de confidentialité", "RSE", "FAQ"].map((text) => (
+            {["Mentions légales", "CGU", "Politique de confidentialité"].map((text) => (
               <li key={text}>
                 <Link
                   onClick={() => handleNavigation(`/${text.replace(/\s+/g, '-').toLowerCase()}`)}  // Gestion du clic pour chaque lien
