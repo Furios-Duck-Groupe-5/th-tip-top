@@ -225,7 +225,7 @@ const Navbar: FC = () => {
           ) : (
             <>
               <MenuItem onClick={toggleMobileMenu} component={Link} to="/login" sx={{ color: 'white' }}>
-                Se connecter
+                Se connecter.
               </MenuItem>
               <MenuItem onClick={toggleMobileMenu} component={Link} to="/signup" sx={{ color: 'white' }}>
                 Créez un compte
