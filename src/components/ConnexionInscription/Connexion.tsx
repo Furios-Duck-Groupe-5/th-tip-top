@@ -1,6 +1,5 @@
 import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert } from "@mui/material";
-import logo from "../../assets/The_TIPTOP2-removebg-preview2.png";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom"; 
@@ -60,11 +59,7 @@ const LoginPage: FC = () => {
                 maxWidth="xs"
                 sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -25 }}
             >
-                <img 
-                    src={logo} 
-                    alt="Logo" 
-                    style={{ height: '120px', marginBottom: '24px' }} 
-                />
+                
 
                 <Box 
                     sx={{ 

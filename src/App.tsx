@@ -36,9 +36,11 @@ const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 // Layout component to control Navbar and Footer display
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const location = useLocation();
-  const hideNavbarAndFooter = location.pathname === "/participation";
+  const hideNavbarAndFooter = location.pathname === "/";
   const hideAdmin = location.pathname === "/admin";
   const hideEmployee = location.pathname === "/page-employee"
+  
+  const isParticipationPage = location.pathname === "/";
 
   return (
     <>
@@ -48,8 +50,10 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <title>Mon Application Thé tip top concours</title>
         <meta name="description" content="Description de l'application" />
       </Helmet>
-      {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Navbar />}
-      <div>{children}</div>
+      {  !hideAdmin && !hideEmployee && <Navbar />}
+      <div className={isParticipationPage ? "" : "  pt-20 "}>
+        {children}
+      </div>
       {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Footer />}
     </>
   );
@@ -64,11 +68,21 @@ const App: React.FC = () => {
         <Layout>
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
-              <Route path="/" element={
+            <Route path="/" element={
                 <>
                   <Helmet>
-                    <title>Page d'Accueil - Mon Application</title>
+                    <title>Accueil - Mon Application</title>
                     <meta name="description" content="Page d'accueil de notre application React." />
+                  </Helmet>
+                  <ParticipationPage />
+                </>
+              } />
+                  {/* About Us Page (Qui sommes nous) */}
+                  <Route path="/participation" element={
+                <>
+                  <Helmet>
+                    <title>Qui sommes-nous - Mon Application</title>
+                    <meta name="description" content="Découvrez notre entreprise et notre équipe." />
                   </Helmet>
                   <HeroSection />
                   <Workflow />
@@ -85,7 +99,6 @@ const App: React.FC = () => {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/lots" element={<LotsPage />} />
-              <Route path="/participation" element={<ParticipationPage />} />
               <Route path="/add-employee" element={<AddEmployeePage />} /> 
               <Route path="/employee" element={<EmployeePrizePage />} /> 
               <Route path="/gain-historique" element={<UserGainHistoryPage />} /> 

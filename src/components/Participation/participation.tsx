@@ -462,13 +462,6 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
         fontSize: "14px",
         color: "white",
       }}>
-        <Typography variant="body2" sx={{ display: "inline", marginLeft: 16 }}>
-          <a href="/" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>ACCEUIL</a>
-          <a href="/login" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>CONNEXION</a>
-          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>CGU</a>
-          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>CGV</a>
-          <a href="#" style={{ color: "#DDA15E", textDecoration: "none", marginRight: 16, fontWeight: "bold" }}>@TheTipTop</a>
-        </Typography>
       </Box>
     </Box>
   );

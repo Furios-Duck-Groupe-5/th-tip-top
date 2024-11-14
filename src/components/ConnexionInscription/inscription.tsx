@@ -1,11 +1,12 @@
 import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import logo from "../../assets/thebgbg.png";
 import React from "react";
-import axios from "axios"; 
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 const SignUpPage: FC = () => {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
@@ -14,10 +15,12 @@ const SignUpPage: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>(""); // Pour le message de succès
-
+  const handleLoginRedirect = () => {
+    navigate("/login"); // Redirect to the login page
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Vérifier si tous les champs sont remplis
     if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password) {
       setErrorMessage("Veuillez remplir tous les champs.");
@@ -51,12 +54,12 @@ const SignUpPage: FC = () => {
   };
 
   return (
-    <Box 
-      sx={{ 
-        bgcolor: "#f5f5f5", 
-        height: "100vh", 
-        display: "flex", 
-        alignItems: "center", 
+    <Box
+      sx={{
+        bgcolor: "#f5f5f5",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
         justifyContent: "center",
         mt: -5
       }}
@@ -64,22 +67,18 @@ const SignUpPage: FC = () => {
       <Container
         component="main"
         maxWidth="xs"
-        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt :-5 }}
+        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -5 }}
       >
-        <img 
-          src={logo} 
-          alt="Logo" 
-          style={{ height: '120px', marginBottom: '24px' }} 
-        />
 
-        <Box 
-          sx={{ 
-            bgcolor: 'white', 
-            padding: 4, 
-            borderRadius: 2, 
-            boxShadow: 3, 
+
+        <Box
+          sx={{
+            bgcolor: 'white',
+            padding: 4,
+            borderRadius: 2,
+            boxShadow: 3,
             width: '100%',
-            mt : -5
+            mt: -5
           }}
         >
           <Typography component="h1" variant="h5" align="center" gutterBottom>
@@ -132,10 +131,12 @@ const SignUpPage: FC = () => {
                 >
                   <MenuItem value="male">Homme</MenuItem>
                   <MenuItem value="female">Femme</MenuItem>
+                  <MenuItem value="other">Autre</MenuItem>
+
                 </Select>
               </FormControl>
             </Box>
-           
+
             <TextField
               variant="outlined"
               required
@@ -184,7 +185,10 @@ const SignUpPage: FC = () => {
             Google
           </Button>
           <Typography variant="body2" align="center" sx={{ marginTop: 2 }}>
-            Vous avez déjà un compte? <a href="#" style={{ color: 'orange' }}>Se connecter</a>
+            Vous avez déjà un compte?{" "}
+            <span style={{ color: 'orange', cursor: 'pointer' }} onClick={handleLoginRedirect}>
+              Se connecter
+            </span>
           </Typography>
         </Box>
       </Container>
