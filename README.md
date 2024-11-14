@@ -7,7 +7,7 @@ Pour lancer le backend il faut :
 aller au fichier backend -> cd/src/backend
 npx tsc
 puis lancer la commande  : node ../dist/index.js
-
+we need to change this
 Puis ouvrir un autre terminal:
 aller à la racine du projet puis executer un :
 yarn dev
