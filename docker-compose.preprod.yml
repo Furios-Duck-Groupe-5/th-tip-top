@@ -37,7 +37,7 @@ services:
 
   db:
     image: postgres:17
-    container_name: postgres-db
+    container_name: postgres-db3
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
