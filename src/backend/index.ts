@@ -74,7 +74,57 @@ app.post('/signup', [
     }
 });
 
+const jwtSecretKey = process.env.JWT_SECRET_KEY!;
+const jwtRefreshSecretKey = process.env.JWT_REFRESH_SECRET_KEY!
 
+const generateAccessToken = (user: any) => {
+    return jwt.sign(
+        {
+            id: user.id,
+            role: user.role,
+        },
+        jwtSecretKey,
+        {
+            expiresIn: '1d',
+        }
+    );
+};
+
+const generateRefreshToken = (user: any) => {
+    return jwt.sign(
+        {
+            id: user.id,
+            role: user.role,
+        },
+        jwtRefreshSecretKey
+    );
+};
+export let refreshTokens: string[] = [];
+export const refresh = async (req: Request, res: Response) => {
+    const refreshToken: string = req.body.refreshToken;
+    try {
+        if (!refreshToken) return res.status(401).json('You are not authenticated!');
+        if (!refreshTokens.includes(refreshToken)) return res.status(403).json('Refresh token is not valid!');
+
+        jwt.verify(refreshToken, jwtRefreshSecretKey, (err, user) => {
+            err && console.log(err);
+            refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+
+            const newToken = generateAccessToken(user);
+            const newRefreshToken = generateRefreshToken(user);
+
+            refreshTokens.push(newRefreshToken);
+
+            return res.status(200).json({
+                token: newToken,
+                refreshToken: newRefreshToken,
+            });
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 app.post('/login', async (req: Request, res: Response): Promise<void> => {
     const { email, mot_de_passe } = req.body;
@@ -108,9 +158,11 @@ app.post('/login', async (req: Request, res: Response): Promise<void> => {
             userId: user.id_user,
             roleId: user.role_id
         };
-        const secretKey = process.env.JWT_SECRET_KEY || '509543e9a1101c7759ab90848b8ad2da554bb28ff805d108215492066b6687be';
-        const token = jwt.sign(payload, secretKey, { expiresIn: '356d' });
-
+      //  const secretKey = process.env.JWT_SECRET_KEY || '509543e9a1101c7759ab90848b8ad2da554bb28ff805d108215492066b6687be';
+        //const token = jwt.sign(payload, secretKey, { expiresIn: '356d' });
+        const token = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+        refreshTokens.push(refreshToken);
         // Exclut le mot de passe des données retournées
         const { mot_de_passe: _, ...userWithoutPassword } = user;
 
