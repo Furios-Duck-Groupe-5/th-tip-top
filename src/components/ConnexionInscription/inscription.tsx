@@ -4,28 +4,38 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
 const SignUpPage: FC = () => {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
-  const [gender, setGender] = useState<boolean | null>(null); // Modifié pour être un booléen ou null
+  const [gender, setGender] = useState<boolean | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>(""); // Pour le message de succès
+  const [successMessage, setSuccessMessage] = useState<string>("");
+
   const handleLoginRedirect = () => {
-    navigate("/login"); // Redirect to the login page
+    navigate("/login");
   };
-  
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Vérification des valeurs
+    console.log("Values on submit:", {
+      firstName,
+      lastName,
+      dateOfBirth,
+      gender,
+      email,
+      password,
+    });
 
     // Vérifier si tous les champs sont remplis
     if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password) {
       setErrorMessage("Veuillez remplir tous les champs.");
+      console.error("Erreur: champs incomplets");
     } else {
       setErrorMessage("");
 
@@ -34,21 +44,25 @@ const SignUpPage: FC = () => {
         nom: lastName,
         prenom: firstName,
         date_de_naissance: dateOfBirth,
-        sexe: gender ? "H" : "F", // Ici, on suppose que 'male' est vrai et 'female' est faux
+        sexe: gender ? "H" : "F",
         email: email,
         mot_de_passe: password,
       };
 
+      console.log("User data prepared for sending:", userData);
+
       try {
         // Envoyer les données à l'API
         const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/signup", userData);
+        console.log("Response from API:", response.data);
         setSuccessMessage("Inscription réussie !");
-        console.log(response.data);
       } catch (error) {
+        // Vérifier si l'erreur vient d'Axios
         if (axios.isAxiosError(error) && error.response) {
-          // Gérer les erreurs renvoyées par le serveur
+          console.error("API error:", error.response.data);
           setErrorMessage(error.response.data.message || "Une erreur s'est produite.");
         } else {
+          console.error("Error with the server connection:", error);
           setErrorMessage("Erreur de connexion au serveur.");
         }
       }
@@ -63,7 +77,7 @@ const SignUpPage: FC = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        mt: -5
+        mt: -5,
       }}
     >
       <Container
@@ -71,8 +85,6 @@ const SignUpPage: FC = () => {
         maxWidth="xs"
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -5 }}
       >
-
-
         <Box
           sx={{
             bgcolor: 'white',
@@ -124,9 +136,10 @@ const SignUpPage: FC = () => {
               <FormControl fullWidth variant="outlined" required sx={{ marginLeft: 1 }}>
                 <InputLabel>Genre</InputLabel>
                 <Select
-                  value={gender === null ? "" : gender ? "male" : "female"} // Affiche 'male' si true et 'female' si false
+                  value={gender === null ? "" : gender ? "male" : "female"}
                   onChange={(e) => {
                     const selectedValue = e.target.value;
+                    console.log("Gender selected:", selectedValue);  // Log de la sélection du genre
                     setGender(selectedValue === "male");
                   }}
                   label="Genre"
@@ -134,7 +147,6 @@ const SignUpPage: FC = () => {
                   <MenuItem value="male">Homme</MenuItem>
                   <MenuItem value="female">Femme</MenuItem>
                   <MenuItem value="other">Autre</MenuItem>
-
                 </Select>
               </FormControl>
             </Box>
@@ -164,7 +176,6 @@ const SignUpPage: FC = () => {
               variant="contained"
               sx={{ bgcolor: '#DDA15E', '&:hover': { bgcolor: '#d19c5c' }, marginBottom: 2 }}
               onClick={handleLoginRedirect}
-
             >
               S'inscrire
             </Button>
