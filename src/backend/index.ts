@@ -108,10 +108,10 @@ app.post('/login', async (req: Request, res: Response): Promise<void> => {
             roleId: user.role_id
         };
 
-        const secretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=';
+        const secretKey = process.env.JWT_SECRET_KEY || '509543e9a1101c7759ab90848b8ad2da554bb28ff805d108215492066b6687be';
 
         // Créez le jeton JWT avec expiration de 24h
-        const token = jwt.sign(payload, secretKey, { expiresIn: '24h' });
+        const token = jwt.sign(payload, secretKey, { expiresIn: '355d' });
 
         // Exclure le mot de passe du résultat retourné
         const { mot_de_passe: _, ...userWithoutPassword } = user;
