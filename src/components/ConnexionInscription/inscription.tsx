@@ -18,6 +18,8 @@ const SignUpPage: FC = () => {
   const handleLoginRedirect = () => {
     navigate("/login"); // Redirect to the login page
   };
+  
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -161,6 +163,8 @@ const SignUpPage: FC = () => {
               fullWidth
               variant="contained"
               sx={{ bgcolor: '#DDA15E', '&:hover': { bgcolor: '#d19c5c' }, marginBottom: 2 }}
+              onClick={handleLoginRedirect}
+
             >
               S'inscrire
             </Button>
