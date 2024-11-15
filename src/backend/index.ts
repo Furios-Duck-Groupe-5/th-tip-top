@@ -109,7 +109,7 @@ app.post('/login', async (req: Request, res: Response): Promise<void> => {
             roleId: user.role_id
         };
         const secretKey = process.env.JWT_SECRET_KEY || '509543e9a1101c7759ab90848b8ad2da554bb28ff805d108215492066b6687be';
-        const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign(payload, secretKey, { expiresIn: '356h' });
 
         // Exclut le mot de passe des données retournées
         const { mot_de_passe: _, ...userWithoutPassword } = user;
