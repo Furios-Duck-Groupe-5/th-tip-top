@@ -6,6 +6,7 @@ import { navItems } from "../constants";
 import { Link } from "react-router-dom";
 import { useAuth } from './ConnexionInscription/AuthContext';
 import React from "react";
+import axios from "axios";
 //todo
 const Navbar: FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -17,13 +18,25 @@ const Navbar: FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      const refreshToken = localStorage.getItem("refreshToken");
+  
+      if (refreshToken) {
+        // Send a request to the /logout endpoint
+        await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/logout", { refreshToken });
+      }
+  
+      // Clear tokens from localStorage
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+  
+      // Redirect the user to the home page or login
       window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
-      // Handle error as necessary
+      // Handle any errors here
     }
   };
+  
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: 'rgba(0, 0, 0, 0)', backdropFilter: 'blur(10px)', zIndex: 50 }}>
