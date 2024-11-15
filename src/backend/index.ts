@@ -74,8 +74,8 @@ app.post('/signup', [
     }
 });
 
-const jwtSecretKey = process.env.JWT_SECRET_KEY!;
-const jwtRefreshSecretKey = process.env.JWT_REFRESH_SECRET_KEY!
+const jwtSecretKey = process.env.JWT_SECRET_KEY || '509543e9a1101c7759ab90848b8ad2da554bb28ff805d108215492066b6687be';
+const jwtRefreshSecretKey = process.env.JWT_REFRESH_SECRET_KEY || '1023851073c4dda20bec07aacefada101dfed5375afa515988bb31c35e7daafc03440edcfe0b0bab9d80570b5dfd180a3c8f8dc678691045f017271dbcb01052';
 
 const generateAccessToken = (user: any) => {
     return jwt.sign(
