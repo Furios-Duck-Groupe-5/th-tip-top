@@ -7,8 +7,6 @@ import { body, validationResult } from 'express-validator';
 import * as XLSX from 'xlsx';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
-import crypto from 'crypto';
-
 // Charger les variables d'environnement
 dotenv.config();
 
@@ -78,111 +76,55 @@ app.post('/signup', [
 
 
 
-
-// Utility to generate a secure random refresh token
-function generateRefreshToken(): string {
-    return crypto.randomBytes(64).toString('hex');
-}
-
 app.post('/login', async (req: Request, res: Response): Promise<void> => {
     const { email, mot_de_passe } = req.body;
 
+    // Vérifie que l'email et le mot de passe sont fournis
     if (!email || !mot_de_passe) {
         res.status(400).json({ message: 'Email et mot de passe sont requis.' });
-        return;
+        return; // On utilise "return" pour stopper l'exécution
     }
 
     try {
         const result = await pool.query('SELECT * FROM Utilisateur WHERE email = $1', [email]);
 
+        // Si aucun utilisateur n'est trouvé, retourne une erreur
         if (result.rows.length === 0) {
             res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
             return;
         }
 
         const user = result.rows[0];
-        const isPasswordValid = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
 
+        // Vérifie que le mot de passe est correct
+        const isPasswordValid = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
         if (!isPasswordValid) {
             res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
             return;
         }
 
-        const payload = { userId: user.id_user, roleId: user.role_id };
+        // Crée un jeton JWT avec les informations de l'utilisateur
+        const payload = {
+            userId: user.id_user,
+            roleId: user.role_id
+        };
         const secretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=';
-        const accessToken = jwt.sign(payload, secretKey, { expiresIn: '15m' }); // Short-lived token
+        const token = jwt.sign(payload, secretKey, { expiresIn: '1h' }); // Example: 1 hour
 
-        // Generate a refresh token
-        const refreshToken = generateRefreshToken();
-
-        // Store refresh token in database
-        await pool.query(
-            'INSERT INTO RefreshTokens (user_id, refresh_token) VALUES ($1, $2)',
-            [user.id_user, refreshToken]
-        );
-
+        // Exclut le mot de passe des données retournées
         const { mot_de_passe: _, ...userWithoutPassword } = user;
 
+        // Retourne les données de l'utilisateur et le jeton
         res.status(200).json({
             message: 'Connexion réussie!',
             user: userWithoutPassword,
-            accessToken,
-            refreshToken
+            token,
+            roleId: user.role_id
         });
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
         res.status(500).json({ message: 'Erreur lors de la connexion.' });
-    }
-});
-
-app.post('/refresh-token', async (req: Request, res: Response): Promise<void> => {
-    const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-        res.status(400).json({ message: 'Refresh token est requis.' });
-        return;
-    }
-
-    try {
-        // Verify if the refresh token exists in the database
-        const result = await pool.query('SELECT * FROM RefreshTokens WHERE refresh_token = $1', [refreshToken]);
-
-        if (result.rows.length === 0) {
-            res.status(401).json({ message: 'Token invalide ou expiré.' });
-            return;
-        }
-
-        const userId = result.rows[0].user_id;
-
-        // Generate a new access token
-        const payload = { userId };
-        const secretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=';
-        const newAccessToken = jwt.sign(payload, secretKey, { expiresIn: '15m' }); // Short-lived token
-
-        res.status(200).json({
-            accessToken: newAccessToken
-        });
-    } catch (error) {
-        console.error('Erreur lors de la génération du nouveau token :', error);
-        res.status(500).json({ message: 'Erreur lors de la génération du nouveau token.' });
-    }
-});
-
-
-app.post('/logout', async (req: Request, res: Response): Promise<void> => {
-    const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-        res.status(400).json({ message: 'Refresh token est requis.' });
-        return;
-    }
-
-    try {
-        await pool.query('DELETE FROM RefreshTokens WHERE refresh_token = $1', [refreshToken]);
-        res.status(200).json({ message: 'Déconnexion réussie.' });
-    } catch (error) {
-        console.error('Erreur lors de la déconnexion :', error);
-        res.status(500).json({ message: 'Erreur lors de la déconnexion.' });
+        return
     }
 });
 

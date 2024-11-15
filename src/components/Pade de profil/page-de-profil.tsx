@@ -1,8 +1,8 @@
 import { FC, useState, useEffect } from "react";
 import { TextField, Button, Typography, Container, Box, Alert, FormControl, InputLabel, Select, MenuItem, DialogActions, Dialog, DialogContent, DialogTitle } from "@mui/material";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import React from "react";
-import api from "../../backend/api";
+
 const ProfilePage: FC = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -26,8 +26,7 @@ const ProfilePage: FC = () => {
         return;
       }
 
-      // Use the custom `api` instance instead of axios directly
-      const response = await api.get("/user-profile", {
+      const response = await axios.get("https://backend.dsp5-archi-o23-15m-g5.fr/user-profile", {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -55,12 +54,13 @@ const ProfilePage: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!firstName || !lastName || !dateOfBirth || gender === null || !email) {
       setErrorMessage("Veuillez remplir les champs obligatoires.");
       return;
     }
-  
+
+    // Crée un objet avec uniquement les champs à mettre à jour
     const updatedUserData: any = {
       nom: lastName,
       prenom: firstName,
@@ -68,38 +68,38 @@ const ProfilePage: FC = () => {
       sexe: gender ? "H" : "F",
       email: email,
     };
-  
+
+    // Ajoute le mot de passe uniquement s'il est fourni
     if (password) {
       updatedUserData.mot_de_passe = password;
     }
-  
+
     try {
       const token = localStorage.getItem('authToken');
       if (!token) {
         setErrorMessage("Token manquant, veuillez vous reconnecter.");
         return;
       }
-  
-      await api.put("/user-profile", updatedUserData, {
+
+      await axios.put("https://backend.dsp5-archi-o23-15m-g5.fr/user-profile", updatedUserData, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
-  
+
       setSuccessMessage("Profil mis à jour avec succès !");
       setErrorMessage("");
-    } catch (error: unknown) {
-      if (error instanceof AxiosError && error.response) {
-        // Now we can safely access error.response.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
         setErrorMessage(error.response.data.message || "Une erreur s'est produite.");
       } else {
         setErrorMessage("Erreur de connexion au serveur.");
       }
     }
   };
-
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => setOpenDialog(false);
+
   return (
     <Box
       sx={{
