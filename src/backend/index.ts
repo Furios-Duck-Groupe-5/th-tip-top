@@ -115,7 +115,12 @@ app.post('/login', async (req: Request, res: Response): Promise<void> => {
 
         // Exclure le mot de passe du résultat retourné
         const { mot_de_passe: _, ...userWithoutPassword } = user;
-
+        res.status(200).json({
+            message: 'Connexion réussie!',
+            token: token, // Send the token back to the client
+            user: userWithoutPassword // Send the user info excluding the password
+        });
+        
         
 
     } catch (error) {
