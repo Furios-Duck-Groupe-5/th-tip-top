@@ -14,22 +14,18 @@ import BlogPage from "./components/Blog/blog";
 import LotsPage from "./components/Participation/Lots";
 import AddEmployeePage from "./components/Admin/addEmploye";
 import EmployeePage from "./components/Employe/employePage";
+import React, { PropsWithChildren, lazy, Suspense } from "react";
 import { AuthProvider, useAuth } from "./components/ConnexionInscription/AuthContext";
-import UserGainHistoryPage from "./components/Page-de-profil/historique";
+import UserGainHistoryPage from "./components/Pade de profil/historique";
 import HistoriqueGain from "./config/Historique-gain";
 import GrandTiragePage from "./components/Admin/grand-tirage";
 import EmployeePrizePage from "./components/Employe/employee";
 import CookieConsentBanner from "./components/cookies";
-import LegalMentions from "./components/CGU/mentions";
-import TermsOfUse from "./components/CGU/cgu";
-import PrivacyPolicy from "./components/CGU/politique";
-import ExplanationPage from "./components/Participation/explication";
-
-import LoginPage from "./components/ConnexionInscription/Connexion";
-import SignUpPage from "./components/ConnexionInscription/inscription";
-import ProfilePage from "./components/Page-de-profil/page-de-profil";
-import AdminPage from "./components/Admin/admin";
-import React, { PropsWithChildren } from "react";
+// Lazy-loaded components
+const LoginPage = lazy(() => import("./components/ConnexionInscription/Connexion"));
+const SignUpPage = lazy(() => import("./components/ConnexionInscription/inscription"));
+const ProfilePage = lazy(() => import("./components/Pade de profil/page-de-profil"));
+const AdminPage = lazy(() => import("./components/Admin/admin"));
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -40,13 +36,9 @@ const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 // Layout component to control Navbar and Footer display
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const location = useLocation();
-  const hideNavbarAndFooter = location.pathname === "/";
+  const hideNavbarAndFooter = location.pathname === "/participation";
   const hideAdmin = location.pathname === "/admin";
-  const hideEmployee = location.pathname === "/page-employee";
-  
-  const isParticipationPage = location.pathname === "/participation";
-  const islogin = location.pathname === "/login";
-  const issignup = location.pathname === "/signup";
+  const hideEmployee = location.pathname === "/page-employee"
 
   return (
     <>
@@ -56,11 +48,9 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <title>Mon Application Thé tip top concours</title>
         <meta name="description" content="Description de l'application" />
       </Helmet>
-      {  !hideAdmin &&  <Navbar />}
-      <div className={isParticipationPage || islogin || issignup ? "pt-20" : ""}>
-        {children}
-      </div>
-      {!hideNavbarAndFooter && <Footer />}
+      {  !hideAdmin  && <Navbar />}
+      <div>{children}</div>
+      {  !hideAdmin  && <Footer />}
     </>
   );
 };
@@ -72,49 +62,39 @@ const App: React.FC = () => {
     <AuthProvider>
       <Router>
         <Layout>
-          <Routes>
-            <Route path="/" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={
                 <>
                   <Helmet>
-                    <title>Accueil - Mon Application</title>
+                    <title>Page d'Accueil - Mon Application</title>
                     <meta name="description" content="Page d'accueil de notre application React." />
                   </Helmet>
-                  <ParticipationPage />
+                  <HeroSection />
+                  <Workflow />
+                  <Testimonials />
                 </>
               } />
-            {/* About Us Page (Qui sommes nous) */}
-            <Route path="/participation" element={
-              <>
-                <Helmet>
-                  <title>Qui sommes-nous - Mon Application</title>
-                  <meta name="description" content="Découvrez notre entreprise et notre équipe." />
-                </Helmet>
-                <HeroSection />
-                <Workflow />
-                <Testimonials />
-              </>
-            } />
-            {!isLoggedIn && <Route path="/login" element={<LoginPage />} />}
-            {!isLoggedIn && <Route path="/signup" element={<SignUpPage />} />}
-            <Route path="/mon-compte" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-            <Route path="/detailed-statistics" element={<DetailedStatisticsPage />} />
-            <Route path="/users" element={<UserListPage />} />
-            <Route path="/page-employee" element={<EmployeePrizePage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/lots" element={<LotsPage />} />
-            <Route path="/add-employee" element={<AddEmployeePage />} />
-            <Route path="/employee" element={<EmployeePrizePage />} />
-            <Route path="/gain-historique" element={<UserGainHistoryPage />} />
-            <Route path="/grand-tirage" element={<GrandTiragePage />} />
-            <Route path="/mentions-légales" element={<LegalMentions />} />
-            <Route path="/cgu" element={<TermsOfUse />} />
-            <Route path="/politique-de-confidentialité" element={<PrivacyPolicy />} />
-            <Route path="/explication" element={<ExplanationPage />} />
-          </Routes>
+              {!isLoggedIn && <Route path="/login" element={<LoginPage />} />}
+              {!isLoggedIn && <Route path="/signup" element={<SignUpPage />} />}
+              <Route path="/mon-compte" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+              <Route path="/detailed-statistics" element={<DetailedStatisticsPage />} />
+              <Route path="/users" element={<UserListPage />} />
+              <Route path="/page-employee" element={<EmployeePrizePage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/lots" element={<LotsPage />} />
+              <Route path="/participation" element={<ParticipationPage />} />
+              <Route path="/add-employee" element={<AddEmployeePage />} /> 
+              <Route path="/employee" element={<EmployeePrizePage />} /> 
+              <Route path="/gain-historique" element={<UserGainHistoryPage />} /> 
+              <Route path="/grand-tirage" element={<GrandTiragePage />} /> 
+            </Routes>
+          </Suspense>
         </Layout>
-        <CookieConsentBanner />
+        <CookieConsentBanner /> 
+
       </Router>
     </AuthProvider>
   );
