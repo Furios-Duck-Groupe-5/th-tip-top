@@ -48,9 +48,9 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <title>Mon Application Thé tip top concours</title>
         <meta name="description" content="Description de l'application" />
       </Helmet>
-      {  !hideAdmin  && <Navbar />}
+      {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Navbar />}
       <div>{children}</div>
-      {  !hideAdmin  && <Footer />}
+      {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Footer />}
     </>
   );
 };
