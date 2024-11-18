@@ -40,7 +40,7 @@ const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 // Layout component to control Navbar and Footer display
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const location = useLocation();
-  const hideNavbarAndFooter = location.pathname === "/";
+  //const hideNavbarAndFooter = location.pathname === "/";
   const hideAdmin = location.pathname === "/admin";
   const hideEmployee = location.pathname === "/page-employee";
 
@@ -60,7 +60,7 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
       <div className={isParticipationPage || islogin || issignup ? "pt-20" : ""}>
         {children}
       </div>
-      {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Footer />}
+      {  !hideAdmin && !hideEmployee && <Footer />}
     </>
   );
 };
