@@ -26,8 +26,13 @@ const pool = new Pool({
     database: process.env.DB_NAME || 'thetiptop_db',
     password: process.env.DB_PASSWORD || 'user',
     port: Number(process.env.DB_PORT) || 5432,
-});
-
+    
+    max: 10, 
+    idleTimeoutMillis: 30000, 
+    connectionTimeoutMillis: 2000, 
+    ssl: false,
+  });
+  
 
 
 app.post('/signup', [
