@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { body, validationResult } from 'express-validator';
 import * as XLSX from 'xlsx';
-import jwt from 'jsonwebtoken';
+import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import fs from 'fs';
 // Charger les variables d'environnement
 dotenv.config();
@@ -22,7 +22,7 @@ app.use(cors());
 // Configurez la connexion à la base de données
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
-    host: process.env.DB_HOST || 'db',
+    host: process.env.DB_HOST || 'localhost',
     database: process.env.DB_NAME || 'thetiptop_db',
     password: process.env.DB_PASSWORD || 'user',
     port: Number(process.env.DB_PORT) || 5432,
@@ -32,11 +32,10 @@ const pool = new Pool({
 
 app.post('/signup', [
     // Validation des champs...
-], async (req: Request, res: Response): Promise<void> => { // Utilisez simplement Promise<void>
+], async (req: Request, res: Response): Promise<void> => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return; // Arrête l'exécution après la réponse
+        //  return res.status(400).json({ errors: errors.array() });
     }
 
     const { nom, prenom, date_de_naissance, sexe, email, mot_de_passe } = req.body;
@@ -45,12 +44,23 @@ app.post('/signup', [
         // Vérifier si l'email existe déjà
         const emailExists = await pool.query('SELECT * FROM Utilisateur WHERE email = $1', [email]);
         if (emailExists.rows.length > 0) {
-            res.status(400).json({ message: 'L\'email existe déjà.' });
-            return;
+            //    return res.status(400).json({ message: 'L\'email existe déjà.' });
         }
 
         // Hacher le mot de passe
         const hashedPassword = await bcrypt.hash(mot_de_passe, Number(process.env.BCRYPT_SALT_ROUNDS) || 10);
+
+        // Debug: Affichez les données à insérer
+        console.log({
+            nom,
+            prenom,
+            email,
+            hashedPassword,
+            role_id: 1,
+            date_de_naissance,
+            sexe,
+            status: true,
+        });
 
         // Insérer le nouvel utilisateur dans la base de données
         const newUser = await pool.query(
@@ -58,23 +68,23 @@ app.post('/signup', [
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
             [nom, prenom, email, hashedPassword, 1, date_de_naissance, sexe, true]
         );
+        console.log("bonjour")
 
         // Retourner la réponse après l'insertion réussie
+        // TODO Pourquoi le rows[0] ?
         res.status(201).json({ message: 'Inscription réussie!!', user: newUser.rows[0] });
     } catch (error) {
         if (error instanceof Error) {
             console.error('Erreur d\'insertion :', error.message);
             res.status(500).json({ message: 'Erreur lors de l\'inscription.' });
-            return
         } else {
             console.error('Erreur inconnue :', error);
             res.status(500).json({ message: 'Une erreur inconnue s\'est produite.' });
-            return
         }
     }
 });
 
-const jwtSecretKey = process.env.JWT_SECRET_KEY || '509543e9a1101c7759ab90848b8ad2da554bb28ff805d108215492066b6687be';
+const jwtSecretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=';
 const jwtRefreshSecretKey = process.env.JWT_REFRESH_SECRET_KEY || '1023851073c4dda20bec07aacefada101dfed5375afa515988bb31c35e7daafc03440edcfe0b0bab9d80570b5dfd180a3c8f8dc678691045f017271dbcb01052';
 
 const generateAccessToken = (user: any) => {
@@ -125,6 +135,23 @@ export const refresh = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const verifyJWT = (token: string, secret: string): void => {
+    jwt.verify(token, secret, (err, decoded) => {
+        if (err) {
+            if (err instanceof TokenExpiredError) {
+                console.log('JWT Expired Error:', err.message); // Log d'expiration
+                console.log('Le token a expiré à :', err.expiredAt); // Date d'expiration
+            } else if (err instanceof JsonWebTokenError) {
+                console.log('JWT Error:', err.message); // Autres erreurs JWT
+            } else {
+                console.log('Erreur inconnue lors de la vérification du JWT:', err);
+            }
+        } else {
+            console.log('JWT valide. Données décryptées :', decoded);
+        }
+    });
+};
+
 
 app.post('/login', async (req: Request, res: Response): Promise<void> => {
     const { email, mot_de_passe } = req.body;
@@ -158,12 +185,11 @@ app.post('/login', async (req: Request, res: Response): Promise<void> => {
             userId: user.id_user,
             roleId: user.role_id
         };
-      //  const secretKey = process.env.JWT_SECRET_KEY || '509543e9a1101c7759ab90848b8ad2da554bb28ff805d108215492066b6687be';
-        //const token = jwt.sign(payload, secretKey, { expiresIn: '356d' });
-        const token = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
-        refreshTokens.push(refreshToken);
+        const secretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=';
+        const token = jwt.sign(payload, secretKey, { expiresIn: '356d' });
+
         // Exclut le mot de passe des données retournées
+        verifyJWT(token,jwtSecretKey)
         const { mot_de_passe: _, ...userWithoutPassword } = user;
 
         // Retourne les données de l'utilisateur et le jeton
@@ -189,8 +215,8 @@ app.get('/users', async (req: Request, res: Response): Promise<void> => {
 
         // Vérifiez si des utilisateurs existent
         if (result.rows.length === 0) {
-              res.status(404).json({ message: 'Aucun utilisateur trouvé.' });
-          return
+            // return res.status(404).json({ message: 'Aucun utilisateur trouvé.' });
+            console.log("aucun utilisateur trouvé")
         }
 
         // Retournez les utilisateurs en réponse
@@ -201,11 +227,9 @@ app.get('/users', async (req: Request, res: Response): Promise<void> => {
         if (error instanceof Error) {
             console.error('Erreur lors de la récupération des utilisateurs :', error.message);
             res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs.' });
-            return
         } else {
             console.error('Erreur inconnue :', error);
             res.status(500).json({ message: 'Une erreur inconnue s\'est produite.' });
-            return
         }
     }
 });
@@ -218,8 +242,8 @@ app.delete('/users/:id_user', async (req: Request, res: Response): Promise<void>
         // Vérifiez si l'utilisateur existe d'abord
         const userExists = await pool.query('SELECT * FROM Utilisateur WHERE id_user = $1', [id_user]);
         if (userExists.rows.length === 0) {
-           res.status(404).json({ message: 'Utilisateur non trouvé.' });
-            return
+            //    return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+            console.log("non trouve")
         }
 
         // Supprimez l'utilisateur de la base de données
@@ -229,7 +253,6 @@ app.delete('/users/:id_user', async (req: Request, res: Response): Promise<void>
     } catch (error) {
         console.error('Erreur lors de la suppression de l\'utilisateur :', error);
         res.status(500).json({ message: 'Erreur lors de la suppression de l\'utilisateur.' });
-        return
     }
 });
 
@@ -243,8 +266,9 @@ app.put('/users/:id_user', async (req: Request, res: Response): Promise<void> =>
         // Vérifiez si l'utilisateur existe
         const userExists = await pool.query('SELECT * FROM Utilisateur WHERE id_user = $1', [id_user]);
         if (userExists.rows.length === 0) {
-            res.status(404).json({ message: 'Utilisateur non trouvé.' });
-return        }
+            //    return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+            console.log("non rnouvé")
+        }
 
         // Mettre à jour l'utilisateur dans la base de données
         await pool.query(
@@ -256,7 +280,6 @@ return        }
     } catch (error) {
         console.error('Erreur lors de la mise à jour de l\'utilisateur :', error);
         res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'utilisateur.' });
-        return;
     }
 });
 
@@ -300,11 +323,9 @@ app.post('/add-employee', async (req: Request, res: Response): Promise<void> => 
         if (error instanceof Error) {
             console.error('Erreur lors de l\'ajout de l\'employé :', error.message);
             res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'employé.' });
-            return
         } else {
             console.error('Erreur inconnue :', error);
             res.status(500).json({ message: 'Une erreur inconnue s\'est produite.' });
-            return
         }
     }
 });
@@ -341,7 +362,6 @@ app.get('/statistics', async (req: Request, res: Response): Promise<void> => {
     } catch (error) {
         console.error('Erreur lors de la récupération des statistiques :', error);
         res.status(500).json({ message: 'Erreur lors de la récupération des statistiques.' });
-        return
     }
 });
 
@@ -359,18 +379,17 @@ app.get('/ticket-statistics', async (req: Request, res: Response): Promise<void>
       // Si aucun ticket n'est trouvé, retourner un message spécifique
       if (availableTickets.rows.length === 0) {
          res.status(404).json({ message: 'Aucun ticket disponible trouvé.' });
-         return
       }
   
       // Retourner les résultats des tickets disponibles, groupés par gain
       res.status(200).json({
         availableTickets: availableTickets.rows
       });
+      console.log("availableTickets",availableTickets.rows)
 
     } catch (error) {
       console.error('Erreur lors de la récupération des statistiques des tickets :', error);
       res.status(500).json({ message: 'Erreur lors de la récupération des statistiques des tickets.' });
-      return
     }
   });
   
@@ -436,7 +455,6 @@ app.get('/export-users', async (req: Request, res: Response): Promise<void> => {
     } catch (error) {
         console.error('Erreur lors de l\'exportation des utilisateurs :', error);
         res.status(500).json({ message: 'Erreur lors de l\'exportation des utilisateurs.' });
-        return
     }
 });
 
@@ -450,7 +468,6 @@ app.post('/participer', async (req: Request, res: Response): Promise<void> => {
     const token = req.headers['authorization']?.split(' ')[1]; // Extrait le token du header Authorization
     if (!token) {
         res.status(401).json({ message: 'Token manquant ou invalide.' });
-        return
     }
 
     try {
@@ -469,7 +486,6 @@ app.post('/participer', async (req: Request, res: Response): Promise<void> => {
             if (result.rows.length === 0) {
                 res.status(404).json({ message: 'Code de ticket invalide ou déjà utilisé.' });
                 console.log("code invalide")
-                return
             }
 
             // Récupérer l'ID du ticket trouvé
@@ -479,7 +495,6 @@ app.post('/participer', async (req: Request, res: Response): Promise<void> => {
             if (!ticket.status) {
                 res.status(400).json({ message: 'Le code de ticket a déjà été utilisé.' });
                 console.log("deja valide")
-                return
             }
 
             // Mettre à jour le ticket pour l'attribuer à l'utilisateur (remis à true)
@@ -496,7 +511,6 @@ app.post('/participer', async (req: Request, res: Response): Promise<void> => {
         console.log("erreur")
         console.error('Erreur lors de la participation :', error);
         res.status(500).json({ message: 'Une erreur s\'est produite lors de la participation.' });
-        return
     }
 });
 
@@ -505,7 +519,6 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction): void 
 
     if (!token) {
         res.status(401).json({ message: 'Token manquant ou invalide.' });
-        return
     }
     if (token) {
         try {
@@ -516,7 +529,6 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction): void 
         } catch (error) {
             console.error('Erreur lors de la vérification du token :', error);
             res.status(401).json({ message: 'Token invalide ou expiré.' });
-            return
         }
     };
 }
@@ -533,7 +545,6 @@ app.put('/user-profile', authenticateJWT, async (req: Request, res: Response): P
         const result = await pool.query('SELECT * FROM Utilisateur WHERE id_user = $1', [userId]);
         if (result.rows.length === 0) {
             res.status(404).json({ message: 'Utilisateur non trouvé.' });
-            return
         }
 
         // Mettre à jour les informations de l'utilisateur dans la base de données
@@ -546,7 +557,6 @@ app.put('/user-profile', authenticateJWT, async (req: Request, res: Response): P
     } catch (error) {
         console.error('Erreur lors de la mise à jour du profil :', error);
         res.status(500).json({ message: 'Erreur lors de la mise à jour du profil.' });
-        return
     }
 });
 // Endpoint pour récupérer le profil utilisateur
@@ -567,7 +577,6 @@ app.get('/user-profile', authenticateJWT, async (req: Request, res: Response): P
     } catch (error) {
         console.error('Erreur lors de la récupération du profil :', error);
         res.status(500).json({ message: 'Erreur lors de la récupération du profil.' });
-        return;
     }
 });
 
@@ -619,7 +628,6 @@ app.post('/grand-tirage', async (req: Request, res: Response): Promise<void> => 
     } catch (error) {
         console.error('Erreur lors du tirage :', error);
         res.status(500).json({ message: 'Une erreur s\'est produite lors du tirage.' });
-        return;
     }
 });
 
@@ -675,7 +683,6 @@ app.post('/get-user-tickets', async (req: Request, res: Response): Promise<void>
     } catch (error) {
         console.error('Erreur lors de la récupération des tickets :', error);
         res.status(500).json({ error: 'Une erreur s\'est produite lors de la récupération des tickets.' });
-        return
     }
 });
 
@@ -720,7 +727,6 @@ app.put('/update-ticket-status/:id_ticket', authenticateJWT, async (req: Request
     } catch (error) {
         console.error('Erreur lors de la mise à jour du statut et du gain:', error);
         res.status(500).json({ message: 'Erreur lors de la mise à jour du statut et du gain.' });
-        return;
     }
 });
 
@@ -758,7 +764,6 @@ app.post('/user-historique', authenticateJWT, async (req: Request, res: Response
     } catch (error) {
         console.error('Erreur lors de la récupération des tickets :', error);
         res.status(500).json({ error: 'Une erreur s\'est produite lors de la récupération des tickets.' });
-        return;
     }
 });
 

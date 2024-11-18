@@ -1,5 +1,6 @@
 import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert } from "@mui/material";
+import logo from "../../assets/The_TIPTOP2-removebg-preview2.png";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom"; 
@@ -22,7 +23,7 @@ const LoginPage: FC = () => {
       setErrorMessage("");
   
       try {
-          const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/login", { email, mot_de_passe });
+          const response = await axios.post('https://backend.dsp5-archi-o23-15m-g5.fr/login', { email, mot_de_passe });
           
           if (response.status === 200) {
               console.log("Connexion réussie:", response.data);
@@ -59,7 +60,6 @@ const LoginPage: FC = () => {
                 maxWidth="xs"
                 sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -25 }}
             >
-                
 
                 <Box 
                     sx={{ 
