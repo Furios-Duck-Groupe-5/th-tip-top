@@ -135,7 +135,7 @@ const UserListPage: React.FC = () => {
   const handleSubmit = async () => {
     if (currentUser) {
       try {
-        const response = await fetch(`https://backend.dsp5-archi-o23-15m-g5.fr/${currentUser.id_user}`, {
+        const response = await fetch(`https://backend.dsp5-archi-o23-15m-g5.fr/users/${currentUser.id_user}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
