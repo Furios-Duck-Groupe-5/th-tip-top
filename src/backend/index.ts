@@ -529,6 +529,7 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction): void 
         } catch (error) {
             console.error('Erreur lors de la vérification du token :', error);
             res.status(401).json({ message: 'Token invalide ou expiré.' });
+            return
         }
     };
 }
