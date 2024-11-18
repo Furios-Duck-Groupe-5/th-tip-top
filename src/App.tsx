@@ -56,11 +56,11 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <title>Mon Application Thé tip top concours</title>
         <meta name="description" content="Description de l'application" />
       </Helmet>
-      {  !hideAdmin && !hideEmployee && <Navbar />}
+      {  !hideAdmin &&  <Navbar />}
       <div className={isParticipationPage || islogin || issignup ? "pt-20" : ""}>
         {children}
       </div>
-      {!hideNavbarAndFooter && !hideAdmin && !hideEmployee && <Footer />}
+      {!hideNavbarAndFooter && <Footer />}
     </>
   );
 };

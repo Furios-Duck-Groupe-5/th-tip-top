@@ -17,6 +17,11 @@ import {
   Modal,
   Fade,
   Backdrop,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
 } from '@mui/material';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 
@@ -47,7 +52,7 @@ const UserListPage: React.FC = () => {
   // Fonction pour récupérer les utilisateurs depuis l'API
   const fetchUsers = async () => {
     try {
-      const response = await fetch("https://backend.dsp5-archi-o23-15m-g5.fr/users"); 
+      const response = await fetch("https://backend.dsp5-archi-o23-15m-g5.fr/users");
       if (!response.ok) {
         throw new Error('Erreur lors de la récupération des utilisateurs.');
       }
@@ -57,7 +62,7 @@ const UserListPage: React.FC = () => {
       console.error('Erreur lors de la récupération des utilisateurs:', error);
     }
     
-    
+
   };
   const getRoleLabel = (role: number): string => {
     switch (role) {
@@ -95,17 +100,17 @@ const UserListPage: React.FC = () => {
 
   const handleDeleteUser = async (id_user: number) => {
     try {
-        const response = await fetch(`https://backend.dsp5-archi-o23-15m-g5.fr/users/${id_user}`, {
-            method: 'DELETE',
-        });
-        if (!response.ok) {
-            throw new Error('Erreur lors de la suppression de l\'utilisateur.');
-        }
-        setUsers(users.filter(user => user.id_user !== id_user));
+      const response = await fetch(`https://backend.dsp5-archi-o23-15m-g5.fr/users/${id_user}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Erreur lors de la suppression de l\'utilisateur.');
+      }
+      setUsers(users.filter(user => user.id_user !== id_user));
     } catch (error) {
-        console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+      console.error('Erreur lors de la suppression de l\'utilisateur:', error);
     }
-};
+  };
 
 
   // Ouvrir le modal pour modifier l'utilisateur
@@ -122,6 +127,16 @@ const UserListPage: React.FC = () => {
 
   // Fonction pour gérer les changements dans le formulaire de modification
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (currentUser) {
+      setCurrentUser(prevState => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleInputChangeSexe = (e: SelectChangeEvent<"H" | "F">) => {
     const { name, value } = e.target;
     if (currentUser) {
       setCurrentUser(prevState => ({
@@ -323,28 +338,33 @@ const UserListPage: React.FC = () => {
               onChange={handleInputChange}
               sx={{ mb: 2 }}
             />
-            <TextField
-              label="Sexe"
-              variant="outlined"
-              fullWidth
-              name="gender"
-              value={currentUser ? currentUser.sexe : ''}
-              onChange={handleInputChange}
-              sx={{ mb: 2 }}
-            />
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Sexe</InputLabel>
+              <Select
+                label="Sexe"
+                name="sexe"  
+                value={currentUser ? currentUser.sexe : ''}
+                onChange={handleInputChangeSexe}
+              >
+                <MenuItem value="H">Homme</MenuItem>
+                <MenuItem value="F">Femme</MenuItem>
+                <MenuItem value="A">Autre</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
               label="Date de Naissance"
               variant="outlined"
               fullWidth
               type="date"
-              name="date_de_naisance"
+              name="date_de_naissance"  
               value={currentUser ? currentUser.date_de_naissance : ''}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
               InputLabelProps={{
-                shrink: true,
+                shrink: true,  
               }}
             />
+
             <Button variant="contained" onClick={handleSubmit} fullWidth>
               Enregistrer
             </Button>
