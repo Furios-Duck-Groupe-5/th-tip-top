@@ -175,7 +175,7 @@ const SignUpPage: FC = () => {
               fullWidth
               variant="contained"
               sx={{ bgcolor: '#DDA15E', '&:hover': { bgcolor: '#d19c5c' }, marginBottom: 2 }}
-              onClick={handleLoginRedirect}
+             // onClick={handleLoginRedirect}
             >
               S'inscrire
             </Button>
