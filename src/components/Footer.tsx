@@ -1,15 +1,21 @@
-import React from "react";
-import { Box, Grid, Typography, Link, Divider, Avatar, TextField, Button, IconButton } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Grid, Typography, Link, Divider, Avatar, TextField, Button, IconButton, Alert } from "@mui/material";
 import { Facebook, Instagram, X } from "@mui/icons-material"; 
 import logo from "../assets/thebgbg.png"; 
 import { To, useNavigate } from "react-router-dom";  
 
 const Footer = () => {
   const navigate = useNavigate();
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
   // Gestionnaires de clic pour chaque lien
   const handleNavigation = (path: To) => {
     navigate(path);
+  };
+
+  const handleNewsletterSubmit = () => {
+    setNewsletterSubmitted(true);
+    setTimeout(() => setNewsletterSubmitted(false), 5000); // Réinitialiser après 5 secondes
   };
 
   return (
@@ -47,7 +53,7 @@ const Footer = () => {
             {["Mentions légales", "CGU", "Politique de confidentialité"].map((text) => (
               <li key={text}>
                 <Link
-                  onClick={() => handleNavigation(`/${text.replace(/\s+/g, '-').toLowerCase()}`)}  // Gestion du clic pour chaque lien
+                  onClick={() => handleNavigation(`/${text.replace(/\s+/g, '-').toLowerCase()}`)}
                   color="inherit"
                   underline="hover"
                   sx={{
@@ -55,6 +61,7 @@ const Footer = () => {
                     py: 0.5,
                     color: "#000000",
                     "&:hover": { color: "#FF8C00" },
+                    cursor: "pointer", 
                   }}
                 >
                   {text}
@@ -103,9 +110,15 @@ const Footer = () => {
             variant="contained"
             sx={{ bgcolor: "#DDA15E", "&:hover": { bgcolor: "#cc8d53" } }}
             fullWidth
+            onClick={handleNewsletterSubmit}
           >
             S'inscrire
           </Button>
+          {newsletterSubmitted && (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              Merci pour votre inscription à la newsletter !
+            </Alert>
+          )}
         </Grid>
 
         <Grid item xs={12} textAlign="center">
