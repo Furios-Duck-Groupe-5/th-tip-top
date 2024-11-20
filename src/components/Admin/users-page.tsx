@@ -104,6 +104,7 @@ const UserListPage: React.FC = () => {
         method: 'DELETE',
       });
       if (!response.ok) {
+        alert('Vous ne pouvez supprimer cet utilisateur, il est déjà inscrit au jeu concours');
         throw new Error('Erreur lors de la suppression de l\'utilisateur.');
       }
       setUsers(users.filter(user => user.id_user !== id_user));
