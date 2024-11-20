@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { generateAccessToken } from '../../backfonction';
+const { generateAccessToken } = require('../../backfonction');
 
 jest.mock('jsonwebtoken'); 
 
