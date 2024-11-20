@@ -7,7 +7,6 @@ import { body, validationResult } from 'express-validator';
 import * as XLSX from 'xlsx';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import fs from 'fs';
-const { generateAccessToken } = require('../../backfonction');
 // Charger les variables d'environnement
 dotenv.config();
 
@@ -91,7 +90,18 @@ app.post('/signup', [
 const jwtSecretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=';
 const jwtRefreshSecretKey = process.env.JWT_REFRESH_SECRET_KEY || '1023851073c4dda20bec07aacefada101dfed5375afa515988bb31c35e7daafc03440edcfe0b0bab9d80570b5dfd180a3c8f8dc678691045f017271dbcb01052';
 
-
+const generateAccessToken = (user: any) => {
+    return jwt.sign(
+        {
+            id: user.id,
+            role: user.role,
+        },
+        jwtSecretKey,
+        {
+            expiresIn: '1d',
+        }
+    );
+};
 
 const generateRefreshToken = (user: any) => {
     return jwt.sign(
