@@ -30,6 +30,7 @@ import SignUpPage from "./components/ConnexionInscription/inscription";
 import ProfilePage from "./components/Page-de-profil/page-de-profil";
 import AdminPage from "./components/Admin/admin";
 import React, { PropsWithChildren } from "react";
+import NotFound from "./404";
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -112,6 +113,7 @@ const App: React.FC = () => {
             <Route path="/cgu" element={<TermsOfUse />} />
             <Route path="/politique-de-confidentialité" element={<PrivacyPolicy />} />
             <Route path="/explication" element={<ExplanationPage />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
         <CookieConsentBanner />
