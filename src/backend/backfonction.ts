@@ -1,7 +1,8 @@
-const jwtSecretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=';
-import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-export const generateAccessToken = (user: any) => {
+const jwtSecretKey = process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=';
+
+const generateAccessToken = (user: any) => {
     return jwt.sign(
         {
             id: user.id,
@@ -12,4 +13,8 @@ export const generateAccessToken = (user: any) => {
             expiresIn: '1d',
         }
     );
+};
+
+module.exports = {
+    generateAccessToken,
 };

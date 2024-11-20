@@ -7,7 +7,7 @@ import { body, validationResult } from 'express-validator';
 import * as XLSX from 'xlsx';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import fs from 'fs';
-import { generateAccessToken } from './backfonction';
+const { generateAccessToken } = require('../../backfonction');
 // Charger les variables d'environnement
 dotenv.config();
 
