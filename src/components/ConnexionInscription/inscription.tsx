@@ -12,11 +12,27 @@ const SignUpPage: FC = () => {
   const [gender, setGender] = useState<boolean | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
 
   const handleLoginRedirect = () => {
     navigate("/login");
+  };
+
+  // Fonction de vérification de la solidité du mot de passe
+  const checkPasswordStrength = (password: string) => {
+    const lengthCheck = password.length >= 8;
+    const upperCheck = /[A-Z]/.test(password);
+    const lowerCheck = /[a-z]/.test(password);
+    const numberCheck = /\d/.test(password);
+
+    return {
+      lengthCheck,
+      upperCheck,
+      lowerCheck,
+      numberCheck,
+    };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,40 +46,56 @@ const SignUpPage: FC = () => {
       gender,
       email,
       password,
+      confirmPassword,
     });
 
     // Vérifier si tous les champs sont remplis
-    if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password) {
+    if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password || !confirmPassword) {
       setErrorMessage("Veuillez remplir tous les champs.");
       console.error("Erreur: champs incomplets");
     } else {
-      setErrorMessage("");
+      const passwordStrength = checkPasswordStrength(password);
 
-      // Préparer les données pour l'envoi
-      const userData = {
-        nom: lastName,
-        prenom: firstName,
-        date_de_naissance: dateOfBirth,
-        sexe: gender ? "H" : "F",
-        email: email,
-        mot_de_passe: password,
-      };
+      // Vérification des critères du mot de passe
+      if (!passwordStrength.lengthCheck) {
+        setErrorMessage("Le mot de passe doit contenir au moins 8 caractères.");
+      } else if (!passwordStrength.upperCheck) {
+        setErrorMessage("Le mot de passe doit contenir au moins une majuscule.");
+      } else if (!passwordStrength.lowerCheck) {
+        setErrorMessage("Le mot de passe doit contenir au moins une minuscule.");
+      } else if (!passwordStrength.numberCheck) {
+        setErrorMessage("Le mot de passe doit contenir au moins un chiffre.");
+      } else if (password !== confirmPassword) {
+        setErrorMessage("Les mots de passe ne correspondent pas.");
+      } else {
+        setErrorMessage(""); // Réinitialiser les messages d'erreur
 
-      console.log("User data prepared for sending:", userData);
+        // Préparer les données pour l'envoi
+        const userData = {
+          nom: lastName,
+          prenom: firstName,
+          date_de_naissance: dateOfBirth,
+          sexe: gender ? "H" : "F",
+          email: email,
+          mot_de_passe: password,
+        };
 
-      try {
-        // Envoyer les données à l'API
-        const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/signup", userData);
-        console.log("Response from API:", response.data);
-        setSuccessMessage("Inscription réussie !");
-      } catch (error) {
-        // Vérifier si l'erreur vient d'Axios
-        if (axios.isAxiosError(error) && error.response) {
-          console.error("API error:", error.response.data);
-          setErrorMessage(error.response.data.message || "Une erreur s'est produite.");
-        } else {
-          console.error("Error with the server connection:", error);
-          setErrorMessage("Erreur de connexion au serveur.");
+        console.log("User data prepared for sending:", userData);
+
+        try {
+          // Envoyer les données à l'API
+          const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/signup", userData);
+          console.log("Response from API:", response.data);
+          setSuccessMessage("Inscription réussie !");
+        } catch (error) {
+          // Vérifier si l'erreur vient d'Axios
+          if (axios.isAxiosError(error) && error.response) {
+            console.error("API error:", error.response.data);
+            setErrorMessage(error.response.data.message || "Une erreur s'est produite.");
+          } else {
+            console.error("Error with the server connection:", error);
+            setErrorMessage("Erreur de connexion au serveur.");
+          }
         }
       }
     }
@@ -170,12 +202,21 @@ const SignUpPage: FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               sx={{ bgcolor: 'white', input: { color: 'black' }, marginBottom: 2 }}
             />
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              label="Confirmer le mot de passe"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              sx={{ bgcolor: 'white', input: { color: 'black' }, marginBottom: 2 }}
+            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ bgcolor: '#DDA15E', '&:hover': { bgcolor: '#d19c5c' }, marginBottom: 2 }}
-             // onClick={handleLoginRedirect}
             >
               S'inscrire
             </Button>
