@@ -305,8 +305,17 @@ app.delete('/users/:id_user', async (req: Request, res: Response): Promise<void>
 
         if (userExists.rows.length === 0) {
             // Si l'utilisateur n'est pas trouvé, retournez une erreur 404
-             res.status(404).json({ message: 'Utilisateur non trouvé.' });
-             return
+            res.status(404).json({ message: 'Utilisateur non trouvé.' });
+            return;
+        }
+
+        // Vérifiez si l'utilisateur est inscrit à des tickets
+        const tickets = await pool.query('SELECT * FROM ticket WHERE id_user = $1', [id_user]);
+
+        if (tickets.rows.length > 0) {
+            // Si l'utilisateur est déjà inscrit à des tickets, retournez un message indiquant que la suppression n'est pas possible
+            res.status(400).json({ message: 'Impossible de supprimer l\'utilisateur. Il est déjà inscrit pour participer à des tickets.' });
+            return;
         }
 
         // Supprimez l'utilisateur de la base de données
@@ -314,8 +323,8 @@ app.delete('/users/:id_user', async (req: Request, res: Response): Promise<void>
 
         // Si aucune ligne n'a été supprimée, cela signifie qu'il y a un problème avec la suppression
         if (deleteResult.rowCount === 0) {
-             res.status(400).json({ message: 'Erreur lors de la suppression de l\'utilisateur.' });
-             return
+            res.status(400).json({ message: 'Erreur lors de la suppression de l\'utilisateur.' });
+            return;
         }
 
         // Réponse de succès
@@ -327,14 +336,15 @@ app.delete('/users/:id_user', async (req: Request, res: Response): Promise<void>
 
         // Vérification des erreurs spécifiques comme une violation de contrainte de clé étrangère
         if ((error as any).code === '23503') {
-             res.status(400).json({ message: 'Impossible de supprimer l\'utilisateur. Il est référencé dans une autre table.' });
-             return
+            res.status(400).json({ message: 'Impossible de supprimer l\'utilisateur. Il est référencé dans une autre table.' });
+            return;
         }
 
         // Erreur générique pour d'autres types d'erreurs
         res.status(500).json({ message: 'Erreur lors de la suppression de l\'utilisateur.' });
     }
 });
+
 
 
 
