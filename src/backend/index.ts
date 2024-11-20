@@ -465,58 +465,74 @@ app.get('/export-users', async (req: Request, res: Response): Promise<void> => {
 
 
 app.post('/participer', async (req: Request, res: Response): Promise<void> => {
-    // TODO enleve les console.log plus ameliore la gestion des erreurs
     const { code_ticket } = req.body; // Le code du ticket que l'utilisateur entre
 
     // Vérifier que l'utilisateur est authentifié via JWT
     const token = req.headers['authorization']?.split(' ')[1]; // Extrait le token du header Authorization
     if (!token) {
         res.status(401).json({ message: 'Token manquant ou invalide.' });
+        return; 
     }
-
+    if (!code_ticket) {
+            res.status(400).json({ 
+            success: false, 
+            message: "Aucun code n'a été fourni." 
+            
+        });return
+    }
     try {
         // Décoder le jeton JWT pour obtenir l'ID de l'utilisateur
-        if (token) {
-            console.log("bonjour")
-            const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=');
-            const userId = decoded.userId;
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY || 'Ki0Ka7E8/LINCNrVraSKs6bRL+U4qfP5U80LryzBEAs=');
+        const userId = decoded?.userId;
 
-            // Vérifier si le code de ticket existe et si le statut est true
-            const result = await pool.query(
-                'SELECT * FROM ticket WHERE code_ticket = $1 AND status = true AND remis = false',
-                [code_ticket]
-            );
-
-            if (result.rows.length === 0) {
-                res.status(404).json({ message: 'Code de ticket invalide ou déjà utilisé.' });
-                console.log("code invalide")
-            }
-
-            // Récupérer l'ID du ticket trouvé
-            const ticket = result.rows[0];
-
-            // Vérifier si le ticket est déjà validé (statut false)
-            if (!ticket.status) {
-                res.status(400).json({ message: 'Le code de ticket a déjà été utilisé.' });
-                console.log("deja valide")
-            }
-
-            // Mettre à jour le ticket pour l'attribuer à l'utilisateur (remis à true)
-            await pool.query(
-                'UPDATE ticket SET id_user = $1, date_validation = $2, status = false WHERE id_ticket = $3',
-                [userId, new Date(), ticket.id_ticket]
-            );
-
-            // Répondre avec un message de succès
-            res.status(200).json({ message: 'Vous avez participé avec succès en utilisant le code de ticket.' });
-            console.log("succes")
+        if (!userId) {
+            res.status(403).json({ message: 'Utilisateur non authentifié.' });
+            return; // Arrête l'exécution si l'utilisateur n'est pas authentifié
         }
+
+        // Vérifier si le code de ticket existe et si le statut est `true` et `remis = false`
+        const result = await pool.query(
+            'SELECT * FROM ticket WHERE code_ticket = $1 AND status = true AND remis = false',
+            [code_ticket]
+        );
+
+        if (result.rows.length === 0) {
+            res.status(404).json({ message: 'Code de ticket invalide ou déjà utilisé.' });
+            return; // Arrête l'exécution si le ticket est introuvable
+        }
+
+        // Récupérer l'ID du ticket trouvé
+        const ticket = result.rows[0];
+
+        // Vérifier si le ticket est déjà validé (statut false)
+        if (!ticket?.status) {
+            res.status(400).json({ message: 'Le code de ticket a déjà été utilisé.' });
+            return; // Arrête l'exécution si le ticket est invalide
+        }
+
+        // Mettre à jour le ticket pour l'attribuer à l'utilisateur (remis à true)
+        await pool.query(
+            'UPDATE ticket SET id_user = $1, date_validation = $2, status = false WHERE id_ticket = $3',
+            [userId, new Date(), ticket.id_ticket]
+        );
+
+        // Répondre avec un message de succès
+        res.status(200).json({ message: 'Vous avez participé avec succès en utilisant le code de ticket.' });
     } catch (error) {
-        console.log("erreur")
         console.error('Erreur lors de la participation :', error);
-        res.status(500).json({ message: 'Une erreur s\'est produite lors de la participation.' });
+
+        // Identifier les erreurs JWT spécifiques
+        if (error instanceof JsonWebTokenError) {
+            res.status(401).json({ message: 'Token JWT invalide.' });
+        } else if (error instanceof TokenExpiredError) {
+            res.status(401).json({ message: 'Le token JWT a expiré.' });
+        } else {
+            // Gestion des autres erreurs
+            res.status(500).json({ message: 'Une erreur s\'est produite lors de la participation.' });
+        }
     }
 });
+
 
 const authenticateJWT = (req: Request, res: Response, next: NextFunction): void => {
     const token = req.headers['authorization']?.split(' ')[1];  // Extraire le token de l'en-tête Authorization
