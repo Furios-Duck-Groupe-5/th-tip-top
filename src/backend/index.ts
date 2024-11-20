@@ -19,7 +19,6 @@ app.use(express.json());
 // Configurez CORS
 app.use(cors());
 
-// Configurez la connexion à la base de données
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
     host: process.env.DB_HOST || 'db',
@@ -27,9 +26,39 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD || 'user',
     port: Number(process.env.DB_PORT) || 5432,
     
-    max: 10, 
-    idleTimeoutMillis: 30000, 
-    connectionTimeoutMillis: 70000  }); // TODO
+    max: 10,  // Nombre maximum de connexions simultanées
+    idleTimeoutMillis: 100000,  // Temps avant qu'une connexion inoccupée ne soit libérée
+    connectionTimeoutMillis: 100000,  // Temps d'attente avant de donner une erreur si pas de connexion
+});
+
+// Gestion des erreurs du pool de connexions
+pool.on('error', (err, client) => {
+    console.error('Unexpected error on idle client', err);
+});
+
+// Middleware pour loguer les requêtes
+app.use((req, res, next) => {
+    console.log(`Request received: ${req.method} ${req.url}`);
+    const start = Date.now();
+    res.on('finish', () => {
+        const duration = Date.now() - start;
+        console.log(`Request to ${req.url} took ${duration}ms`);
+    });
+    next();
+});
+
+// Exemple de route pour tester la connexion
+app.get('/', async (req: Request, res: Response) => {
+    try {
+        const client = await pool.connect();
+        const result = await client.query('SELECT NOW()');
+        res.send(result.rows[0]);
+        client.release();
+    } catch (err) {
+        console.error('Error executing query', err);
+        res.status(500).send('Database error');
+    }
+});
   
 
 
