@@ -148,79 +148,103 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
         color: "white",
         position: "relative",
         backgroundColor: "#e0dad3",
+        marginTop:-2
       }}
     >
       {/* Animation Lottie */}
-      <Lottie
-        animationData={sleeveAnimation}
-        loop={true}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
-      <Container sx={{ paddingBottom: 8, paddingTop: 8, height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 4 }}>
-          {/* Text Section */}
-          <Box
-            data-aos="zoom-out"
-            data-aos-duration="400"
-            data-aos-once="true"
-            sx={{ display: "flex", flexDirection: "column", justifyContent: "center", textAlign: { xs: "center", sm: "left" }, order: { xs: 2, sm: 1 } }}
+  <Lottie
+    animationData={sleeveAnimation}
+    loop={true}
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+    }}
+  />
+  <Container sx={{ paddingBottom: 8, paddingTop: 8, height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 4 }}>
+      {/* Text Section */}
+      <Box
+        data-aos="zoom-out"
+        data-aos-duration="400"
+        data-aos-once="true"
+        sx={{ display: "flex", flexDirection: "column", justifyContent: "center", textAlign: { xs: "center", sm: "left" }, order: { xs: 2, sm: 1 } }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            marginTop: -25,
+            fontWeight: "bold",
+            backgroundColor: "white",
+            color: "#DDA15E",
+            display: "inline-block",
+            padding: "8px 16px",
+            border: "2px solid #DDA15E",
+            borderRadius: "20px",
+          }}
+        >
+          Bienvenue au jeu concours The Tip Top !
+        </Typography>
+
+        <Typography variant="body2" sx={{ marginTop: 2, color: '#000000',fontWeight:'bold' }}>
+          Découvrez quel lot vous avez gagné en entrant votre code de concours ! Ne manquez pas cette chance de profiter de nos offres exclusives et de nos thés raffinés.
+        </Typography>
+        <Typography variant="body1" sx={{ marginTop: 2, fontWeight: 'bold', color: '#DDA15E' }}>
+          100% Gagnant, profitez de cette chance !
+        </Typography>
+
+        {/* Nouveau texte pour "Venez" et 360 Gain de un an */}
+        <Typography variant="body2"  sx={{  fontWeight: 'bold',color: '#000000' }}>
+        En participant à ce jeu concours, vous entrez automatiquement dans notre grand tirage au sort pour gagner un an de thé gratuit, d'une valeur de 360€ !
+        </Typography>
+
+        
+
+        {/* Nouvelle section pour la 10ème boutique */}
+        <Box sx={{
+          backgroundColor: "#fff", 
+          padding: "10px 20px", 
+          borderRadius: "12px", 
+          marginTop: 4,
+          textAlign: "center",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)"
+        }}>
+          <Typography variant="h6" sx={{ color: "#DDA15E", fontWeight: 'bold' }}>
+            🎉 Nous célébrons la 10ème boutique ! 🎉
+          </Typography>
+        </Box>
+
+        {/* Code input section */}
+        <Box sx={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField
+            variant="outlined"
+            label="Entrez votre code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            sx={{
+              width: "100%",
+              backgroundColor: "#fff",
+              borderRadius: "12px",
+              boxShadow: 1,
+            }}
+            fullWidth
+          />
+          <Button
+            variant="contained"
+            sx={{
+              background: "linear-gradient(to right, #DDA15E, #DDA15E)",
+              "&:hover": { transform: "scale(1.05)" },
+              borderRadius: "20px",
+              boxShadow: 1,
+            }}
+            onClick={handleSubmitCode}
           >
-            <Typography
-              variant="h3"
-              sx={{
-                marginTop: -40,
-                fontWeight: "bold",
-                backgroundColor: "white",
-                color: "#DDA15E",
-                display: "inline-block",
-                padding: "8px 16px",
-                border: "2px solid #DDA15E",
-                borderRadius: "20px",
-              }}
-            >
-              Bienvenue au jeu concours The Tip Top
-            </Typography>
-
-            <Typography variant="body2" sx={{ marginTop: 2, color: '#000000' }}>
-              Découvrez quel lot vous avez gagné en entrant votre code de concours ! Ne manquez pas cette chance de profiter de nos offres exclusives et de nos thés raffinés.
-            </Typography>
-
-
-            {/* Code input section */}
-            <Box sx={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
-              <TextField
-                variant="outlined"
-                label="Entrez votre code"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                sx={{
-                  width: "100%",
-                  backgroundColor: "#fff",
-                  borderRadius: "12px",
-                  boxShadow: 1,
-                }}
-                fullWidth
-              />
-              <Button
-                variant="contained"
-                sx={{
-                  background: "linear-gradient(to right, #DDA15E, #DDA15E)",
-                  "&:hover": { transform: "scale(1.05)" },
-                  borderRadius: "20px",
-                  boxShadow: 1,
-                }}
-                onClick={handleSubmitCode}
-              >
-                Vérifiez votre code
-              </Button>
-            </Box>
-          </Box>
+            Vérifiez votre code
+          </Button>
+        </Box>
+      </Box>
 
           {/* Image Section */}
           <Box

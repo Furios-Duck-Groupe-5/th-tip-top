@@ -295,7 +295,9 @@ app.post('/add-employee', async (req: Request, res: Response): Promise<void> => 
         // Check if the email already exists
         const emailExists = await pool.query('SELECT * FROM Utilisateur WHERE email = $1', [email]);
         if (emailExists.rows.length > 0) {
-            console.log("email existe deja")
+            console.log("email existe déjà");
+            res.status(400).json({ message: "Cet email est déjà utilisé." });
+            return;
         }
 
         // Hash the password
@@ -322,13 +324,15 @@ app.post('/add-employee', async (req: Request, res: Response): Promise<void> => 
 
         // Respond with a success message
         res.status(201).json({ message: 'Nouvel employé ajouté avec succès!', employee: newEmployee.rows[0] });
+        return; 
     } catch (error) {
         if (error instanceof Error) {
             console.error('Erreur lors de l\'ajout de l\'employé :', error.message);
             res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'employé.' });
-        } else {
+            return; 
             console.error('Erreur inconnue :', error);
             res.status(500).json({ message: 'Une erreur inconnue s\'est produite.' });
+            return; 
         }
     }
 });
