@@ -65,14 +65,30 @@ const AdminPage: React.FC = () => {
       console.error('Erreur lors de l\'envoi du message:', error);
     }
   };
-  const { logout } = useAuth();
+  const { logout,refreshToken } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await logout();
-      window.location.href = "/";
+      // Appel à l'API de déconnexion
+      const response = await fetch('http://localhost:4001/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }), // Envoi du refresh token pour la déconnexion
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Si la déconnexion réussit, on appelle la fonction logout du context
+        logout(); 
+        window.location.href = "/"; // Redirection vers la page d'accueil après déconnexion
+      } else {
+        console.error("Déconnexion échouée:", data.message);
+      }
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Erreur lors de la déconnexion:", error);
+      // Handle error as necessary
     }
   };
 

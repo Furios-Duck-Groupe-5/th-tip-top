@@ -6,6 +6,8 @@ interface AuthContextType {
     roleId: number | null; // Add roleId to manage user roles
     login: (roleId: number) => void; // Modify login to accept roleId
     logout: () => void;
+    refreshToken?: string | null; // Ajouter refreshToken pour stocker le refresh token
+
 }
 
 // Create the context with a default value

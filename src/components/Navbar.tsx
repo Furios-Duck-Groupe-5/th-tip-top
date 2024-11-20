@@ -6,10 +6,11 @@ import { navItems } from "../constants";
 import { Link } from "react-router-dom";
 import { useAuth } from './ConnexionInscription/AuthContext';
 import React from "react";
-//todo
+
+// Nouveau code pour la déconnexion avec l'appel à l'API
 const Navbar: FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const { isLoggedIn, logout, roleId } = useAuth();
+  const { isLoggedIn, logout, roleId, refreshToken } = useAuth();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
@@ -17,10 +18,25 @@ const Navbar: FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
-      window.location.href = "/";
+      // Appel à l'API de déconnexion
+      const response = await fetch('http://localhost:4001/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }), // Envoi du refresh token pour la déconnexion
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Si la déconnexion réussit, on appelle la fonction logout du context
+        logout(); 
+        window.location.href = "/"; // Redirection vers la page d'accueil après déconnexion
+      } else {
+        console.error("Déconnexion échouée:", data.message);
+      }
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Erreur lors de la déconnexion:", error);
       // Handle error as necessary
     }
   };
@@ -39,7 +55,6 @@ const Navbar: FC = () => {
                 position: 'absolute',
                 top: '50%',
                 transform: 'translateY(-50%)',
-               // left: '75px',
                 marginTop: 7
               }}
             />

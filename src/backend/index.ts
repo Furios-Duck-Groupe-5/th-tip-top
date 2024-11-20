@@ -216,6 +216,28 @@ app.post('/login', async (req: Request, res: Response): Promise<void> => {
 });
 
 
+app.post('/logout', (req: Request, res: Response): void => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+         res.status(401).json({ message: 'Aucun refresh token fourni !' });
+         return
+    }
+
+    // Vérifie si le refresh token existe dans le tableau
+    if (!refreshTokens.includes(refreshToken)) {
+         res.status(403).json({ message: 'Refresh token invalide ou expiré !' });
+         return
+    }
+
+    // Supprime le refresh token du tableau
+    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+
+    // Répond avec un message de succès
+    res.status(200).json({ message: 'Vous avez été déconnecté avec succès !' });
+});
+
+
 
 // Endpoint pour récupérer tous les utilisateurs sert pour ladmin
 app.get('/users', async (req: Request, res: Response): Promise<void> => {
