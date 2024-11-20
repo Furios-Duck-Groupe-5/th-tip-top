@@ -16,6 +16,8 @@ npx tsc
 mv ../dist/index.js ../dist/index.cjs
 node ../dist/index.cjs
 
+voila pour la bdd
+
 
 pour remplir la bdd :
 -- Créer une fonction pour générer un code aléatoire de 10 caractères
