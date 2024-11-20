@@ -244,17 +244,36 @@ app.delete('/users/:id_user', async (req: Request, res: Response): Promise<void>
     try {
         // Vérifiez si l'utilisateur existe d'abord
         const userExists = await pool.query('SELECT * FROM Utilisateur WHERE id_user = $1', [id_user]);
+
         if (userExists.rows.length === 0) {
-            //    return res.status(404).json({ message: 'Utilisateur non trouvé.' });
-            console.log("non trouve")
+            // Si l'utilisateur n'est pas trouvé, retournez une erreur 404
+             res.status(404).json({ message: 'Utilisateur non trouvé.' });
+             return
         }
 
         // Supprimez l'utilisateur de la base de données
-        await pool.query('DELETE FROM Utilisateur WHERE id_user = $1', [id_user]);
+        const deleteResult = await pool.query('DELETE FROM Utilisateur WHERE id_user = $1', [id_user]);
+
+        // Si aucune ligne n'a été supprimée, cela signifie qu'il y a un problème avec la suppression
+        if (deleteResult.rowCount === 0) {
+             res.status(400).json({ message: 'Erreur lors de la suppression de l\'utilisateur.' });
+             return
+        }
+
+        // Réponse de succès
         res.status(200).json({ message: 'Utilisateur supprimé avec succès.' });
-        console.log("suppression done")
+        console.log("Suppression réussie pour l'utilisateur ID:", id_user);
     } catch (error) {
+        // Gestion des erreurs de suppression (par exemple, violation de contrainte de clé étrangère)
         console.error('Erreur lors de la suppression de l\'utilisateur :', error);
+
+        // Vérification des erreurs spécifiques comme une violation de contrainte de clé étrangère
+        if ((error as any).code === '23503') {
+             res.status(400).json({ message: 'Impossible de supprimer l\'utilisateur. Il est référencé dans une autre table.' });
+             return
+        }
+
+        // Erreur générique pour d'autres types d'erreurs
         res.status(500).json({ message: 'Erreur lors de la suppression de l\'utilisateur.' });
     }
 });
@@ -329,9 +348,6 @@ app.post('/add-employee', async (req: Request, res: Response): Promise<void> => 
         if (error instanceof Error) {
             console.error('Erreur lors de l\'ajout de l\'employé :', error.message);
             res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'employé.' });
-            return; 
-            console.error('Erreur inconnue :', error);
-            res.status(500).json({ message: 'Une erreur inconnue s\'est produite.' });
             return; 
         }
     }
