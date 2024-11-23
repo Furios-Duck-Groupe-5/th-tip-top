@@ -15,6 +15,7 @@ import { Box, Button, Typography, Container, TextField, Snackbar, Dialog, Dialog
 import { CheckCircle, ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../ConnexionInscription/AuthContext";
 
 const ImageList = [
   { id: 1, img: BiryaniImg1 },
@@ -69,61 +70,97 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
         return BiryaniImg1; // Image par défaut au cas où aucun gain ne correspond
     }
   };
+  const { roleId } = useAuth(); // Récupérer roleId depuis le contexte
+
 
   const handleSubmitCode = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Logique principale après validation du roleId
 
-    if (code.length !== 10) {
-      setSnackbarMessage("Le code saisi n'est pas valide. Veuillez réessayer.");
-      setSnackbarType("error");
-      setOpenSnackbar(true);
-      return;
-    }
-
-    const token = localStorage.getItem("authToken");
-    if (!token) {
+    if (!roleId || ![1, 2, 3].includes(roleId)) {
       setSnackbarMessage("Vous devez être connecté pour participer.");
       setSnackbarType("error");
       setOpenSnackbar(true);
+  
+      // Redirection vers la page de connexion après un délai
+      setTimeout(() => {
+          navigate("/login");
+      }, 2000); // Attend 2 secondes avant de rediriger
       return;
-    }
-
-    try {
-      const response = await axios.post(
-        "https://backend.dsp5-archi-o23-15m-g5.fr/participer",
-        { code_ticket: code },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        setSnackbarMessage(response.data.message);
-        setSnackbarType("success");
-        setOpenSnackbar(true);
-
-        // Récupère le gain depuis la réponse du backend et l'affiche dans le popup
-        const gain = response.data.gain;
-        setLotGagne(gain);
-
-        // Met à jour l'image en fonction du gain
-        setImageId(getImageForPrize(gain));
-
-        setOpenPopup(true);
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setSnackbarMessage(error.response?.data.message || "Une erreur est survenue. Veuillez réessayer.");
-      } else {
-        setSnackbarMessage("Une erreur s'est produite lors de la participation.");
-      }
-
+  }
+  
+  // Ajouter les conditions spécifiques pour les rôles 2 et 3
+  if (roleId === 2) {
+      setSnackbarMessage("Vous êtes administrateur. Vous n'avez pas le droit de participer.");
       setSnackbarType("error");
       setOpenSnackbar(true);
+  
+      // Redirection vers la page d'accueil après un délai de 2 secondes
+      setTimeout(() => {
+          navigate("/"); // Redirige vers la page d'accueil ou une autre page
+      }, 2000); // Attend 2 secondes avant de rediriger
+      return;
+  }
+  
+  if (roleId === 3) {
+      setSnackbarMessage("Vous êtes employé. Vous n'avez pas le droit de participer.");
+      setSnackbarType("error");
+      setOpenSnackbar(true);
+  
+      // Redirection vers la page d'accueil après un délai de 2 secondes
+      setTimeout(() => {
+          navigate("/"); // Redirige vers la page d'accueil ou une autre page
+      }, 2000); // Attend 2 secondes avant de rediriger
+      return;
+  }
+  
+  // Code pour les autres rôles si nécessaire
+  
+
+    // Vérification de la validité du code
+    if (code.length !== 10) {
+        setSnackbarMessage("Le code saisi n'est pas valide. Veuillez réessayer.");
+        setSnackbarType("error");
+        setOpenSnackbar(true);
+        return;
     }
-  };
+
+    const token = localStorage.getItem("authToken");
+
+    try {
+        const response = await axios.post(
+            "https://backend.dsp5-archi-o23-15m-g5.fr/participer",
+            { code_ticket: code },
+            {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (response.status === 200) {
+            setSnackbarMessage(response.data.message);
+            setSnackbarType("success");
+            setOpenSnackbar(true);
+
+            const gain = response.data.gain;
+            setLotGagne(gain);
+            setImageId(getImageForPrize(gain));
+            setOpenPopup(true);
+        }
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            setSnackbarMessage(error.response?.data.message || "Une erreur est survenue. Veuillez réessayer.");
+        } else {
+            setSnackbarMessage("Une erreur s'est produite lors de la participation.");
+        }
+
+        setSnackbarType("error");
+        setOpenSnackbar(true);
+    }
+};
+
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       // Changer l'image en fonction de l'index
