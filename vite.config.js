@@ -11,7 +11,7 @@ export default defineConfig({
     },
     proxy: {
       '/': { // Redirige toutes les requêtes vers votre backend
-        target: 'http://40.66.40.126:4003', // URL de votre backend
+        target: 'http://40.66.40.126:4003', // URL de votre backendeef
         changeOrigin: true, // Change l'origine de la requête pour correspondre au backend
         secure: false, // Si le backend utilise un certificat SSL auto-signé
       },
