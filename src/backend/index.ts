@@ -10,7 +10,7 @@ import fs from 'fs';
 // Charger les variables d'environnement
 dotenv.config();
 
-const app = express();
+export const app = express();
 const port = 4001;
 
 // Middleware pour analyser les données JSON
