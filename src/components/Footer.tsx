@@ -21,7 +21,7 @@ const Footer = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://backend.dsp5-archi-o23-15m-g5.fr/add-email", {
+      const response = await fetch("http://40.66.40.126:4003/add-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

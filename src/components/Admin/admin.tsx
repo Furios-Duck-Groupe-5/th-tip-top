@@ -34,7 +34,7 @@ const AdminPage: React.FC = () => {
 
   const handleExportData = async () => {
     try {
-      const response = await axios.get('https://backend.dsp5-archi-o23-15m-g5.fr/export-users', {
+      const response = await axios.get('http://40.66.40.126:4003/export-users', {
         responseType: 'blob', // Pour traiter le fichier en tant que blob (données binaires)
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -66,7 +66,7 @@ const AdminPage: React.FC = () => {
         message,
       };
       // Remplacer l'URL par celle de votre backend
-      await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/send-newsletter", notificationData);
+      await axios.post("http://40.66.40.126:4003/send-newsletter", notificationData);
 
       setOpenSnackbar(true);
       handleCloseNotificationDialog();

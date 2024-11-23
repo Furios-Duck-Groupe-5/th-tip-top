@@ -34,7 +34,7 @@ const EmployeePrizePage: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/get-user-tickets", {
+            const response = await axios.post("http://40.66.40.126:4003/get-user-tickets", {
                 nom: name,
                 email: email,
             });
@@ -78,7 +78,7 @@ const EmployeePrizePage: React.FC = () => {
             const requestData = { newStatus: true };
 
             const response = await axios.put(
-                `https://backend.dsp5-archi-o23-15m-g5.fr/update-ticket-status/${id_ticket}`,
+                `http://40.66.40.126:4003/update-ticket-status/${id_ticket}`,
                 requestData,
                 {
                     headers: {

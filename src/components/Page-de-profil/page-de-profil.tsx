@@ -26,7 +26,7 @@ const ProfilePage: FC = () => {
         return;
       }
 
-      const response = await axios.get("https://backend.dsp5-archi-o23-15m-g5.fr/user-profile", {
+      const response = await axios.get("http://40.66.40.126:4003/user-profile", {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -81,7 +81,7 @@ const ProfilePage: FC = () => {
         return;
       }
 
-      await axios.put("https://backend.dsp5-archi-o23-15m-g5.fr/user-profile", updatedUserData, {
+      await axios.put("http://40.66.40.126:4003/user-profile", updatedUserData, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

@@ -90,7 +90,7 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
 
     try {
       const response = await axios.post(
-        "https://backend.dsp5-archi-o23-15m-g5.fr/participer",
+        "http://40.66.40.126:4003/participer",
         { code_ticket: code },
         {
           headers: {

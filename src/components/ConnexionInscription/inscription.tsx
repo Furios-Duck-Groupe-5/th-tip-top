@@ -84,7 +84,7 @@ const SignUpPage: FC = () => {
 
         try {
           // Envoyer les données à l'API
-          const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/signup", userData);
+          const response = await axios.post("http://40.66.40.126:4003/signup", userData);
           console.log("Response from API:", response.data);
           setSuccessMessage("Inscription réussie !");
         } catch (error) {

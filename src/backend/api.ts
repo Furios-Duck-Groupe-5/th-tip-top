@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://backend.dsp5-archi-o23-15m-g5.fr", // Your backend URL
+  baseURL: "http://40.66.40.126:4003", // Your backend URL
 });
 
 // Request interceptor for adding the access token
