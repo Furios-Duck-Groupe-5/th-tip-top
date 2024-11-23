@@ -21,8 +21,8 @@ const Navbar: FC = () => {
       window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
-      // Handle error as necessary
-    }
+      return   
+     }
   };
 
   return (
@@ -39,7 +39,7 @@ const Navbar: FC = () => {
                 position: 'absolute',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                left: '75px',
+               // left: '75px',
                 marginTop: 7
               }}
             />

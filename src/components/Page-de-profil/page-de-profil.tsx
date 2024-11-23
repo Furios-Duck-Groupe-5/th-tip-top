@@ -1,7 +1,6 @@
 import { FC, useState, useEffect } from "react";
-import { TextField, Button, Typography, Container, Box, Alert, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { TextField, Button, Typography, Container, Box, Alert, FormControl, InputLabel, Select, MenuItem, DialogActions, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import axios from "axios";
-import logo from "../../assets/thebgbg.png";
 import React from "react";
 
 const ProfilePage: FC = () => {
@@ -15,6 +14,8 @@ const ProfilePage: FC = () => {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [openDialog, setOpenDialog] = useState<boolean>(false); // Gérer l'ouverture du dialog
+  const [deleting, setDeleting] = useState<boolean>(false); // Indicateur de suppression
   // Fonction pour récupérer les données de l'utilisateur
   const fetchUserData = async () => {
     try {
@@ -96,6 +97,8 @@ const ProfilePage: FC = () => {
       }
     }
   };
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
 
   return (
     <Box
@@ -113,11 +116,7 @@ const ProfilePage: FC = () => {
         maxWidth="xs"
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -5 }}
       >
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ height: '120px', marginBottom: '24px' }}
-        />
+
 
         <Box
           sx={{
@@ -210,9 +209,49 @@ const ProfilePage: FC = () => {
             >
               {loading ? "Chargement..." : "Mettre à jour"}
             </Button>
+
           </form>
+          {/* Bouton pour supprimer le compte */}
+          <Button
+            variant="outlined"
+            fullWidth
+            sx={{
+              borderColor: 'red',
+              color: 'red',
+              '&:hover': { borderColor: '#D32F2F', color: '#D32F2F' },
+              marginTop: 2
+            }}
+            onClick={handleOpenDialog}
+            disabled={loading || deleting}
+          >
+            {deleting ? "Suppression..." : "Supprimer le compte"}
+          </Button>
         </Box>
       </Container>
+
+      {/* Dialog de confirmation de suppression */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Confirmer la suppression de compte</DialogTitle>
+        <DialogContent>
+          <Typography>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">Annuler</Button>
+          <Button
+          //  onClick={handleDeleteAccount}
+            sx={{
+              color: '#DDA15E', // Set the text color to #DDA15E
+              '&:hover': {
+                color: '#d19c5c', // Set a darker shade of the color on hover, optional
+              }
+            }}
+            disabled={deleting}
+          >
+            {deleting ? "Suppression..." : "Supprimer"}
+          </Button>
+
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

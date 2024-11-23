@@ -23,7 +23,7 @@ const LoginPage: FC = () => {
       setErrorMessage("");
   
       try {
-          const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/login", { email, mot_de_passe });
+          const response = await axios.post('https://backend.dsp5-archi-o23-15m-g5.fr/login', { email, mot_de_passe });
           
           if (response.status === 200) {
               console.log("Connexion réussie:", response.data);
@@ -60,11 +60,6 @@ const LoginPage: FC = () => {
                 maxWidth="xs"
                 sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -25 }}
             >
-                <img 
-                    src={logo} 
-                    alt="Logo" 
-                    style={{ height: '120px', marginBottom: '24px' }} 
-                />
 
                 <Box 
                     sx={{ 

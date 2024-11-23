@@ -12,7 +12,7 @@ const HeroSection = () => {
     navigate("/lots")
   }
   const handleGoToDraw = () => {
-    navigate("/participation")
+    navigate("/")
   }
   return (
     <>

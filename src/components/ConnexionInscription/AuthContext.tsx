@@ -6,6 +6,7 @@ interface AuthContextType {
     roleId: number | null; // Add roleId to manage user roles
     login: (roleId: number) => void; // Modify login to accept roleId
     logout: () => void;
+
 }
 
 // Create the context with a default value

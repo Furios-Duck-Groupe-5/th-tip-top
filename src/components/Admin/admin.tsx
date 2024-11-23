@@ -27,13 +27,14 @@ import { useAuth } from '../ConnexionInscription/AuthContext';
 
 const AdminPage: React.FC = () => {
   const [view, setView] = useState<string>('home'); // Etat pour gérer la vue active
-  const [message, setMessage] = useState<string>('');
+  const [subject, setSubject] = useState<string>(''); // Sujet de la notification
+  const [message, setMessage] = useState<string>(''); // Message de la notification
   const [openNotificationDialog, setOpenNotificationDialog] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
   const handleExportData = async () => {
     try {
-      const response = await axios.get("https://backend.dsp5-archi-o23-15m-g5.fr/export-users", {
+      const response = await axios.get('https://backend.dsp5-archi-o23-15m-g5.fr/export-users', {
         responseType: 'blob', // Pour traiter le fichier en tant que blob (données binaires)
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -53,18 +54,27 @@ const AdminPage: React.FC = () => {
 
   const handleCloseNotificationDialog = () => {
     setOpenNotificationDialog(false);
+    setSubject('');
     setMessage('');
   };
 
   const handleSendNotification = async () => {
     try {
-      // Envoi de la notification (à implémenter selon ton backend)
+      // Envoi de la notification avec le sujet et le message
+      const notificationData = {
+        subject,
+        message,
+      };
+      // Remplacer l'URL par celle de votre backend
+      await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/send-newsletter", notificationData);
+
       setOpenSnackbar(true);
       handleCloseNotificationDialog();
     } catch (error) {
       console.error('Erreur lors de l\'envoi du message:', error);
     }
   };
+
   const { logout } = useAuth();
 
   const handleLogout = async () => {
@@ -73,6 +83,7 @@ const AdminPage: React.FC = () => {
       window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
+      return;
     }
   };
 
@@ -154,7 +165,6 @@ const AdminPage: React.FC = () => {
             Déconnexion
           </Button>
         </Box>
-
       </Drawer>
 
       {/* Main Content */}
@@ -187,6 +197,16 @@ const AdminPage: React.FC = () => {
             <TextField
               autoFocus
               margin="dense"
+              id="subject"
+              label="Sujet"
+              type="text"
+              fullWidth
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="dense"
               id="message"
               label="Votre Message"
               type="text"
@@ -202,7 +222,7 @@ const AdminPage: React.FC = () => {
             <Button onClick={handleCloseNotificationDialog} color="primary">
               Annuler
             </Button>
-            <Button onClick={handleSendNotification} color="primary" disabled={!message.trim()}>
+            <Button onClick={handleSendNotification} color="primary" disabled={!subject.trim() || !message.trim()}>
               Envoyer
             </Button>
           </DialogActions>

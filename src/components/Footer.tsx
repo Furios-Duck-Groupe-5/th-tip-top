@@ -1,9 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid, Typography, Link, Divider, Avatar, TextField, Button, IconButton } from "@mui/material";
-import { Facebook, Instagram, Twitter, LinkedIn, Pinterest } from "@mui/icons-material"; 
+import { Facebook, Instagram, Twitter, LinkedIn, Pinterest, X } from "@mui/icons-material"; 
 import logo from "../assets/thebgbg.png"; 
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleEmailChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    setEmail(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (!email) {
+      setMessage("Veuillez entrer un email valide.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("https://backend.dsp5-archi-o23-15m-g5.fr/add-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage("Vous êtes bien inscrit à la newsletter !");
+        setEmail(""); // Clear input after success
+      } else {
+        setMessage(data.message || "Une erreur est survenue. Essayez à nouveau.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'inscription à la newsletter :", error);
+      setMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box
       component="footer"
@@ -89,15 +130,29 @@ const Footer = () => {
             fullWidth
             placeholder="Entrez votre email"
             size="small"
+            value={email}
+            onChange={handleEmailChange}
             sx={{ mb: 2 }}
           />
           <Button
             variant="contained"
             sx={{ bgcolor: "#DDA15E", "&:hover": { bgcolor: "#cc8d53" } }}
             fullWidth
+            onClick={handleSubmit}
+            disabled={loading}
           >
-            S'inscrire
+            {loading ? "En cours..." : "S'inscrire"}
           </Button>
+          {message && (
+            <Typography
+              variant="body2"
+              color={message.includes("succès") ? "success.main" : "error.main"}
+              align="center"
+              sx={{ mt: 2 }}
+            >
+              {message}
+            </Typography>
+          )}
         </Grid>
 
         <Grid item xs={12} textAlign="center">
@@ -113,13 +168,7 @@ const Footer = () => {
               <Instagram />
             </IconButton>
             <IconButton href="https://twitter.com" target="_blank" sx={{ color: "#1DA1F2", mx: 1 }}>
-              <Twitter />
-            </IconButton>
-            <IconButton href="https://linkedin.com" target="_blank" sx={{ color: "#0077B5", mx: 1 }}>
-              <LinkedIn />
-            </IconButton>
-            <IconButton href="https://pinterest.com" target="_blank" sx={{ color: "#E60023", mx: 1 }}>
-              <Pinterest />
+              <X />
             </IconButton>
           </Box>
         </Grid>

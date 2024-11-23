@@ -139,6 +139,8 @@ const AddEmployeePage: React.FC = () => {
             >
               <MenuItem value="H">Homme</MenuItem>
               <MenuItem value="F">Femme</MenuItem>
+              <MenuItem value="A">Autre</MenuItem>
+
             </TextField>
           </Grid>
 

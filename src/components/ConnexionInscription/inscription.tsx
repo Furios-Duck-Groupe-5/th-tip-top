@@ -1,85 +1,130 @@
 import { FC, useState } from "react";
 import { TextField, Button, Typography, Container, Box, Alert, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import logo from "../../assets/thebgbg.png";
 import React from "react";
-import axios from "axios"; 
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage: FC = () => {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
-  const [gender, setGender] = useState<boolean | null>(null); // Modifié pour être un booléen ou null
+  const [gender, setGender] = useState<boolean | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>(""); // Pour le message de succès
+  const [successMessage, setSuccessMessage] = useState<string>("");
+
+  const handleLoginRedirect = () => {
+    navigate("/login");
+  };
+
+  // Fonction de vérification de la solidité du mot de passe
+  const checkPasswordStrength = (password: string) => {
+    const lengthCheck = password.length >= 8;
+    const upperCheck = /[A-Z]/.test(password);
+    const lowerCheck = /[a-z]/.test(password);
+    const numberCheck = /\d/.test(password);
+
+    return {
+      lengthCheck,
+      upperCheck,
+      lowerCheck,
+      numberCheck,
+    };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // Vérification des valeurs
+    console.log("Values on submit:", {
+      firstName,
+      lastName,
+      dateOfBirth,
+      gender,
+      email,
+      password,
+      confirmPassword,
+    });
+
     // Vérifier si tous les champs sont remplis
-    if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password) {
+    if (!firstName || !lastName || !dateOfBirth || gender === null || !email || !password || !confirmPassword) {
       setErrorMessage("Veuillez remplir tous les champs.");
+      console.error("Erreur: champs incomplets");
     } else {
-      setErrorMessage("");
+      const passwordStrength = checkPasswordStrength(password);
 
-      // Préparer les données pour l'envoi
-      const userData = {
-        nom: lastName,
-        prenom: firstName,
-        date_de_naissance: dateOfBirth,
-        sexe: gender ? "H" : "F", // Ici, on suppose que 'male' est vrai et 'female' est faux
-        email: email,
-        mot_de_passe: password,
-      };
+      // Vérification des critères du mot de passe
+      if (!passwordStrength.lengthCheck) {
+        setErrorMessage("Le mot de passe doit contenir au moins 8 caractères.");
+      } else if (!passwordStrength.upperCheck) {
+        setErrorMessage("Le mot de passe doit contenir au moins une majuscule.");
+      } else if (!passwordStrength.lowerCheck) {
+        setErrorMessage("Le mot de passe doit contenir au moins une minuscule.");
+      } else if (!passwordStrength.numberCheck) {
+        setErrorMessage("Le mot de passe doit contenir au moins un chiffre.");
+      } else if (password !== confirmPassword) {
+        setErrorMessage("Les mots de passe ne correspondent pas.");
+      } else {
+        setErrorMessage(""); // Réinitialiser les messages d'erreur
 
-      try {
-        // Envoyer les données à l'API
-        const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/signup", userData);
-        setSuccessMessage("Inscription réussie !");
-        console.log(response.data);
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          // Gérer les erreurs renvoyées par le serveur
-          setErrorMessage(error.response.data.message || "Une erreur s'est produite.");
-        } else {
-          setErrorMessage("Erreur de connexion au serveur.");
+        // Préparer les données pour l'envoi
+        const userData = {
+          nom: lastName,
+          prenom: firstName,
+          date_de_naissance: dateOfBirth,
+          sexe: gender ? "H" : "F",
+          email: email,
+          mot_de_passe: password,
+        };
+
+        console.log("User data prepared for sending:", userData);
+
+        try {
+          // Envoyer les données à l'API
+          const response = await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/signup", userData);
+          console.log("Response from API:", response.data);
+          setSuccessMessage("Inscription réussie !");
+        } catch (error) {
+          // Vérifier si l'erreur vient d'Axios
+          if (axios.isAxiosError(error) && error.response) {
+            console.error("API error:", error.response.data);
+            setErrorMessage(error.response.data.message || "Une erreur s'est produite.");
+          } else {
+            console.error("Error with the server connection:", error);
+            setErrorMessage("Erreur de connexion au serveur.");
+          }
         }
       }
     }
   };
 
   return (
-    <Box 
-      sx={{ 
-        bgcolor: "#f5f5f5", 
-        height: "100vh", 
-        display: "flex", 
-        alignItems: "center", 
+    <Box
+      sx={{
+        bgcolor: "#f5f5f5",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
         justifyContent: "center",
-        mt: -5
+        mt: -5,
       }}
     >
       <Container
         component="main"
         maxWidth="xs"
-        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt :-5 }}
+        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: -5 }}
       >
-        <img 
-          src={logo} 
-          alt="Logo" 
-          style={{ height: '120px', marginBottom: '24px' }} 
-        />
-
-        <Box 
-          sx={{ 
-            bgcolor: 'white', 
-            padding: 4, 
-            borderRadius: 2, 
-            boxShadow: 3, 
+        <Box
+          sx={{
+            bgcolor: 'white',
+            padding: 4,
+            borderRadius: 2,
+            boxShadow: 3,
             width: '100%',
-            mt : -5
+            mt: -5
           }}
         >
           <Typography component="h1" variant="h5" align="center" gutterBottom>
@@ -123,19 +168,21 @@ const SignUpPage: FC = () => {
               <FormControl fullWidth variant="outlined" required sx={{ marginLeft: 1 }}>
                 <InputLabel>Genre</InputLabel>
                 <Select
-                  value={gender === null ? "" : gender ? "male" : "female"} // Affiche 'male' si true et 'female' si false
+                  value={gender === null ? "" : gender ? "male" : "female"}
                   onChange={(e) => {
                     const selectedValue = e.target.value;
+                    console.log("Gender selected:", selectedValue);  // Log de la sélection du genre
                     setGender(selectedValue === "male");
                   }}
                   label="Genre"
                 >
                   <MenuItem value="male">Homme</MenuItem>
                   <MenuItem value="female">Femme</MenuItem>
+                  <MenuItem value="other">Autre</MenuItem>
                 </Select>
               </FormControl>
             </Box>
-           
+
             <TextField
               variant="outlined"
               required
@@ -153,6 +200,16 @@ const SignUpPage: FC = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              sx={{ bgcolor: 'white', input: { color: 'black' }, marginBottom: 2 }}
+            />
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              label="Confirmer le mot de passe"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               sx={{ bgcolor: 'white', input: { color: 'black' }, marginBottom: 2 }}
             />
             <Button
@@ -184,7 +241,10 @@ const SignUpPage: FC = () => {
             Google
           </Button>
           <Typography variant="body2" align="center" sx={{ marginTop: 2 }}>
-            Vous avez déjà un compte? <a href="#" style={{ color: 'orange' }}>Se connecter</a>
+            Vous avez déjà un compte?{" "}
+            <span style={{ color: 'orange', cursor: 'pointer' }} onClick={handleLoginRedirect}>
+              Se connecter
+            </span>
           </Typography>
         </Box>
       </Container>

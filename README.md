@@ -12,7 +12,11 @@ Puis ouvrir un autre terminal:
 aller à la racine du projet puis executer un :
 yarn dev
 
+npx tsc
+mv ../dist/index.js ../dist/index.cjs
+node ../dist/index.cjs
 
+voila pour la bdd
 
 
 pour remplir la bdd :
