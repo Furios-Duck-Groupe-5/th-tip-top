@@ -1,15 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid, Typography, Link, Divider, Avatar, TextField, Button, IconButton } from "@mui/material";
-import { Facebook, Instagram, X } from "@mui/icons-material"; 
+import { Facebook, Instagram, Twitter, LinkedIn, Pinterest, X } from "@mui/icons-material"; 
 import logo from "../assets/thebgbg.png"; 
-import { To, useNavigate } from "react-router-dom";  
 
 const Footer = () => {
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Gestionnaires de clic pour chaque lien
-  const handleNavigation = (path: To) => {
-    navigate(path);
+  const handleEmailChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    setEmail(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (!email) {
+      setMessage("Veuillez entrer un email valide.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("https://backend.dsp5-archi-o23-15m-g5.fr/add-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage("Vous êtes bien inscrit à la newsletter !");
+        setEmail(""); // Clear input after success
+      } else {
+        setMessage(data.message || "Une erreur est survenue. Essayez à nouveau.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'inscription à la newsletter :", error);
+      setMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,14 +73,14 @@ const Footer = () => {
 
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant="h6" gutterBottom textAlign="center">
-            Liens utiles
+            Ressources
           </Typography>
           <Divider sx={{ mb: 2, bgcolor: "#bbb" }} />
           <ul style={{ listStyleType: "none", padding: 0, textAlign: "center" }}>
-            {["Mentions légales", "CGU", "Politique de confidentialité"].map((text) => (
+            {["Nos Thés", "Histoire du Thé", "Bienfaits du Thé", "Recettes de Thé", "Guide de Préparation"].map((text) => (
               <li key={text}>
                 <Link
-                  onClick={() => handleNavigation(`/${text.replace(/\s+/g, '-').toLowerCase()}`)}  // Gestion du clic pour chaque lien
+                  href={`/${text.replace(/\s+/g, '-').toLowerCase()}`}
                   color="inherit"
                   underline="hover"
                   sx={{
@@ -97,15 +130,29 @@ const Footer = () => {
             fullWidth
             placeholder="Entrez votre email"
             size="small"
+            value={email}
+            onChange={handleEmailChange}
             sx={{ mb: 2 }}
           />
           <Button
             variant="contained"
             sx={{ bgcolor: "#DDA15E", "&:hover": { bgcolor: "#cc8d53" } }}
             fullWidth
+            onClick={handleSubmit}
+            disabled={loading}
           >
-            S'inscrire
+            {loading ? "En cours..." : "S'inscrire"}
           </Button>
+          {message && (
+            <Typography
+              variant="body2"
+              color={message.includes("succès") ? "success.main" : "error.main"}
+              align="center"
+              sx={{ mt: 2 }}
+            >
+              {message}
+            </Typography>
+          )}
         </Grid>
 
         <Grid item xs={12} textAlign="center">

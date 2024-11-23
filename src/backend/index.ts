@@ -7,6 +7,7 @@ import { body, validationResult } from 'express-validator';
 import * as XLSX from 'xlsx';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import fs from 'fs';
+import nodemailer from 'nodemailer'
 // Charger les variables d'environnement
 dotenv.config();
 
@@ -893,6 +894,112 @@ app.post('/user-historique', authenticateJWT, async (req: Request, res: Response
     }
 });
 
+
+
+interface NodemailerError extends Error {
+    code?: string;  // Ajoutez une propriété `code` pour les erreurs de Nodemailer
+  }
+  
+  const mailUser = process.env.MAIL_USER || 'thetiptop40@gmail.com'; // Valeur par défaut
+const mailPass = process.env.MAIL_PASS || 'jqgi ehko kvsb oczy'; // Valeur par défaut
+
+if (mailUser === 'thetiptop40@gmail.com' || mailPass === 'jqgi ehko kvsb oczy') {
+    console.warn('Les variables d\'environnement MAIL_USER et MAIL_PASS ne sont pas définies. Utilisation des valeurs par défaut.');
+}
+
+// Créer le transporteur pour Nodemailer
+const transporter = nodemailer.createTransport({
+    service: 'gmail',  // Utilisez le service SMTP de votre choix
+    auth: {
+        user: mailUser, // Votre email
+        pass: mailPass, // Votre mot de passe ou mot de passe d'application
+    },
+});
+
+// Route pour envoyer la newsletter
+app.post('/send-newsletter', async (req: Request, res: Response): Promise<void> => {
+    const { subject, message } = req.body;
+
+    // Vérification des champs subject et message
+    if (!subject || !message) {
+        res.status(400).json({ message: 'Sujet et message sont requis.' });
+        return;
+    }
+
+    try {
+        // Récupérer tous les emails de la table newsletter
+        const result = await pool.query('SELECT email FROM emaling');
+        const emails = result.rows.map((row) => row.email);
+
+        if (emails.length === 0) {
+            res.status(404).json({ message: 'Aucun email trouvé dans la base de données.' });
+            return;
+        }
+
+        // Envoi des emails
+        const emailPromises = emails.map((email) => {
+            return transporter.sendMail({
+                from: mailUser, // Votre email
+                to: email,
+                subject: subject,
+                text: message,
+            });
+        });
+
+        await Promise.all(emailPromises);
+
+        res.status(200).json({ message: 'Newsletter envoyée avec succès!' });
+    } catch (error) {
+        if (error instanceof Error) {
+            const nodemailerError = error as NodemailerError; // Casting vers NodemailerError
+
+            // Si l'erreur est une instance de NodemailerError, vous pouvez maintenant accéder à `error.code`
+            console.error('Erreur lors de l\'envoi des emails :', nodemailerError);
+            if (nodemailerError.code === 'EAUTH') {
+                console.error("Erreur d'authentification SMTP : Vérifiez les identifiants (mot de passe, mot de passe d'application ou autres paramètres de sécurité).");
+            }
+        } else {
+            // Si ce n'est pas une erreur de type Error, affichez un message générique
+            console.error('Erreur inconnue lors de l\'envoi des emails :', error);
+        }
+
+        res.status(500).json({ message: 'Erreur lors de l\'envoi des emails.' });}
+});
+
+app.post('/add-email', async (req: Request, res: Response): Promise<void> => {
+    const { email } = req.body;
+
+    // Vérification que l'email est fourni
+    if (!email) {
+         res.status(400).json({ message: 'L\'email est requis.' });
+         return
+    }
+
+    // Vérification du format de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+         res.status(400).json({ message: 'Adresse email invalide.' });
+         return
+    }
+
+    try {
+        // Vérifier si l'email existe déjà dans la table emailing
+        const emailExists = await pool.query('SELECT * FROM emaling WHERE email = $1', [email]);
+        if (emailExists.rows.length > 0) {
+             res.status(400).json({ message: 'Cet email existe déjà dans la liste.' });
+             return
+        }
+
+        // Insérer l'email dans la table emailing
+        const newEmail = await pool.query('INSERT INTO emaling (email) VALUES ($1) RETURNING *', [email]);
+
+        // Retourner la réponse avec l'email ajouté
+        res.status(201).json({ message: 'Email ajouté avec succès!', email: newEmail.rows[0] });
+    } catch (error) {
+        console.error('Erreur lors de l\'ajout de l\'email :', error);
+        res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'email.' });
+    }
+});
 
 
 // Démarrer le serveur
