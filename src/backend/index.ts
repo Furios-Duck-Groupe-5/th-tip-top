@@ -983,7 +983,7 @@ app.post('/api/add-email', async (req: Request, res: Response): Promise<void> =>
     }
 
     try {
-        // Vérifier si l'email existe déjà dans la table emailing
+        // Vérifier si l'email existe déjà dans la table emailingjjjj
         const emailExists = await pool.query('SELECT * FROM emaling WHERE email = $1', [email]);
         if (emailExists.rows.length > 0) {
              res.status(400).json({ message: 'Cet email existe déjà dans la liste.' });
