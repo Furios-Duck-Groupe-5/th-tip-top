@@ -31,23 +31,33 @@ import ProfilePage from "./components/Page-de-profil/page-de-profil";
 import AdminPage from "./components/Admin/admin";
 import React, { PropsWithChildren } from "react";
 import NotFound from "./404";
+import AccessDenied from "./components/PrivateRoutes/access-denied";
 
 // Protected Route Component
-const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
-  const { isLoggedIn } = useAuth();
-  return isLoggedIn ? children : <Navigate to="/login" />;
+const ProtectedRoute: React.FC<{ children: JSX.Element; requiredRoles: number[] }> = ({ children, requiredRoles }) => {
+  const { isLoggedIn, roleId } = useAuth();
+
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Vérifiez si roleId est non-null et si le rôle est dans la liste des rôles requis
+  if (roleId === null || !requiredRoles.includes(roleId)) {
+    return <Navigate to="/access-denied" replace />;
+  }
+
+  return children;
 };
 
 // Layout component to control Navbar and Footer display
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const location = useLocation();
-  //const hideNavbarAndFooter = location.pathname === "/";
   const hideAdmin = location.pathname === "/admin";
   const hideEmployee = location.pathname === "/page-employee";
 
   const isParticipationPage = location.pathname === "/participation";
-  const islogin = location.pathname === "/login";
-  const issignup = location.pathname === "/signup";
+  const isLogin = location.pathname === "/login";
+  const isSignup = location.pathname === "/signup";
 
   return (
     <>
@@ -57,11 +67,11 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <title>Mon Application Thé tip top concours</title>
         <meta name="description" content="Description de l'application" />
       </Helmet>
-      {  !hideAdmin && !hideEmployee && <Navbar />}
-      <div className={isParticipationPage || islogin || issignup ? "pt-20" : ""}>
+      {!hideAdmin && !hideEmployee && <Navbar />}
+      <div className={isParticipationPage || isLogin || isSignup ? "pt-20" : ""}>
         {children}
       </div>
-      {  !hideAdmin && !hideEmployee && <Footer />}
+      {!hideAdmin && !hideEmployee && <Footer />}
     </>
   );
 };
@@ -75,14 +85,14 @@ const App: React.FC = () => {
         <Layout>
           <Routes>
             <Route path="/" element={
-                <>
-                  <Helmet>
-                    <title>Accueil - Mon Application</title>
-                    <meta name="description" content="Page d'accueil de notre application React." />
-                  </Helmet>
-                  <ParticipationPage />
-                </>
-              } />
+              <>
+                <Helmet>
+                  <title>Accueil - Mon Application</title>
+                  <meta name="description" content="Page d'accueil de notre application React." />
+                </Helmet>
+                <ParticipationPage />
+              </>
+            } />
             {/* About Us Page (Qui sommes nous) */}
             <Route path="/participation" element={
               <>
@@ -97,22 +107,93 @@ const App: React.FC = () => {
             } />
             {!isLoggedIn && <Route path="/login" element={<LoginPage />} />}
             {!isLoggedIn && <Route path="/signup" element={<SignUpPage />} />}
-            <Route path="/mon-compte" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-            <Route path="/detailed-statistics" element={<DetailedStatisticsPage />} />
-            <Route path="/users" element={<UserListPage />} />
-            <Route path="/page-employee" element={<EmployeePrizePage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/lots" element={<LotsPage />} />
-            <Route path="/add-employee" element={<AddEmployeePage />} />
-            <Route path="/employee" element={<EmployeePrizePage />} />
-            <Route path="/gain-historique" element={<UserGainHistoryPage />} />
-            <Route path="/grand-tirage" element={<GrandTiragePage />} />
+
             <Route path="/mentions-légales" element={<LegalMentions />} />
             <Route path="/cgu" element={<TermsOfUse />} />
             <Route path="/politique-de-confidentialité" element={<PrivacyPolicy />} />
             <Route path="/explication" element={<ExplanationPage />} />
+
+            {/* Pages protégées par rôle */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute requiredRoles={[2]}>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/detailed-statistics"
+              element={
+                <ProtectedRoute requiredRoles={[2]}>
+                  <DetailedStatisticsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/users"
+              element={
+                <ProtectedRoute requiredRoles={[2]}>
+                  <UserListPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/add-employe"
+              element={
+                <ProtectedRoute requiredRoles={[2]}>
+                  <AddEmployeePage />
+                </ProtectedRoute>
+              }
+            />
+
+
+            <Route
+              path="/grand-tirage"
+              element={
+                <ProtectedRoute requiredRoles={[2]}>
+                  <GrandTiragePage />
+                </ProtectedRoute>
+              }
+            />
+
+
+            <Route
+              path="/page-employee"
+              element={
+                <ProtectedRoute requiredRoles={[3]}>
+                  <EmployeePage />
+                </ProtectedRoute>
+              }
+            />
+
+
+            <Route
+              path="/mon-compte"
+              element={
+                <ProtectedRoute requiredRoles={[1, 2, 3]}>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/gain-historique"
+              element={
+                <ProtectedRoute requiredRoles={[1]}>
+                  <UserGainHistoryPage />
+                </ProtectedRoute>
+              }
+            />
+
+
+            {/* Pages d'erreur et accès refusé */}
+            <Route path="/access-denied" element={<AccessDenied />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
