@@ -192,7 +192,7 @@ const verifyJWT = (token: string, secret: string): void => {
 };
 
 
-app.post('/login', async (req: Request, res: Response): Promise<void> => {
+app.post('/api/login', async (req: Request, res: Response): Promise<void> => {
     const { email, mot_de_passe } = req.body;
 
     // Vérifie que l'email et le mot de passe sont fournis
