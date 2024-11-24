@@ -41,7 +41,7 @@ const ProtectedRoute: React.FC<{ children: JSX.Element; requiredRoles: number[] 
     return <Navigate to="/login" replace />;
   }
 
-  // Vérifiez si roleId est non-null et si le rôle est dans la liste des rôles requis
+  // Vérifiez si roleId est non-null et si le rôle est dans la liste des rôles requis.
   if (roleId === null || !requiredRoles.includes(roleId)) {
     return <Navigate to="/access-denied" replace />;
   }
