@@ -63,7 +63,7 @@ app.get('/', async (req: Request, res: Response) => {
   
 
 
-    app.post('/signup', [
+    app.post('/api/signup', [
         // Validation des champs...
     ], async (req: Request, res: Response): Promise<void> => {
         const errors = validationResult(req);
@@ -246,7 +246,7 @@ app.post('/api/login', async (req: Request, res: Response): Promise<void> => {
 });
 
 
-app.post('/logout', (req: Request, res: Response): void => {
+app.post('/api/logout', (req: Request, res: Response): void => {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
@@ -270,7 +270,7 @@ app.post('/logout', (req: Request, res: Response): void => {
 
 
 // Endpoint pour récupérer tous les utilisateurs sert pour ladmin
-app.get('/users', async (req: Request, res: Response): Promise<void> => {
+app.get('/api/users', async (req: Request, res: Response): Promise<void> => {
     try {
         // Exécutez la requête pour récupérer tous les utilisateurs
         const result = await pool.query('SELECT * FROM Utilisateur');
@@ -297,7 +297,7 @@ app.get('/users', async (req: Request, res: Response): Promise<void> => {
 });
 
 // Endpoint pour supprimer un utilisateur par ID
-app.delete('/users/:id_user', async (req: Request, res: Response): Promise<void> => {
+app.delete('/api/users/:id_user', async (req: Request, res: Response): Promise<void> => {
     const { id_user } = req.params;
 
     try {
@@ -349,7 +349,7 @@ app.delete('/users/:id_user', async (req: Request, res: Response): Promise<void>
 
 
 
-app.put('/users/:id_user', async (req: Request, res: Response): Promise<void> => {
+app.put('/api/users/:id_user', async (req: Request, res: Response): Promise<void> => {
     const { id_user } = req.params;
     const { prenom, nom, role_id, email, sexe, date_de_naissance } = req.body;
 
@@ -376,7 +376,7 @@ app.put('/users/:id_user', async (req: Request, res: Response): Promise<void> =>
 });
 
 
-app.post('/add-employee', async (req: Request, res: Response): Promise<void> => {
+app.post('/api/add-employee', async (req: Request, res: Response): Promise<void> => {
     const { nom, prenom, date_de_naissance, sexe, email, mot_de_passe } = req.body;
     const role_id = 3; // Assign role_id 3 for employees
 
@@ -422,7 +422,7 @@ app.post('/add-employee', async (req: Request, res: Response): Promise<void> => 
     }
 });
 
-app.get('/statistics', async (req: Request, res: Response): Promise<void> => {
+app.get('/api/statistics', async (req: Request, res: Response): Promise<void> => {
     try {
         // Requête pour obtenir les statistiques de sexe
         const genderStats = await pool.query(`
@@ -458,7 +458,7 @@ app.get('/statistics', async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-app.get('/ticket-statistics', async (req: Request, res: Response): Promise<void> => {
+app.get('/api/ticket-statistics', async (req: Request, res: Response): Promise<void> => {
     try {
       // Récupérer le nombre de tickets disponibles (status = true)
       const availableTicketsQuery = `
@@ -490,7 +490,7 @@ app.get('/ticket-statistics', async (req: Request, res: Response): Promise<void>
   
 
 // TODO date de naissanance ## pas de id pas de status et pas de mot de passe
-app.get('/export-users', async (req: Request, res: Response): Promise<void> => {
+app.get('/api/export-users', async (req: Request, res: Response): Promise<void> => {
     try {
         // Récupérer les utilisateurs de la base de données
         const result = await pool.query('SELECT * FROM Utilisateur');
@@ -556,7 +556,7 @@ app.get('/export-users', async (req: Request, res: Response): Promise<void> => {
 
 
 
-app.post('/participer', async (req: Request, res: Response): Promise<void> => {
+app.post('/api/participer', async (req: Request, res: Response): Promise<void> => {
     const { code_ticket } = req.body; // Le code du ticket que l'utilisateur entre
 
     // Vérifier que l'utilisateur est authentifié via JWT
@@ -654,7 +654,7 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction): void 
 export default authenticateJWT;
 
 // Endpoint pour mettre à jour le profil utilisateur
-app.put('/user-profile', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+app.put('/api/user-profile', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
     const { prenom, nom, email, sexe, date_de_naissance } = req.body;
     const userId = req.userId;  // Récupérer l'ID de l'utilisateur depuis le token JWT
 
@@ -680,7 +680,7 @@ app.put('/user-profile', authenticateJWT, async (req: Request, res: Response): P
     }
 });
 // Endpoint pour récupérer le profil utilisateur
-app.get('/user-profile', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+app.get('/api/user-profile', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId;  // Récupérer l'ID de l'utilisateur depuis le token JWT
 
     try {
@@ -701,7 +701,7 @@ app.get('/user-profile', authenticateJWT, async (req: Request, res: Response): P
     }
 });
 
-app.post('/grand-tirage', async (req: Request, res: Response): Promise<void> => {
+app.post('/api/grand-tirage', async (req: Request, res: Response): Promise<void> => {
     try {
         // 1. Récupérer un ticket aléatoire dont le statut est 'false'
         const ticketResult = await pool.query(
@@ -754,7 +754,7 @@ app.post('/grand-tirage', async (req: Request, res: Response): Promise<void> => 
 });
 
 
-app.post('/get-user-tickets', async (req: Request, res: Response): Promise<void> => {
+app.post('/api/get-user-tickets', async (req: Request, res: Response): Promise<void> => {
     const { email, nom } = req.body;
 
     if (!email || !nom) {
@@ -812,7 +812,7 @@ app.post('/get-user-tickets', async (req: Request, res: Response): Promise<void>
 });
 
 
-app.put('/update-ticket-status/:id_ticket', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+app.put('/api/update-ticket-status/:id_ticket', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
     const { id_ticket } = req.params;
     const { newStatus } = req.body;
 
@@ -857,7 +857,7 @@ app.put('/update-ticket-status/:id_ticket', authenticateJWT, async (req: Request
 });
 
 
-app.post('/user-historique', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+app.post('/api/user-historique', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId; // Get the authenticated user's ID from the request
 
     if (!userId) {
@@ -917,7 +917,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Route pour envoyer la newsletter
-app.post('/send-newsletter', async (req: Request, res: Response): Promise<void> => {
+app.post('/api/send-newsletter', async (req: Request, res: Response): Promise<void> => {
     const { subject, message } = req.body;
 
     // Vérification des champs subject et message
@@ -966,7 +966,7 @@ app.post('/send-newsletter', async (req: Request, res: Response): Promise<void> 
         res.status(500).json({ message: 'Erreur lors de l\'envoi des emails.' });}
 });
 
-app.post('/add-email', async (req: Request, res: Response): Promise<void> => {
+app.post('/api/add-email', async (req: Request, res: Response): Promise<void> => {
     const { email } = req.body;
 
     // Vérification que l'email est fourni

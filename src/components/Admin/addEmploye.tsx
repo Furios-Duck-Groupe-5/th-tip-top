@@ -39,7 +39,7 @@ const AddEmployeePage: React.FC = () => {
 
     try {
       // Send a POST request to the backend API to add the employee
-      const response = await fetch("https://backend.dsp5-archi-o23-15m-g5.fr/add-employee", {
+      const response = await fetch("https://pre-prod.dsp5-archi-o23-15m-g5.fr/api/add-employee", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

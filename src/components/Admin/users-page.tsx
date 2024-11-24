@@ -52,7 +52,7 @@ const UserListPage: React.FC = () => {
   // Fonction pour récupérer les utilisateurs depuis l'API
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://40.66.40.126:4003/users");
+      const response = await fetch("https://pre-prod.dsp5-archi-o23-15m-g5.fr/api/users");
       if (!response.ok) {
         throw new Error('Erreur lors de la récupération des utilisateurs.');
       }
@@ -100,7 +100,7 @@ const UserListPage: React.FC = () => {
 
   const handleDeleteUser = async (id_user: number) => {
     try {
-      const response = await fetch(`http://40.66.40.126:4003/users/${id_user}`, {
+      const response = await fetch(`https://pre-prod.dsp5-archi-o23-15m-g5.fr/api/users/${id_user}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -151,7 +151,7 @@ const UserListPage: React.FC = () => {
   const handleSubmit = async () => {
     if (currentUser) {
       try {
-        const response = await fetch(`http://40.66.40.126:4003/users/${currentUser.id_user}`, {
+        const response = await fetch(`https://pre-prod.dsp5-archi-o23-15m-g5.fr/api/users/${currentUser.id_user}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

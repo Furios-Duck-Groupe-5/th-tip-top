@@ -37,7 +37,7 @@ const DetailedStatisticsPage: React.FC = () => {
 
   useEffect(() => {
     // Récupérer les statistiques générales
-    fetch("http://40.66.40.126:4003/statistics")
+    fetch("https://pre-prod.dsp5-archi-o23-15m-g5.fr/api/statistics")
       .then(response => response.json())
       .then(data => {
         console.log("Données des statistiques générales:", data); // Log pour vérifier les données
@@ -54,7 +54,7 @@ const DetailedStatisticsPage: React.FC = () => {
       .catch(error => console.error('Erreur lors de la récupération des statistiques :', error));
 
     // Récupérer les statistiques des tickets
-    fetch("http://40.66.40.126:4003/ticket-statistics")
+    fetch("https://pre-prod.dsp5-archi-o23-15m-g5.fr/api/ticket-statistics")
       .then(response => response.json())
       .then(data => {
         console.log("Données des statistiques des tickets:", data); // Log pour vérifier les données des tickets

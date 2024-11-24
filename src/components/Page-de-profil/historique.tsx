@@ -23,7 +23,7 @@ const UserGainHistoryPage: React.FC = () => {
       setLoading(true); // Set loading to true before the request
 
       try {
-        const response = await axios.post("http://40.66.40.126:4003/user-historique", {}, {
+        const response = await axios.post("https://pre-prod.dsp5-archi-o23-15m-g5.fr/api/user-historique", {}, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Include JWT token from localStorage
           },
