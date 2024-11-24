@@ -1001,6 +1001,41 @@ app.post('/add-email', async (req: Request, res: Response): Promise<void> => {
     }
 });
 
+app.post('/send-notification-grand', async (req: Request, res: Response): Promise<void> => {
+    const { email, subject, message } = req.body;
+
+    // Vérification des champs requis
+    if (!email || !subject || !message) {
+        res.status(400).json({ message: 'Email, sujet et message sont requis.' });
+        return;
+    }
+
+    try {
+        // Envoi de l'email
+        const mailOptions = {
+            from: mailUser,  // Votre email
+            to: email,       // L'email du gagnant
+            subject: subject,
+            text: message,   // Le message de notification
+        };
+
+        await transporter.sendMail(mailOptions); // Envoi de l'email
+
+        res.status(200).json({ message: 'Notification envoyée avec succès!' });
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de l\'email :', error);
+
+        if (error instanceof Error) {
+            const nodemailerError = error as NodemailerError; 
+            if (nodemailerError.code === 'EAUTH') {
+                console.error("Erreur d'authentification SMTP : Vérifiez les identifiants.");
+            }
+        }
+
+        res.status(500).json({ message: 'Erreur lors de l\'envoi de la notification.' });
+    }
+});
+
 
 // Démarrer le serveur
 app.listen(port, () => {
