@@ -8,11 +8,12 @@ import * as XLSX from 'xlsx';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import fs from 'fs';
 import nodemailer from 'nodemailer'
+import path from 'path';
 // Charger les variables d'environnement
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-const app = express();
-const port = 4001;
+export const app = express();
+const port = process.env.PORT || 4001;
 
 // Middleware pour analyser les données JSON
 app.use(express.json());
@@ -20,16 +21,16 @@ app.use(express.json());
 // Configurez CORS
 app.use(cors());
 
-const pool = new Pool({
+export const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
     host: process.env.DB_HOST || 'db',
     database: process.env.DB_NAME || 'thetiptop_db',
     password: process.env.DB_PASSWORD || 'user',
     port: Number(process.env.DB_PORT) || 5432,
     
-    max: 10,  // Nombre maximum de connexions simultanées
-    idleTimeoutMillis: 100000,  // Temps avant qu'une connexion inoccupée ne soit libérée
-    connectionTimeoutMillis: 100000,  // Temps d'attente avant de donner une erreur si pas de connexion
+    max: 10, 
+    idleTimeoutMillis: 100000,  
+    connectionTimeoutMillis: 100000,  
 });
 
 // Gestion des erreurs du pool de connexions
@@ -900,12 +901,13 @@ interface NodemailerError extends Error {
     code?: string;  // Ajoutez une propriété `code` pour les erreurs de Nodemailer
   }
   
-  const mailUser = process.env.MAIL_USER || 'thetiptop40@gmail.com'; // Valeur par défaut
-const mailPass = process.env.MAIL_PASS || 'jqgi ehko kvsb oczy'; // Valeur par défaut
-
-if (mailUser === 'thetiptop40@gmail.com' || mailPass === 'jqgi ehko kvsb oczy') {
-    console.warn('Les variables d\'environnement MAIL_USER et MAIL_PASS ne sont pas définies. Utilisation des valeurs par défaut.');
-}
+  const mailUser = process.env.MAIL_USER || 'thetiptop40@gmail.com';
+  const mailPass = process.env.MAIL_PASS || 'jqgi ehko kvsb oczy';
+  
+//   if (mailUser === 'thetiptop40@gmail.com' && mailPass === 'jqgi ehko kvsb oczy') {
+//       console.warn('Les variables d\'environnement MAIL_USER et MAIL_PASS ne sont pas définies. Utilisation des valeurs par défaut.');
+//   }
+  
 
 // Créer le transporteur pour Nodemailer
 const transporter = nodemailer.createTransport({
@@ -929,12 +931,15 @@ app.post('/send-newsletter', async (req: Request, res: Response): Promise<void> 
     try {
         // Récupérer tous les emails de la table newsletter
         const result = await pool.query('SELECT email FROM emaling');
-        const emails = result.rows.map((row) => row.email);
 
-        if (emails.length === 0) {
+        // Vérifier si 'result' et 'result.rows' existent et ne sont pas vides
+        if (!result || !result.rows || result.rows.length === 0) {
             res.status(404).json({ message: 'Aucun email trouvé dans la base de données.' });
             return;
         }
+
+        // Extraire les emails
+        const emails = result.rows.map((row) => row.email);
 
         // Envoi des emails
         const emailPromises = emails.map((email) => {
@@ -950,6 +955,7 @@ app.post('/send-newsletter', async (req: Request, res: Response): Promise<void> 
 
         res.status(200).json({ message: 'Newsletter envoyée avec succès!' });
     } catch (error) {
+        // Gestion d'erreur plus détaillée
         if (error instanceof Error) {
             const nodemailerError = error as NodemailerError; // Casting vers NodemailerError
 
@@ -963,8 +969,10 @@ app.post('/send-newsletter', async (req: Request, res: Response): Promise<void> 
             console.error('Erreur inconnue lors de l\'envoi des emails :', error);
         }
 
-        res.status(500).json({ message: 'Erreur lors de l\'envoi des emails.' });}
+        res.status(500).json({ message: 'Erreur lors de l\'envoi des emails.' });
+    }
 });
+
 
 app.post('/add-email', async (req: Request, res: Response): Promise<void> => {
     const { email } = req.body;
@@ -1038,6 +1046,9 @@ app.post('/send-notification-grand', async (req: Request, res: Response): Promis
 
 
 // Démarrer le serveur
-app.listen(port, () => {
-    console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    const port = process.env.PORT || 4001;
+    app.listen(port, () => {
+        console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
+    })
+}
