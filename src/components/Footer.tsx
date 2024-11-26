@@ -77,7 +77,7 @@ const Footer = () => {
           </Typography>
           <Divider sx={{ mb: 2, bgcolor: "#bbb" }} />
           <ul style={{ listStyleType: "none", padding: 0, textAlign: "center" }}>
-            {["Nos Thés", "Histoire du Thé", "Bienfaits du Thé", "Recettes de Thé", "Guide de Préparation"].map((text) => (
+            {["CGU", "Mentions légales", "Politique de confidentialité"].map((text) => (
               <li key={text}>
                 <Link
                   href={`/${text.replace(/\s+/g, '-').toLowerCase()}`}

@@ -86,7 +86,7 @@ const LegalMentions = () => {
           6. Cookies
         </Typography>
         <Typography variant="body1" paragraph>
-          Le site utilise des cookies pour améliorer votre expérience utilisateur. Ces fichiers sont stockés sur votre ordinateur et permettent de personnaliser votre visite. Vous pouvez choisir de désactiver les cookies à tout moment dans les paramètres de votre navigateur. Pour plus d'informations sur notre utilisation des cookies, consultez notre <Link href="/politique-de-confidentialite">politique de confidentialité</Link>.
+          Le site utilise des cookies pour améliorer votre expérience utilisateur. Ces fichiers sont stockés sur votre ordinateur et permettent de personnaliser votre visite. Vous pouvez choisir de désactiver les cookies à tout moment dans les paramètres de votre navigateur. Pour plus d'informations sur notre utilisation des cookies, consultez notre <Link href="/politique-de-confidentialité">politique de confidentialité</Link>.
         </Typography>
       </Box>
 

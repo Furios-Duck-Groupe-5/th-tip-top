@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "start": "node dist/server.cjs",
     "dev:server": "ts-node --esm src/back-end/server.ts",
-    "test": "node test.js"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
