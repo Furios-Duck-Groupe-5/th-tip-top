@@ -29,7 +29,7 @@ import LoginPage from "./components/ConnexionInscription/Connexion";
 import SignUpPage from "./components/ConnexionInscription/inscription";
 import ProfilePage from "./components/Page-de-profil/page-de-profil";
 import AdminPage from "./components/Admin/admin";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import NotFound from "./404";
 import AccessDenied from "./components/PrivateRoutes/access-denied";
 
@@ -58,7 +58,13 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const isParticipationPage = location.pathname === "/participation";
   const isLogin = location.pathname === "/login";
   const isSignup = location.pathname === "/signup";
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  useEffect(() => {
+    console.log("bonjour")
+    // La page est prête pour l'hydratation (une fois que le JavaScript est chargé)
+    setIsHydrated(true);
+  }, []);
   return (
     <>
       <Helmet>
