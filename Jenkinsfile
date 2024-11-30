@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker images using Docker Compose
-                    sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} build'
+                    sh 'sudo docker compose -f ${DOCKER_COMPOSE_FILE} build'
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Start the Docker containers in detached mode
-                    sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'
+                    sh 'sudo docker compose -f ${DOCKER_COMPOSE_FILE} up -d'
                 }
             }
         }
@@ -45,7 +45,7 @@ pipeline {
     post {
         always {
             // Clean up containers after the pipeline runs (optional)
-            sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} down'
+            sh 'sudo docker image prune -a'
         }
         success {
             // Actions on successful completion (optional)
