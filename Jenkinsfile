@@ -28,7 +28,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'sudo docker compose -f ${DOCKER_COMPOSE_FILE} build'
+                    sh 'sudo docker compose build'
                 }
             }
         }
