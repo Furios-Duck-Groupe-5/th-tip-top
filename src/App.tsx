@@ -55,7 +55,7 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const hideAdmin = location.pathname === "/admin";
   const hideEmployee = location.pathname === "/page-employee";
 
-  const isParticipationPage = location.pathname === "/participation";
+  const isParticipationPage = location.pathname === "/apropos";
   const isLogin = location.pathname === "/login";
   const isSignup = location.pathname === "/signup";
 
@@ -94,7 +94,7 @@ const App: React.FC = () => {
               </>
             } />
             {/* About Us Page (Qui sommes nous) */}
-            <Route path="/participation" element={
+            <Route path="/apropos" element={
               <>
                 <Helmet>
                   <title>Qui sommes-nous - Mon Application</title>

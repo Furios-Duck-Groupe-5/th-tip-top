@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import { AuthProvider } from './components/ConnexionInscription/AuthContext';
+import { HelmetProvider } from 'react-helmet-async'; // Importer HelmetProvider
 
 // Assurer que le type de l'élément est bien trouvé par TypeScript
 const rootElement = document.getElementById('root');
@@ -12,9 +13,11 @@ if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+      <HelmetProvider> {/* Entourer l'application avec HelmetProvider */}
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </HelmetProvider>
     </React.StrictMode>
   );
 } else {
