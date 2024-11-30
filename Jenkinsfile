@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     // Run Jest tests using npx
-                    sh 'npm install'
+                    sh 'npm install --force'
                     sh 'npx jest test'
                 }
             }
