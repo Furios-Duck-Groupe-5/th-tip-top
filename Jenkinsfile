@@ -45,7 +45,7 @@ pipeline {
     post {
         always {
             // Clean up containers after the pipeline runs (optional)
-            sh 'sudo docker image prune -a'
+            sh 'sudo docker image prune -af'
         }
         success {
             // Actions on successful completion (optional)
