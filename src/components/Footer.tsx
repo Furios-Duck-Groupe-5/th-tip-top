@@ -161,13 +161,31 @@ const Footer = () => {
           </Typography>
           <Divider sx={{ mb: 2, bgcolor: "#bbb" }} />
           <Box display="flex" justifyContent="center" sx={{ mb: 2 }}>
-            <IconButton href="https://facebook.com" target="_blank" sx={{ color: "#3b5998", mx: 1 }}>
+            <IconButton
+              href="https://facebook.com"
+              target="_blank"
+              aria-label="Facebook"
+              rel="noopener noreferrer"
+              sx={{ color: "#3b5998", mx: 1 }}
+            >
               <Facebook />
             </IconButton>
-            <IconButton href="https://instagram.com" target="_blank" sx={{ color: "#E4405F", mx: 1 }}>
+            <IconButton
+              href="https://instagram.com"
+              target="_blank"
+              aria-label="Instagram"
+              rel="noopener noreferrer"
+              sx={{ color: "#E4405F", mx: 1 }}
+            >
               <Instagram />
             </IconButton>
-            <IconButton href="https://twitter.com" target="_blank" sx={{ color: "#1DA1F2", mx: 1 }}>
+            <IconButton
+              href="https://twitter.com"
+              target="_blank"
+              aria-label="Twitter"
+              rel="noopener noreferrer"
+              sx={{ color: "#1DA1F2", mx: 1 }}
+            >
               <X />
             </IconButton>
           </Box>

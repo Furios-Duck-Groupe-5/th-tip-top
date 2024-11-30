@@ -9,8 +9,8 @@ import {
   Backdrop,
   Fade,
 } from '@mui/material';
+import { Helmet } from 'react-helmet';  // Importer Helmet pour gérer le SEO
 
-// Définition de l'interface pour les articles
 interface Article {
   id: number;
   title: string;
@@ -94,89 +94,103 @@ const BlogPage: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        p: 4,
-        minHeight: '100vh',
-        backgroundImage: `url(src/assets/bgThe.jpg)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        color: 'white',
-      }}
-    >
-      <Typography variant="h2" align="center" gutterBottom sx={{ fontWeight: 'bold', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
-        Blog
-      </Typography>
-      <Typography variant="body1" align="center" sx={{ marginBottom: 4, color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.7)' }}>
-        Bienvenue sur notre blog ! Découvrez des conseils et astuces pour réussir vos concours et engager votre audience.
-      </Typography>
-      <Grid container spacing={4}>
-        {articles.map((article) => (
-          <Grid item xs={12} sm={6} md={4} key={article.id}>
-            <Paper elevation={3} sx={{ p: 2, borderRadius: 2, transition: '0.3s', backgroundColor: 'rgba(255, 255, 255, 0.9)', '&:hover': { transform: 'scale(1.03)' } }}>
-              <img src={article.image} alt={article.title} style={{ width: '100%', borderRadius: '8px', marginBottom: '16px' }} />
-              <Typography variant="h5" sx={{ mt: 1, color: '#DDA15E' }}>
-                {article.title}
-              </Typography>
-              <Typography variant="body1" sx={{ mt: 1, color: '#555' }}>
-                {article.excerpt}
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 2 }}
-                onClick={() => handleOpen(article)}
-              >
-                Lire la suite
-              </Button>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
+    <>
+      <Helmet>
+        <title>Blog - Conseils et Astuces pour Organiser des Concours</title>
+        <meta name="description" content="Découvrez des conseils et astuces pour organiser un concours réussi et engager votre audience." />
+        <meta name="keywords" content="concours, engagement, stratégie, marketing" />
+        <meta property="og:title" content="Blog - Conseils et Astuces pour Organiser des Concours" />
+        <meta property="og:description" content="Découvrez des conseils et astuces pour organiser un concours réussi et engager votre audience." />
+        <meta property="og:image" content="src/assets/bgThe.jpg" />
+        <meta property="og:url" content="https://dsp5-archi-o23-15m-g5.fr/blog" />
+      </Helmet>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{ timeout: 500 }}
+      <Box
+        sx={{
+          p: 4,
+          minHeight: '100vh',
+          backgroundImage: `url(src/assets/bgThe.jpg)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          color: 'white',
+        }}
       >
-        <Fade in={open}>
-          <Box
-            sx={{
-              bgcolor: 'rgba(255, 255, 255, 0.9)',
-              borderRadius: 2,
-              boxShadow: 24,
-              p: 4,
-              width: { xs: '90%', sm: '600px' },
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-            }}
-          >
-            {selectedArticle && (
-              <>
-                <Typography variant="h4" sx={{ color: '#DDA15E', fontWeight: 'bold' }}>
-                  {selectedArticle.title}
+        <Typography variant="h2" align="center" gutterBottom sx={{ fontWeight: 'bold', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
+          Blog
+        </Typography>
+        <Typography variant="body1" align="center" sx={{ marginBottom: 4, color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.7)' }}>
+          Bienvenue sur notre blog ! Découvrez des conseils et astuces pour réussir vos concours et engager votre audience.
+        </Typography>
+        <Grid container spacing={4}>
+          {articles.map((article) => (
+            <Grid item xs={12} sm={6} md={4} key={article.id}>
+              <Paper elevation={3} sx={{ p: 2, borderRadius: 2, transition: '0.3s', backgroundColor: 'rgba(255, 255, 255, 0.9)', '&:hover': { transform: 'scale(1.03)' } }}>
+                <img src={article.image} alt={article.title} style={{ width: '100%', borderRadius: '8px', marginBottom: '16px' }} />
+                <Typography variant="h5" sx={{ mt: 1, color: '#DDA15E' }}>
+                  {article.title}
                 </Typography>
-                <Typography variant="body1" sx={{ mt: 2, color: '#444' }}>
-                  {selectedArticle.content}
+                <Typography variant="body1" sx={{ mt: 1, color: '#555' }}>
+                  {article.excerpt}
                 </Typography>
                 <Button
                   variant="contained"
                   color="primary"
-                  sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 4 }}
-                  onClick={handleClose}
+                  sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 2 }}
+                  onClick={() => handleOpen(article)}
                 >
-                  Fermer
+                  Lire la suite
                 </Button>
-              </>
-            )}
-          </Box>
-        </Fade>
-      </Modal>
-    </Box>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{ timeout: 500 }}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        >
+          <Fade in={open}>
+            <Box
+              sx={{
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+                borderRadius: 2,
+                boxShadow: 24,
+                p: 4,
+                width: { xs: '90%', sm: '600px' },
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              {selectedArticle && (
+                <>
+                  <Typography variant="h4" sx={{ color: '#DDA15E', fontWeight: 'bold' }} id="modal-title">
+                    {selectedArticle.title}
+                  </Typography>
+                  <Typography variant="body1" sx={{ mt: 2, color: '#444' }} id="modal-description">
+                    {selectedArticle.content}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ backgroundColor: '#DDA15E', '&:hover': { backgroundColor: '#d49a5c' }, mt: 4 }}
+                    onClick={handleClose}
+                  >
+                    Fermer
+                  </Button>
+                </>
+              )}
+            </Box>
+          </Fade>
+        </Modal>
+      </Box>
+    </>
   );
 };
 

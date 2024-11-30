@@ -33,13 +33,67 @@ const Testimonials = () => {
 
   return (
     <>
-      {/* Balises Meta pour le SEO */}
+      {/* SEO: Balises Meta pour améliorer l'indexation */}
       <Helmet>
-        <title>Thé tip top</title>
-        <meta name="description" content="Découvrez ce que nos clients pensent de nos produits et de leur expérience avec nous. Lisez leurs témoignages inspirants." />
-        <meta name="keywords" content="témoignages clients, avis clients, expérience, produits, satisfaction" />
+        <title>Témoignages clients - Thé Tip Top | Découvrez les avis sur nos produits</title>
+        <meta
+          name="description"
+          content="Découvrez ce que nos clients pensent de nos produits et de leur expérience avec nous. Lisez leurs témoignages inspirants sur Thé Tip Top."
+        />
+        <meta
+          name="keywords"
+          content="témoignages clients, avis thé, témoignages thé, expérience produit, thé de qualité, satisfaction client, Thé Tip Top"
+        />
+        <meta name="robots" content="index, follow" />
+
+        {/* Open Graph: Optimisation pour les réseaux sociaux */}
+        <meta property="og:title" content="Témoignages clients - Thé Tip Top | Découvrez les avis" />
+        <meta
+          property="og:description"
+          content="Découvrez ce que nos clients pensent de nos produits. Lisez leurs témoignages sur leur expérience avec Thé Tip Top, la marque de thé préférée des gourmets."
+        />
+        <meta property="og:image" content="URL_de_l_image_illustrative_des_témoignages" />
+        <meta property="og:url" content="https://dsp5-archi-o23-15m-g5.fr/apropos" />
+        <meta property="og:type" content="website" />
+
+        {/* Twitter Card: Optimisation pour Twitter */}
+        <meta name="twitter:title" content="Témoignages clients - Thé Tip Top | Découvrez les avis" />
+        <meta
+          name="twitter:description"
+          content="Découvrez ce que nos clients pensent de nos produits et de leur expérience avec Thé Tip Top. Lisez des témoignages inspirants."
+        />
+        <meta name="twitter:image" content="URL_de_l_image_illustrative_des_témoignages" />
+        <meta name="twitter:card" content="summary_large_image" />
+
+        {/* Structured Data (Schema.org) pour les témoignages */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Review",
+              "itemReviewed": {
+                "@type": "Product",
+                "name": "Thé Tip Top",
+                "description": "Thé Tip Top est une marque de thé offrant une expérience unique avec des produits de qualité.",
+                "image": "URL_de_l_image_du_thé",
+              },
+              "author": {
+                "@type": "Person",
+                "name": "Nom du Client",
+              },
+              "reviewRating": {
+                "@type": "Rating",
+                "bestRating": "5",
+                "ratingValue": "5",
+                "worstRating": "1",
+              },
+              "reviewBody": "Un témoignage incroyable sur l'excellence du thé Tip Top.",
+            }),
+          }}
+        />
       </Helmet>
-      
+
       <Box sx={{ mt: 10, textAlign: "center" }}>
         <Typography
           variant="h3"

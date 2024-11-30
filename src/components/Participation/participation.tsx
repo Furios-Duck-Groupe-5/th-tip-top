@@ -16,6 +16,7 @@ import { CheckCircle, ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../ConnexionInscription/AuthContext";
+import { Helmet } from "react-helmet";
 
 const ImageList = [
   { id: 1, img: BiryaniImg1 },
@@ -176,6 +177,20 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
   }, []);
 
   return (
+    <>
+    <Helmet>
+        <title>Jeu Concours The Tip Top | Participez et Gagnez des Lots</title>
+        <meta name="description" content="Participez au jeu concours The Tip Top et gagnez des lots incroyables, dont un an de thé gratuit d'une valeur de 360€. Entrez votre code et découvrez votre lot !" />
+        <meta name="keywords" content="jeu concours, thé, lots, code concours, 360€ de thé gratuit, thé détox, infuseur à thé" />
+        <meta property="og:title" content="Jeu Concours The Tip Top | Participez et Gagnez des Lots" />
+        <meta property="og:description" content="Participez au jeu concours The Tip Top et gagnez des lots incroyables, dont un an de thé gratuit d'une valeur de 360€. Entrez votre code et découvrez votre lot !" />
+        <meta property="og:image" content={BiryaniImg1} />
+        <meta property="og:url" content="https://dsp5-archi-o23-15m-g5.fr" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Jeu Concours The Tip Top | Participez et Gagnez des Lots" />
+        <meta name="twitter:description" content="Participez au jeu concours The Tip Top et gagnez des lots incroyables, dont un an de thé gratuit d'une valeur de 360€. Entrez votre code et découvrez votre lot !" />
+        <meta name="twitter:image" content={BiryaniImg1} />
+      </Helmet>
     <Box
       sx={{
         display: "flex",
@@ -548,6 +563,7 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
       }}>
       </Box>
     </Box>
+    </>
   );
 };
 
