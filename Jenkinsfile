@@ -23,20 +23,14 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
-                    sh 'sudo docker compose build'
+                    sh 'sudo docker compose -f ${DOCKER_COMPOSE_FILE} build'
                 }
             }
         }
 
         stage('Start Containers') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
                     sh 'sudo docker compose -f ${DOCKER_COMPOSE_FILE} up -d'
