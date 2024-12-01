@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+        DOCKER_COMPOSE_FILE = 'docker-compose.preprod.yml'
         DOCKER_REGISTRY = 'docker.io'  // Docker registry (Docker Hub)
         DOCKER_IMAGE_NAME = 'thetiptopgrp5/tiptop'  // Replace with your Docker Hub username and project name
         DOCKER_TAG = 'latest'  // You can use a version tag like v1.0.0 instead of "latest" if desired
