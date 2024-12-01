@@ -20,7 +20,7 @@ const ContactPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '', // Added subject field
+    subject: '', // Ajout du champ "Sujet"
     message: '',
   });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -57,7 +57,15 @@ const ContactPage = () => {
         </Typography>
       </header>
       <section>
-        <Paper elevation={8} sx={{ p: 4, borderRadius: 3, backgroundColor: '#ffffff', boxShadow: '0px 4px 30px rgba(0, 0, 0, 0.2)' }}>
+        <Paper
+          elevation={8}
+          sx={{
+            p: 4,
+            borderRadius: 3,
+            backgroundColor: '#ffffff',
+            boxShadow: '0px 4px 30px rgba(0, 0, 0, 0.2)',
+          }}
+        >
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
               <Typography variant="h6" gutterBottom sx={{ color: '#333', fontWeight: 'bold' }}>
@@ -123,7 +131,6 @@ const ContactPage = () => {
                   variant="outlined"
                   sx={{ mb: 2, '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
                 />
-                {/* Added Subject field */}
                 <TextField
                   label="Sujet"
                   name="subject"
@@ -146,7 +153,7 @@ const ContactPage = () => {
                   variant="outlined"
                   sx={{ mb: 2, '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
                 />
-                <Button type="submit" variant="contained" color="primary" sx={{ borderRadius: '8px', width: '100%' }}>
+                <Button type="submit" variant="contained" color="primary" sx={{ borderRadius: '8px', width: '100%',bgcolor: '#DDA15E' }}>
                   Envoyer
                 </Button>
               </form>

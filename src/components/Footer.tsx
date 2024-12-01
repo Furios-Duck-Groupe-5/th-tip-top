@@ -106,7 +106,7 @@ const Footer = () => {
             Participez à notre concours de dégustation de thés et tentez de gagner des coffrets exclusifs de nos meilleures sélections !
           </Typography>
           <Link
-            href="/concours"
+            href="/explication"
             color="inherit"
             underline="hover"
             sx={{
@@ -118,7 +118,7 @@ const Footer = () => {
           </Link>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={3} >
           <Typography variant="h6" gutterBottom textAlign="center">
             Newsletter
           </Typography>
@@ -144,15 +144,15 @@ const Footer = () => {
             {loading ? "En cours..." : "S'inscrire"}
           </Button>
           {message && (
-            <Typography
-              variant="body2"
-              color={message.includes("succès") ? "success.main" : "error.main"}
-              align="center"
-              sx={{ mt: 2 }}
-            >
-              {message}
-            </Typography>
-          )}
+          <Typography
+            variant="body2"
+            color={message.includes("inscrit") ? "success.main" : "error.main"}
+            align="center"
+            sx={{ mt: 2 }}
+          >
+            {message}
+          </Typography>
+        )}
         </Grid>
 
         <Grid item xs={12} textAlign="center">
@@ -195,8 +195,9 @@ const Footer = () => {
       <Divider sx={{ my: 4, bgcolor: "#bbb" }} />
 
       <Typography variant="body2" align="center">
-        © {new Date().getFullYear()} Thé Tip Top. Tous droits réservés. Rejoignez-nous pour célébrer la passion du thé !
-      </Typography>
+  © {new Date().getFullYear()} Thé Tip Top. Projet étudiant - Tous droits réservés. Rejoignez-nous pour célébrer la passion du thé !
+</Typography>
+
     </Box>
   );
 };

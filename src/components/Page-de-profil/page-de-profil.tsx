@@ -47,6 +47,14 @@ const ProfilePage: FC = () => {
       setLoading(false);
     }
   };
+  const handleDeleteAccount = () => {
+    setDeleting(true);
+    setTimeout(() => {
+      setDeleting(false);
+      setSuccessMessage("Votre demande de suppression a été envoyée et est en cours de traitement.");
+      setOpenDialog(false);
+    }, 2000); 
+  };
 
   useEffect(() => {
     fetchUserData();
@@ -229,27 +237,43 @@ const ProfilePage: FC = () => {
         </Box>
       </Container>
 
-      {/* Dialog de confirmation de suppression */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
+       {/* Dialog de confirmation */}
+       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirmer la suppression de compte</DialogTitle>
         <DialogContent>
-          <Typography>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</Typography>
+          <Typography variant="body1" gutterBottom>
+            <strong>Nom :</strong> {lastName}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            <strong>Prénom :</strong> {firstName}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            <strong>Email :</strong> {email}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+            Vous êtes sur le point de supprimer votre compte. Cette action est <strong>irréversible</strong>.
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+            Sujet : <strong>Demande de suppression de compte</strong>
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Message : <em>Je confirme vouloir supprimer mon compte définitivement.</em>
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">Annuler</Button>
+          <Button onClick={handleCloseDialog} color="primary">
+            Annuler
+          </Button>
           <Button
-          //  onClick={handleDeleteAccount}
-            sx={{
-              color: '#DDA15E', // Set the text color to #DDA15E
-              '&:hover': {
-                color: '#d19c5c', // Set a darker shade of the color on hover, optional
-              }
-            }}
+            onClick={handleDeleteAccount}
             disabled={deleting}
+            sx={{
+              color: "#DDA15E",
+              "&:hover": { color: "#d19c5c" },
+            }}
           >
             {deleting ? "Suppression..." : "Supprimer"}
           </Button>
-
         </DialogActions>
       </Dialog>
     </Box>

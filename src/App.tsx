@@ -16,7 +16,7 @@ import AddEmployeePage from "./components/Admin/addEmploye";
 import EmployeePage from "./components/Employe/employePage";
 import { AuthProvider, useAuth } from "./components/ConnexionInscription/AuthContext";
 import UserGainHistoryPage from "./components/Page-de-profil/historique";
-import HistoriqueGain from "./config/Historique-gain";
+//import HistoriqueGain from "./config/Historique-gain";
 import GrandTiragePage from "./components/Admin/grand-tirage";
 import EmployeePrizePage from "./components/Employe/employee";
 import CookieConsentBanner from "./components/cookies";
@@ -165,10 +165,10 @@ const App: React.FC = () => {
 
 
             <Route
-              path="/page-employee"
+              path="/employee"
               element={
                 <ProtectedRoute requiredRoles={[3]}>
-                  <EmployeePage />
+                  <EmployeePrizePage />
                 </ProtectedRoute>
               }
             />
