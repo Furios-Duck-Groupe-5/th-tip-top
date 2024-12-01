@@ -40,14 +40,17 @@ pipeline {
         stage('Push Docker Images to Docker Hub') {
             steps {
                 script {
-                    // Log in to Docker Hub
-                    sh 'echo "$DOCKER_PASSWORD" | sudo docker login -u "$DOCKER_USERNAME" --password-stdin'
+                    // Login to Docker Hub using stored credentials
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        // Docker login using the credentials
+                        sh 'echo "$DOCKER_PASSWORD" | sudo docker login -u "$DOCKER_USERNAME" --password-stdin'
 
-                    // Push backend image to Docker Hub
-                    sh 'sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-backend:${DOCKER_TAG}'
+                        // Push backend image to Docker Hub
+                        sh 'sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-backend:${DOCKER_TAG}'
 
-                    // Push frontend image to Docker Hub
-                    sh 'sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-frontend:${DOCKER_TAG}'
+                        // Push frontend image to Docker Hub
+                        sh 'sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-frontend:${DOCKER_TAG}'
+                    }
                 }
             }
         }
