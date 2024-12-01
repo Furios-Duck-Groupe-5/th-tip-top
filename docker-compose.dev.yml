@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   backend:
+    image: docker.io/thetiptopgrp5/tiptop-backend-dev:latest
     build:
       context: .
       dockerfile: Dockerfile.backend.dev
@@ -16,6 +17,7 @@ services:
       - db
 
   frontend:
+    image: docker.io/thetiptopgrp5/tiptop-frntend-dev:latest
     build:
       context: .
       dockerfile: Dockerfile.frontend.dev
