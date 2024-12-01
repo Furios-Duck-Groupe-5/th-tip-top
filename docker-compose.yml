@@ -3,6 +3,7 @@ version: '3.8'
 services:
   backend:
     image: docker.io/thetiptopgrp5/tiptop-backend:latest
+    restart: always
     container_name: app-container
     ports:
       - "4001:4001"
@@ -11,6 +12,7 @@ services:
 
   frontend:
     image: docker.io/thetiptopgrp5/tiptop-frontend:latest
+    restart: always
     container_name: app-prod-container
     ports:
       - "5173:5173"
