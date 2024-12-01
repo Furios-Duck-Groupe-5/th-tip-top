@@ -46,10 +46,10 @@ pipeline {
                         sh 'echo "$DOCKER_PASSWORD" | sudo docker login -u "$DOCKER_USERNAME" --password-stdin'
 
                         // Push backend image to Docker Hub
-                        sh 'sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-backend:${DOCKER_TAG}'
+                        sh 'sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-backend-preprod:${DOCKER_TAG}'
 
                         // Push frontend image to Docker Hub
-                        sh 'sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-frontend:${DOCKER_TAG}'
+                        sh 'sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-frontend-preprod:${DOCKER_TAG}'
                     }
                 }
             }
@@ -59,10 +59,10 @@ pipeline {
             steps {
                 script {
                     // Pull the backend image from Docker Hub
-                    sh 'sudo docker pull ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-backend:${DOCKER_TAG}'
+                    sh 'sudo docker pull ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-backend-preprod:${DOCKER_TAG}'
 
                     // Pull the frontend image from Docker Hub
-                    sh 'sudo docker pull ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-frontend:${DOCKER_TAG}'
+                    sh 'sudo docker pull ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-frontend-preprod:${DOCKER_TAG}'
 
                     // Start containers using docker-compose
                     sh 'sudo docker compose -f ${DOCKER_COMPOSE_FILE} up -d'
