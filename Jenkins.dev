@@ -29,10 +29,10 @@ pipeline {
             steps {
                 script {
                     // Build the backend image
-                    sh 'sudo docker build -f Dockerfile -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-backend-dev:${DOCKER_TAG} .'
+                    sh 'sudo docker build -f Dockerfile.backend.dev -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-backend-dev:${DOCKER_TAG} .'
 
                     // Build the frontend image
-                    sh 'sudo docker build -f Dockerfile.prod -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-frontend-dev:${DOCKER_TAG} .'
+                    sh 'sudo docker build -f Dockerfile.frontend.dev -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-frontend-dev:${DOCKER_TAG} .'
                 }
             }
         }
