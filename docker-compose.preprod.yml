@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   backend:
+    image: docker.io/thetiptopgrp5/tiptop-backend-preprod:latest
     build:
       context: .
       dockerfile: Dockerfile.backend.preprod
@@ -21,6 +22,7 @@ services:
       - preprod-network
 
   frontend:
+    image: docker.io/thetiptopgrp5/tiptop-frontend-preprod:latest
     build:
       context: .
       dockerfile: Dockerfile.frontend.preprod
