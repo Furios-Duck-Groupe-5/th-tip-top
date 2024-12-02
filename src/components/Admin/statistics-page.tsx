@@ -33,7 +33,7 @@ const DetailedStatisticsPage: React.FC = () => {
   const [winners, setWinners] = useState<WinnerData[]>([]);
   const [ageGroups, setAgeGroups] = useState<AgeGroupData[]>([]);
   const [ticketStats, setTicketStats] = useState<TicketData[]>([]);
-  const COLORS = ['#0088FE', '#FFBB28'];
+  const COLORS = ['#0088FE', '#FF69B4','#4CAF50']
 
   useEffect(() => {
     // Récupérer les statistiques générales
@@ -41,18 +41,30 @@ const DetailedStatisticsPage: React.FC = () => {
       .then(response => response.json())
       .then(data => {
         console.log("Données des statistiques générales:", data); // Log pour vérifier les données
-        setWinners(data.genderStats.map((item: any) => ({
-          gender: item.sexe === 'H' ? 'Homme' : 'Femme',
+  
+        const genderStats = data.genderStats.map((item: any) => ({
+          gender: item.sexe === 'H' ? 'Homme' : item.sexe === 'F' ? 'Femme' : 'Autre',
           count: parseInt(item.count, 10),
-        })));
+        }));
+  
+        const otherGender = { gender: 'Autre', count: 0 };
+        const genders = genderStats.filter((item: { gender: string; }) => item.gender !== 'Autre');
+        
+        if (genders.length === genderStats.length) {
+          genders.push(otherGender); 
+        }
+  
+        setWinners(genders);
         
         setAgeGroups(data.ageStats.map((item: any) => ({
           ageGroup: item.age_group,
           count: parseInt(item.count, 10),
         })));
       })
-      .catch(error => console.error('Erreur lors de la récupération des statistiques :', error));
-
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques :', error);
+      });
+  
     // Récupérer les statistiques des tickets
     fetch("https://backend.dsp5-archi-o23-15m-g5.fr/ticket-statistics")
       .then(response => response.json())

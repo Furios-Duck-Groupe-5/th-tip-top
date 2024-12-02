@@ -72,7 +72,7 @@ const ExplanationPage: React.FC = () => {
             Règlement du Jeu Concours "Thé Tip Top"
           </Typography>
 
-          <Box data-aos="fade-up" data-aos-duration="1000">
+          <Box >
             <Typography variant="h5" sx={{ marginBottom: 3 }}>
               Bienvenue à notre jeu concours ! Pour participer et tenter de gagner des lots exceptionnels, veuillez prendre connaissance des conditions de participation.
             </Typography>
