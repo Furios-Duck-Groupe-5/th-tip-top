@@ -21,6 +21,7 @@ services:
 
   db:
     image: postgres:17
+    restart: always
     container_name: postgres-db
     environment:
       POSTGRES_USER: ${DB_USER}
