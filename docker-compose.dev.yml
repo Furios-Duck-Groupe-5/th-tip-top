@@ -3,6 +3,7 @@ version: '3.8'
 services:
   backend:
     image: docker.io/thetiptopgrp5/tiptop-backend-dev:latest
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile.backend.dev
@@ -18,6 +19,7 @@ services:
 
   frontend:
     image: docker.io/thetiptopgrp5/tiptop-frntend-dev:latest
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile.frontend.dev
@@ -31,6 +33,7 @@ services:
 
   db:
     image: postgres:17
+    restart: always
     container_name: postgres-db2
     environment:
       POSTGRES_USER: ${DB_USER}
