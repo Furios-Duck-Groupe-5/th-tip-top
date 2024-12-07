@@ -162,7 +162,7 @@ const Footer = () => {
           <Divider sx={{ mb: 2, bgcolor: "#bbb" }} />
           <Box display="flex" justifyContent="center" sx={{ mb: 2 }}>
             <IconButton
-              href="https://facebook.com"
+              href="https://www.facebook.com/profile.php?id=61568576166989"
               target="_blank"
               aria-label="Facebook"
               rel="noopener noreferrer"
@@ -171,7 +171,7 @@ const Footer = () => {
               <Facebook />
             </IconButton>
             <IconButton
-              href="https://instagram.com"
+              href="https://www.instagram.com/thetiptop__/"
               target="_blank"
               aria-label="Instagram"
               rel="noopener noreferrer"
@@ -180,7 +180,7 @@ const Footer = () => {
               <Instagram />
             </IconButton>
             <IconButton
-              href="https://twitter.com"
+              href="https://x.com/Thetiptop_grp5"
               target="_blank"
               aria-label="Twitter"
               rel="noopener noreferrer"

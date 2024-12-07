@@ -33,7 +33,6 @@ import React, { PropsWithChildren } from "react";
 import NotFound from "./404";
 import AccessDenied from "./components/PrivateRoutes/access-denied";
 
-// Protected Route Component
 const ProtectedRoute: React.FC<{ children: JSX.Element; requiredRoles: number[] }> = ({ children, requiredRoles }) => {
   const { isLoggedIn, roleId } = useAuth();
 
@@ -41,7 +40,6 @@ const ProtectedRoute: React.FC<{ children: JSX.Element; requiredRoles: number[] 
     return <Navigate to="/login" replace />;
   }
 
-  // Vérifiez si roleId est non-null et si le rôle est dans la liste des rôles requis.
   if (roleId === null || !requiredRoles.includes(roleId)) {
     return <Navigate to="/access-denied" replace />;
   }
@@ -49,7 +47,6 @@ const ProtectedRoute: React.FC<{ children: JSX.Element; requiredRoles: number[] 
   return children;
 };
 
-// Layout component to control Navbar and Footer display
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const location = useLocation();
   const hideAdmin = location.pathname === "/admin";
@@ -64,8 +61,28 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
       <Helmet>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Mon Application Thé tip top concours</title>
-        <meta name="description" content="Description de l'application" />
+        <title> Thé tip top concours</title>
+        <meta name="description" content="Participez au concours Thé Tip Top et tentez de gagner des lots exclusifs. Découvrez notre sélection de thés biologiques et uniques." />
+        <meta name="keywords" content="thé, concours, lots, bio, infusion, exclusifs" />
+        <meta property="og:title" content="Concours Thé Tip Top" />
+        <meta property="og:description" content="Rejoignez notre concours de thé et gagnez des cadeaux uniques." />
+        <script type="application/ld+json">
+    {`
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Thé Tip Top",
+      "url": "https://dsp5-archi-o23-15m-g5.fr/",
+      "logo": "https://dsp5-archi-o23-15m-g5.fr/src/assets/The_TIPTOP2-removebg-preview2.png",
+      "description": "Participez au concours Thé Tip Top et découvrez des thés uniques.",
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=61568576166989",
+        "https://www.instagram.com/thetiptop__/",
+
+      ]
+    }
+    `}
+  </script>
       </Helmet>
       {!hideAdmin && !hideEmployee && <Navbar />}
       <div className={isParticipationPage || isLogin || isSignup ? "pt-20" : ""}>
@@ -93,7 +110,7 @@ const App: React.FC = () => {
                 <ParticipationPage />
               </>
             } />
-            {/* About Us Page (Qui sommes nous) */}
+            {/* About Us Page  */}
             <Route path="/apropos" element={
               <>
                 <Helmet>

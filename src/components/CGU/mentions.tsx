@@ -15,15 +15,15 @@ const LegalMentions = () => {
         <Typography variant="body1" paragraph>
           <strong>Nom de l'entreprise :</strong> Thé Tip Top
           <br />
-          <strong>Siège social :</strong> 123 Rue du Thé, 75001 Paris, France
+          <strong>Siège social :</strong> 18 rue Léon Frot, 75011 Paris
           <br />
           <strong>Numéro de SIRET :</strong> 123 456 789 00010
           <br />
           <strong>Téléphone :</strong> 01 23 45 67 89
           <br />
-          <strong>Email :</strong> <Link href="mailto:contact@thetiptop.com">contact@thetiptop.com</Link>
+          <strong>Email :</strong> <Link sx={{ color: '#DDA15E' }} href="mailto:contact@thetiptop.com">contact@thetiptop.com</Link>
           <br />
-          <strong>Site internet :</strong> <Link href="https://www.thetiptop.com" target="_blank" rel="noopener noreferrer">www.thetiptop.com</Link>
+          <strong>Site internet :</strong> <Link sx={{ color: '#DDA15E' }} href="https://www.thetiptop.com" target="_blank" rel="noopener noreferrer">www.thetiptop.com</Link>
         </Typography>
       </Box>
 
@@ -34,7 +34,7 @@ const LegalMentions = () => {
           2. Directeur de publication
         </Typography>
         <Typography variant="body1" paragraph>
-          <strong>Nom :</strong> Jean Dupont
+          <strong>Nom :</strong> Eric Bourdon
           <br />
           <strong>Fonction :</strong> Gérant
           <br />
@@ -49,11 +49,11 @@ const LegalMentions = () => {
           3. Hébergement du site
         </Typography>
         <Typography variant="body1" paragraph>
-          <strong>Nom de l'hébergeur :</strong> Google Cloud Platform
+          <strong>Nom de l'hébergeur :</strong> Microsoft Azure 
           <br />
-          <strong>Adresse :</strong> 1600 Amphitheatre Parkway, Mountain View, CA 94043, États-Unis
+          <strong>Adresse :</strong> Ireland – 1, One Microsoft Place, South County Business Park, Leopardstown, Dublin 18, D18 P521, Irlande.
           <br />
-          Le site est hébergé par Google Cloud Platform, garantissant une sécurité, une rapidité et une disponibilité optimales.
+          Le site est hébergé par Microsoft Azure Platform, garantissant une sécurité, une rapidité et une disponibilité optimales.
         </Typography>
       </Box>
 
@@ -75,7 +75,7 @@ const LegalMentions = () => {
           5. Données personnelles
         </Typography>
         <Typography variant="body1" paragraph>
-          Conformément à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification et de suppression des données vous concernant. Pour exercer ces droits, vous pouvez nous contacter à l'adresse email suivante : <Link href="mailto:contact@thetiptop.com">contact@thetiptop.com</Link>.
+          Conformément à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification et de suppression des données vous concernant. Pour exercer ces droits, vous pouvez nous contacter à l'adresse email suivante : <Link sx={{ color: '#DDA15E' }} href="mailto:contact@thetiptop.com">contact@thetiptop.com</Link>.
         </Typography>
       </Box>
 
@@ -86,7 +86,7 @@ const LegalMentions = () => {
           6. Cookies
         </Typography>
         <Typography variant="body1" paragraph>
-          Le site utilise des cookies pour améliorer votre expérience utilisateur. Ces fichiers sont stockés sur votre ordinateur et permettent de personnaliser votre visite. Vous pouvez choisir de désactiver les cookies à tout moment dans les paramètres de votre navigateur. Pour plus d'informations sur notre utilisation des cookies, consultez notre <Link href="/politique-de-confidentialité">politique de confidentialité</Link>.
+          Le site utilise des cookies pour améliorer votre expérience utilisateur. Ces fichiers sont stockés sur votre ordinateur et permettent de personnaliser votre visite. Vous pouvez choisir de désactiver les cookies à tout moment dans les paramètres de votre navigateur. Pour plus d'informations sur notre utilisation des cookies, consultez notre <Link sx={{ color: '#DDA15E' }} href="/politique-de-confidentialité">politique de confidentialité</Link>.
         </Typography>
       </Box>
 
@@ -130,7 +130,7 @@ const LegalMentions = () => {
           10. Contact
         </Typography>
         <Typography variant="body1" paragraph>
-          Pour toute question, n'hésitez pas à nous contacter par email : <Link href="mailto:contact@thetiptop.com">contact@thetiptop.com</Link>.
+          Pour toute question, n'hésitez pas à nous contacter par email : <Link sx={{ color: '#DDA15E' }} href="mailto:contact@thetiptop.com">contact@thetiptop.com</Link>.
         </Typography>
       </Box>
 
