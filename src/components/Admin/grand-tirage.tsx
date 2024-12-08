@@ -75,7 +75,6 @@ L'équipe du Grand Tirage
 `;
 
       // Appel API pour envoyer la notification (email, message, etc.)
-      // TODO l'api de l'envoi de notification ne fonctionne pas :)
       await axios.post("https://backend.dsp5-archi-o23-15m-g5.fr/send-notification-grand", {
         email: winner.email, // Utilisation de l'email du gagnant
         subject: subject,

@@ -25,7 +25,7 @@ const articles: Article[] = [
     id: 1,
     title: 'Comment organiser un concours réussi',
     excerpt: 'Découvrez les étapes clés pour organiser un concours qui attire de nombreux participants et engage votre audience.',
-    image: 'src/assets/bgThe.jpg',
+    image: 'src/assets/blog1.png',
     content: `
       ### Étape 1 : Définir des objectifs clairs
       Avant de commencer, déterminez ce que vous souhaitez atteindre avec votre concours. Que ce soit pour augmenter votre base de données clients ou accroître votre visibilité, des objectifs clairs vous aideront à orienter votre stratégie.
@@ -44,7 +44,7 @@ const articles: Article[] = [
     id: 2,
     title: 'Les meilleures pratiques pour engager vos participants',
     excerpt: 'Engager vos participants est essentiel pour le succès de votre concours. Voici quelques pratiques à suivre pour maintenir l\'intérêt de votre audience.',
-    image: 'src/assets/bgThe.jpg',
+    image: 'src/assets/blog2.png',
     content: `
       ### 1. Interactions régulières
       Postez régulièrement des mises à jour sur le concours, partagez des anecdotes et encouragez les participants à interagir.
@@ -63,7 +63,7 @@ const articles: Article[] = [
     id: 3,
     title: 'L’importance de la transparence dans les concours',
     excerpt: 'La transparence est cruciale pour instaurer la confiance auprès de vos participants. Découvrez pourquoi cela compte.',
-    image: 'src/assets/bgThe.jpg',
+    image: 'src/assets/blog3.png',
     content: `
       ### Pourquoi la transparence est-elle importante ?
       Les participants doivent sentir qu'ils ont une chance équitable de gagner. Partager les règles, les critères de sélection et les processus d'attribution des prix est essentiel.
@@ -109,16 +109,16 @@ const BlogPage: React.FC = () => {
         sx={{
           p: 4,
           minHeight: '100vh',
-          backgroundImage: `url(src/assets/bgThe.jpg)`,
+          backgroundImage: `url(src/assets/bgbg.jpg)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           color: 'white',
         }}
       >
-        <Typography variant="h2" align="center" gutterBottom sx={{ fontWeight: 'bold', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
+        <Typography variant="h2" align="center" gutterBottom sx={{ fontWeight: 'bold', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',color: '#DDA15E' }}>
           Blog
         </Typography>
-        <Typography variant="body1" align="center" sx={{ marginBottom: 4, color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.7)' }}>
+        <Typography variant="body1" align="center" sx={{ marginBottom: 4, color: '#000000' }}>
           Bienvenue sur notre blog ! Découvrez des conseils et astuces pour réussir vos concours et engager votre audience.
         </Typography>
         <Grid container spacing={4}>

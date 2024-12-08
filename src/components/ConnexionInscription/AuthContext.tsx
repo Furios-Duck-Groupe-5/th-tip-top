@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setRoleId(roleId);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("roleId", roleId.toString()); 
-        console.log("roleid",roleId) // TODO supprime ça
     };
 
     const logout = () => {

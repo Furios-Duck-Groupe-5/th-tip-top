@@ -1,26 +1,77 @@
-# React + Vite
+# Projet Jeu-Concours pour Furious Ducks et Thé Tip Top
 
-Bonjour :
+# Démarrage du Projet
 
-Pour lancer le backend il faut :
+# Lancer le Backend
+-Accédez au dossier src/backend : cd src/backend
 
-aller au fichier backend -> cd/src/backend
-npx tsc
-puis lancer la commande  : node ../dist/index.js
-we need to change this
-Puis ouvrir un autre terminal:
-aller à la racine du projet puis executer un :
-yarn dev
-
+-Compilez le code TypeScript en JavaScript pour générer les fichiers nécessaires à l’exécution puis lancez le serveur backend
 npx tsc
 mv ../dist/index.js ../dist/index.cjs
 node ../dist/index.cjs
 
-voila pour la bdd
+
+# Lancer le Frontend
+Ouvrez un terminal et placez-vous dans le répertoire racine du projet.
+Lancez le serveur de développement pour afficher l’application front-end avec:
+yarn dev
 
 
-pour remplir la bdd :
--- Créer une fonction pour générer un code aléatoire de 10 caractères
+
+Fonctionnalités du Site Jeu-Concours
+
+# Pour les Participants
+Création de comptes via Google, Facebook ou formulaire classique.
+Saisie et validation des numéros de tickets pour participer au tirage au sort.
+Historique des gains consultable en ligne.
+
+# Pour les Administrateurs
+Visualisation des statistiques en temps réel (tickets distribués, lots gagnés, données démographiques des participants).
+Outils pour emailings à des fins marketing.
+Grand tirage
+Création d'un(e) employe(e)
+Pour les Employés en Boutique
+Export des en Excel
+Gestion des utilisateurs
+
+# Pour les employe(e)s
+Vérification des gains associés à un ticket et possibilité de marquer les lots comme remis.
+
+Conformité Technique et Légale
+Accessibilité : Le site respecte les normes pour être consulté sur tous types de devices et navigateurs.
+RGPD Friendly : Les données des participants sont gérées conformément aux réglementations européennes.
+Éco-responsabilité : Toutes les technologies sélectionnées suivent une démarche respectueuse de l’environnement.
+Gestion de Projet
+Organisation
+
+Un outil de suivi  est utilisé pour la planification des tâches et le suivi des livrables ( GitHub)
+Livrables
+
+Charte graphique modernisée pour Thé Tip Top.
+Site responsive et optimisé pour le SEO.
+Documentation technique pour faciliter la prise en main et la maintenance.
+Méthodologie
+
+Une gestion de projet en méthodologie Agile permet de livrer des incréments fonctionnels à chaque sprint, avec des ajustements itératifs selon les retours.
+Déploiement
+Le workflow de production est basé sur Docker pour garantir l’uniformité des environnements et une montée en charge facile, avec :
+
+CI/CD via Jenkins.
+Automatisation des sauvegardes pour garantir la sécurité des données.
+Test coverage
+
+
+# Une fonction PostgreSQL est configurée pour générer automatiquement des codes aléatoires de 10 caractères alphanumériques.
+Pré-remplissage des Tickets
+
+Une procédure est mise en place pour insérer jusqu’à 500 000 tickets dans la base de données, en respectant les pourcentages de répartition des lots :
+60% : Infuseurs à thé.
+20% : Boîtes de thé détox ou infusion.
+10% : Boîtes de thé signature.
+6% : Coffrets découverte (39€).
+4% : Coffrets découverte (69€).
+
+# La fonction pour générer un code aléatoire de 10 caractères
 CREATE OR REPLACE FUNCTION generate_random_code() RETURNS VARCHAR(10) AS $$
 DECLARE
     chars TEXT := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -67,4 +118,12 @@ BEGIN
         END IF;
     END LOOP;
 END;
-$$;
+$$,
+
+
+
+Réalisé par :
+Abbad Mohamed
+Atmani Anas
+Safi Azzedine
+Teffah Zakaria

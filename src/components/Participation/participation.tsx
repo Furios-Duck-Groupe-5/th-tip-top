@@ -143,6 +143,13 @@ const ParticipationPage: React.FC<ParticipationPage> = () => {
       );
 
       if (response.status === 200) {
+        if (window.gtag) {
+          window.gtag('event', 'valid_code_submission', {
+            event_category: 'Jeu concours',
+            event_label: 'Code valide',
+            value: 1,
+          });
+        }
         setSnackbarMessage(response.data.message);
         setSnackbarType("success");
         setOpenSnackbar(true);

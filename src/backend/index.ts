@@ -490,7 +490,6 @@ app.get('/ticket-statistics', async (req: Request, res: Response): Promise<void>
   });
   
 
-// TODO date de naissanance ## pas de id pas de status et pas de mot de passe
 app.get('/export-users', async (req: Request, res: Response): Promise<void> => {
     try {
         // Récupérer les utilisateurs de la base de données

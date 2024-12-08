@@ -47,7 +47,7 @@ const DetailedStatisticsPage: React.FC = () => {
           count: parseInt(item.count, 10),
         }));
   
-        const otherGender = { gender: 'Autre', count: 0 };
+        const otherGender = { gender: 'Autre', count: 1 };
         const genders = genderStats.filter((item: { gender: string; }) => item.gender !== 'Autre');
         
         if (genders.length === genderStats.length) {

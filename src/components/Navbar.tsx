@@ -6,7 +6,6 @@ import { navItems } from "../constants";
 import { Link } from "react-router-dom";
 import { useAuth } from './ConnexionInscription/AuthContext';
 import React from "react";
-//todo
 const Navbar: FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const { isLoggedIn, logout, roleId } = useAuth();
