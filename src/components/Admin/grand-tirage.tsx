@@ -37,7 +37,6 @@ const GrandTiragePage: React.FC = () => {
       }
 
       setOpenGrandTirageDialog(true); // Ouvrir la modale pour afficher le gagnant
-      setOpenSnackbar(true); // Afficher le message de succès
 
     } catch (error) {
       console.error('Erreur lors du tirage du grand lot:', error);
@@ -66,12 +65,12 @@ Nous vous encourageons à vérifier votre boîte de réception, ainsi que votre 
 
 Nous tenons à vous remercier pour votre participation et espérons que ce gain vous apportera beaucoup de joie et de bonheur. 😊
 
-Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment à l'adresse support@exemple.com.
+Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment à l'adresse thetiptop@exemple.fr
 
 Encore toutes nos félicitations et à très bientôt pour d'autres tirages !
 
 Bien à vous,
-L'équipe du Grand Tirage
+                L'équipe du Thé Tip Top
 `;
 
       // Appel API pour envoyer la notification (email, message, etc.)
@@ -82,7 +81,8 @@ L'équipe du Grand Tirage
       });
 
       setNotificationStatus('Notification envoyée avec succès.');
-      console.log('Notification envoyée');
+      setOpenSnackbar(true)
+      handleCloseGrandTirageDialog();
     } catch (error) {
       console.error('Erreur lors de l\'envoi de la notification:', error);
       setNotificationStatus('Erreur lors de l\'envoi de la notification.');
@@ -119,19 +119,23 @@ L'équipe du Grand Tirage
 
       {/* Snackbar de succès */}
       <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-        message="Le tirage a été effectué avec succès!"
-        sx={{
-          bottom: 30,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          bgcolor: '#28a745',
-          color: '#fff',
-          borderRadius: '8px',
-        }}
-      />
+  open={openSnackbar}
+  autoHideDuration={3000}
+  onClose={() => setOpenSnackbar(false)}
+  message="Le tirage a été effectué avec succès!"
+  sx={{
+  
+    transform: 'translateX(-50%)',
+    bgcolor: '#28a745',
+    color: '#fff',
+    borderRadius: '8px',
+    marginRight:'100px',
+    padding: '10px',
+    fontWeight: 'bold',
+    zIndex: 1400,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)', 
+  }}
+/>
 
       {/* Modale affichant le gagnant */}
       <Dialog
@@ -181,7 +185,7 @@ L'équipe du Grand Tirage
 
                 Nous tenons à vous remercier pour votre participation et espérons que ce gain vous apportera beaucoup de joie et de bonheur. 😊
 
-                Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment à l'adresse support@exemple.com.
+                Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment à l'adresse support@thetiptop.fr.
 
                 Encore toutes nos félicitations et à très bientôt pour d'autres tirages !
 

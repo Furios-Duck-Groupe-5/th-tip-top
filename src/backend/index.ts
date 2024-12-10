@@ -900,8 +900,8 @@ interface NodemailerError extends Error {
     code?: string;  // Ajoutez une propriété `code` pour les erreurs de Nodemailer
   }
   
-  const mailUser = process.env.MAIL_USER || 'thetiptop40@gmail.com';
-  const mailPass = process.env.MAIL_PASS || 'tbmd esqf rhcf gyzy';
+  const mailUser = process.env.MAIL_USER || 'thetiptopthetiptop6@gmail.com';
+  const mailPass = process.env.MAIL_PASS || 'ooqy xgvp oovk hskc';
   
 //   if (mailUser === 'thetiptop40@gmail.com' && mailPass === 'jqgi ehko kvsb oczy') {
 //       console.warn('Les variables d\'environnement MAIL_USER et MAIL_PASS ne sont pas définies. Utilisation des valeurs par défaut.');
