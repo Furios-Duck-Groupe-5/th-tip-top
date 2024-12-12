@@ -17,7 +17,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../ConnexionInscription/AuthContext";
 import { Helmet } from "react-helmet";
-
+//ok
 const ImageList = [
   { id: 1, img: BiryaniImg1 },
   { id: 2, img: BiryaniImg2 },
